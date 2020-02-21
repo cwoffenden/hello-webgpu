@@ -1,0 +1,15 @@
+# Intermediate and and build files
+out/x86/
+out/x64/
+out/mac/
+out/ems/
+
+# VS project files
+*.vcxproj.user
+.vs/
+*.VC.db
+*.VC.opendb
+*.sdf
+*.suo
+*.opensdf
+*.aps
