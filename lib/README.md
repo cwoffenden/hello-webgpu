@@ -4,13 +4,13 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
 
-2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); The VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/).
+2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); the VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/).
 
 3. Make sure you have up-to-date graphics drivers. If you're running Windows on Boot Camp install one of the [unofficial AMD drivers](//www.bootcampdrivers.com) (if only to get Vulkan support; it'd be nice if Apple made this step unnecessary).
 
 4. Install the [Vulkan SDK](//www.lunarg.com/vulkan-sdk/). Make sure the examples run (`vkcube.exe`, for example).
 
-5. Install Git. I installed Git for Windows via the [Git Credential Manager](https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/).
+5. Install Git. I installed Git for Windows via the [Git Credential Manager](//github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/).
 
 6. Install Google's [Depot Tools](//commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up). I didn't install Depot Tools the recommended way, instead I did this:
 
@@ -36,9 +36,9 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 		`python -m pip install pywin32`
 
-	The reason for doing it this way is it keeps Depot Tools from being the first `PATH` entry and interferring with other tools (and plus the Google instructions are a bit clunky for Windows).
+	The reason for doing it this way is it keeps Depot Tools from permanently being the first `PATH` entry and interferring with other tools (and plus the Google instructions are a bit clunky for Windows).
 
-7. In the same VS2019 x64 Prompt above, with the same `PATH`, etc., clone Dawn following the [Building Dawn instructions](https://dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md). We need to make these steps a little more Windows friendly:
+7. In the same VS2019 x64 Prompt above, with the same `PATH`, etc., clone Dawn following the [Building Dawn instructions](//dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md). We need to make these steps a little more Windows friendly:
 
 	```bat
 	git clone https://dawn.googlesource.com/dawn dawn && cd dawn
@@ -69,7 +69,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	asan_globals=false
 	```
 
-	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings.
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs).
 
 	For debug:
 
@@ -83,7 +83,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`.
 	
-10. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](https://chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
+10. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
 	Taking the same arguments as Dawn plus:
 
