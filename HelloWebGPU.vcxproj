@@ -14,21 +14,20 @@
     <VCProjectVersion>16.0</VCProjectVersion>
     <ProjectGuid>{8CB18772-844E-4743-B821-5E5FAF086321}</ProjectGuid>
     <RootNamespace>HelloWebGPU</RootNamespace>
-    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>Unicode</CharacterSet>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
@@ -48,7 +47,7 @@
     <IncludePath>$(ProjectDir)\lib\dawn\inc;$(VULKAN_SDK)\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)out\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>out\$(PlatformShortName)\$(Configuration)\</IntDir>
-	<LocalDebuggerEnvironment>PATH=$(ProjectDir);$(LibraryPath);%PATH%;</LocalDebuggerEnvironment>
+    <LocalDebuggerEnvironment>PATH=$(ProjectDir);$(LibraryPath);%PATH%;</LocalDebuggerEnvironment>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
