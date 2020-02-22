@@ -13,3 +13,6 @@ out/ems/
 *.suo
 *.opensdf
 *.aps
+
+# Mac meta files
+.DS_Store

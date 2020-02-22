@@ -1,96 +1,95 @@
-Dawn build instructions:
+#Building Windows Dawn (and optionally [ANGLE](https://chromium.googlesource.com/angle/angle))
 
-1. VisualStudio (VS2015/17/19). Community edition is fine. Make sure the CMake option is enabled.
+These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md) but tailored for Windows (and specifically a DLL that can be linked with MSVC).
 
-2. You need the the full Windows 10 SDK; VS will install the Win10 SDK from VS (via the VS Installer) but it misses the required "Debugging Tools for Windows":
+1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
 
-	https://developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/
+2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); The VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/).
 
-3. Up-to-date graphics drivers and the Vulkan SDK:
+3. Make sure you have up-to-date graphics drivers. If you're running Windows on Boot Camp install one of the [unofficial AMD drivers](//www.bootcampdrivers.com) (if only to get Vulkan support; it'd be nice if Apple made this step unnecessary).
 
-	https://www.lunarg.com/vulkan-sdk/
+4. Install the [Vulkan SDK](//www.lunarg.com/vulkan-sdk/). Make sure the examples run (`vkcube.exe`, for example).
 
-4. Git. I have Git for Windows installed along with the MS Credential Manager:
-		
-	https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/tag/1.20.0
-		
-5. Google's Depot Tools:
+5. Install Git. I installed Git for Windows via the [Git Credential Manager](https://github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/).
 
-	http://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up
-	
-I didn't install Depot Tools the recommended way, instead I did this:
+6. Install Google's [Depot Tools](//commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up). I didn't install Depot Tools the recommended way, instead I did this:
 
-	5.1 Make sure Git is on the PATH (via the environment variable control panel)
-	
-	5.1 Launch a VS2019 x64 Native Tools Command Prompt
-	
-	5.2 Set-up Git following the "Bootstrapping" section in the Depot Tools page above
-	
-	5.3 cd into your dev/work/code directory (mine is C:\Volumes\Data\Work\Native)
-	
-	5.4 git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git
-	
-	5.5 Add Depot Tools to the front of your PATH in the current Command Prompt:
-	
-		set PATH=C:\Volumes\Data\Work\Native\depot_tools;%PATH%
-	
-	5.6 Run 'gclient' (which should download the CIPD client then show you some options)
+	1. Make sure Git is on the `PATH` (via the environment variable control panel).
 
-	5.7 Add win32file to Depot Tools' Python (verify with 'where python' that Depot Tools is the correct python executable):
+	2. Launch a VS2019 x64 Native Tools Command Prompt (found in the Windows menu; note to investigate: a regular Prompt might be enough, since Depot Tools knows how to find the compiler).
 
-		python -m pip install pywin32
-	
-The reason for doing it this way is it keeps the random self-updating Depot Tools from being the first PATH entry (and the Google instructions are a bit clunky for Windows).
+	3. Set-up Git following the *Bootstrapping* section in the Depot Tools page above.
 
-6. In the same VS2019 x64 Prompt above, with the same PATH, etc., clone Dawn following the Building Dawn instructions:
+	4. `cd` into your dev/work/code directory (mine is `C:\Volumes\Data\Work\Native`).
 
-	https://dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md
+	5. Clone Depot Tools:
 
-The copy needs making Windows friendly and the local VS toolchain needs enabling:
+		`git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git`
 
+	6. Add Depot Tools to the front of your `PATH` in the current Command Prompt:
+
+		`set PATH=C:\Volumes\Data\Work\Native\depot_tools;%PATH%`
+
+	7. Run `gclient` (which should download the CIPD client then show you some options).
+
+	8. Add `win32file` to Depot Tools' Python (and verify with `where python` that Depot Tools is the preferred python executable):
+
+		`python -m pip install pywin32`
+
+	The reason for doing it this way is it keeps Depot Tools from being the first `PATH` entry and interferring with other tools (and plus the Google instructions are a bit clunky for Windows).
+
+7. In the same VS2019 x64 Prompt above, with the same `PATH`, etc., clone Dawn following the [Building Dawn instructions](https://dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md). We need to make these steps a little more Windows friendly:
+
+	```bat
 	git clone https://dawn.googlesource.com/dawn dawn && cd dawn
-	
 	copy scripts\standalone.gclient .gclient
-	
 	set DEPOT_TOOLS_WIN_TOOLCHAIN=0
-	
 	gclient sync
+	```
+
+8. Configure then build Dawn:
+
+	1. `gn args out/Release`
+
+	2. In the text file that just opened add `is_debug=false` then save and close it.
+
+	3. `ninja -C out\Release`
+
+9. That should be it. Run the samples in the `out` directory (`CHelloTriangle.exe`, for example). Now that the basic install builds and runs the configuration can be investigated and tweaked:
+
+	`gn args out/Release --list`
+
+	For release I went with:
+
+	```ini
+	is_clang=false
+	is_debug=false
+	strip_debug_info=true
+	symbol_level=0
+	asan_globals=false
+	```
+
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings.
+
+	For debug:
+
+	```ini
+	is_clang=false
+	is_debug=true
+	enable_iterator_debugging=true
+	```
+
+	If you don't set the `enable_iterator_debugging` option then you'll need [`_ITERATOR_DEBUG_LEVEL=0`](//docs.microsoft.com/en-us/cpp/standard-library/iterator-debug-level?view=vs-2019) setting in the preprocessor.
+
+	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`.
 	
-7. Configure then build Dawn:
+10. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](https://chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
-	5.1 gn args out/Release
-	
-	5.2 In the text file that opened add "is_debug=false", save then close it
-	
-	5.3 ninja -C out\Release
-	
-8. That should be it. Run the samples in the build directory. Now that the basic install can build and run, the configuration can be investigated and tweaked:
+	Taking the same arguments as Dawn plus:
 
-	gn args out/Release --list
+	```ini
+	angle_enable_swiftshader=false
+	angle_enable_vulkan=false
+	```
 
-For release I went with:
-
-is_clang=false
-is_debug=false
-strip_debug_info=true
-symbol_level=0
-asan_globals=false
-
-is_clang=false
-is_debug=true
-enable_iterator_debugging=true (note: build with _ITERATOR_DEBUG_LEVEL=0 if setting this to false)
-
-With builds for both target_cpu="x64" and target_cpu="x86".
-
-Command line warning D9002 : ignoring unknown option '/Zc:twoPhase'
-	
-9. Pretty much the same steps are needed to build ANGLE:
-
-	https://chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md
-
-With same arguments as Dawn plus:
-
-angle_enable_swiftshader=false
-angle_enable_vulkan=false
-
-Note: ANGLE currently fails to build when disabling D3D9.
+	Note: ANGLE currently fails to build when disabling D3D9.
