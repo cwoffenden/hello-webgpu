@@ -185,6 +185,15 @@ static void initSwapChain(WGPUBackendType backend, WGPUDevice device, window::Ha
 		break;
 	}
 }
+
+/**
+ * Dawn error handling callback (adheres to \c WGPUErrorCallback).
+ * 
+ * \param[in] message error string
+ */
+static void printError(WGPUErrorType /*type*/, const char* message, void*) {
+	puts(message);
+}
 } // impl
 
 //******************************** Public API ********************************/
@@ -208,7 +217,9 @@ WGPUDevice webgpu::create(window::Handle window, WGPUBackendType type) {
 		impl::backend = static_cast<WGPUBackendType>(properties.backendType);
 		impl::device  = adapter.CreateDevice();
 		impl::initSwapChain(impl::backend, impl::device, window);
-		dawnProcSetProcs(&dawn_native::GetProcs());
+		DawnProcTable procs(dawn_native::GetProcs());
+		procs.deviceSetUncapturedErrorCallback(impl::device, impl::printError, nullptr);
+		dawnProcSetProcs(&procs);
 	}
 	return impl::device;
 }
