@@ -84,7 +84,7 @@ static uint32_t const triangle_frag[] = {
  * \param[in] size size of \a code in bytes
  * \param[in] label optional shader name
  */
-WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
+static WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
 	WGPUShaderModuleDescriptor desc = {};
 	desc.label    = label;
 	desc.codeSize = size / sizeof uint32_t;
@@ -134,7 +134,7 @@ static void createPipeline() {
 	wgpuShaderModuleRelease(vertMod);
 }
 
-bool redraw() {
+static bool redraw() {
 	WGPUTextureView backBufView = wgpuSwapChainGetCurrentTextureView(swapchain);			// create textureView
 
 	WGPURenderPassColorAttachmentDescriptor colorDesc = {};
