@@ -513,11 +513,11 @@ void window::destroy(window::Handle wHnd) {
 	DestroyWindow(reinterpret_cast<HWND>(wHnd));
 }
 
-void window::show(Handle wHnd, bool show) {
+void window::show(window::Handle wHnd, bool show) {
 	ShowWindow(reinterpret_cast<HWND>(wHnd), (show) ? SW_SHOWDEFAULT : SW_HIDE);
 }
 
-void window::loop(Redraw const func) {
+void window::loop(window::Redraw const func) {
 	while (impl::yield()) {
 		if (func) {
 			if (!func()) {
