@@ -87,7 +87,7 @@ static uint32_t const triangle_frag[] = {
 static WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
 	WGPUShaderModuleDescriptor desc = {};
 	desc.label    = label;
-	desc.codeSize = size / sizeof uint32_t;
+	desc.codeSize = size / sizeof(uint32_t);
 	desc.code     = code;
 	return wgpuDeviceCreateShaderModule(device, &desc);
 }
@@ -177,10 +177,11 @@ int main(int /*argc*/, char* /*argv*/[]) {
 			WGPUSwapChainDescriptor swapDesc = {};
 			swapDesc.implementation = webgpu::getSwapChainImpl(device);
 			swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);
+		#ifndef __EMSCRIPTEN__
 			wgpuSwapChainConfigure(swapchain,
 				webgpu::getSwapChainFormat(device),
 					WGPUTextureUsage_OutputAttachment, 800, 450); // TODO: currently failing on hi-DPI (with Vulkan at least)
-
+		#endif
 			createPipeline();
 
 			window::show(wHnd);
