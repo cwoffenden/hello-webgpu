@@ -93,6 +93,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\win\glue.cpp" />
     <ClCompile Include="src\win\webgpu.cpp" />
     <ClCompile Include="src\win\window.cpp" />
   </ItemGroup>

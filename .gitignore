@@ -2,7 +2,7 @@
 out/x86/
 out/x64/
 out/mac/
-out/ems/
+out/web/
 
 # VS project files
 *.vcxproj.user

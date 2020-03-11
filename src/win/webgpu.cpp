@@ -224,8 +224,25 @@ WGPUDevice webgpu::create(window::Handle window, WGPUBackendType type) {
 	return impl::device;
 }
 
-uintptr_t webgpu::getSwapChainImpl(WGPUDevice /*device*/) {
-	return reinterpret_cast<uintptr_t>(&impl::swapImpl);
+WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
+	WGPUSwapChainDescriptor swapDesc = {};
+	/*
+	 * Currently failing (probably because the nextInChain needs setting up, and
+	 * also with the correct WGPUSType_* for the platform).
+	 *
+	swapDesc.usage  = WGPUTextureUsage_OutputAttachment;
+	swapDesc.format = impl::swapPref;
+	swapDesc.width  = 800;
+	swapDesc.height = 450;
+	swapDesc.presentMode = WGPUPresentMode_VSync;
+	 */
+	swapDesc.implementation = reinterpret_cast<uintptr_t>(&impl::swapImpl);
+	WGPUSwapChain swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);
+	/*
+	 * Currently failing on hi-DPI (with Vulkan).
+	 */
+	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_OutputAttachment, 800, 450);
+	return swapchain;
 }
 
 WGPUTextureFormat webgpu::getSwapChainFormat(WGPUDevice /*device*/) {

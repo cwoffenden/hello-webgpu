@@ -15,15 +15,10 @@
 namespace webgpu {
 WGPUDevice create(window::Handle window, WGPUBackendType type = WGPUBackendType_Force32);
 
-/**
- * Temporary: replace will a call to create the swap chain directly. The
- * browser creates the swap chain from the canvas (which is the window in our
- * analogy) so this needs a rethink outside of Dawn.
- */
-uintptr_t getSwapChainImpl(WGPUDevice device);
+WGPUSwapChain createSwapChain(WGPUDevice device);
 
 /**
- * See \c #getSwapChainImpl();
+ * See \c #createSwapChain();
  */
 WGPUTextureFormat getSwapChainFormat(WGPUDevice device);
 }

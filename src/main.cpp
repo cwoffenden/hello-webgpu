@@ -163,25 +163,22 @@ static bool redraw() {
 
 	wgpuQueueSubmit(queue, 1, &commands);
 	wgpuCommandBufferRelease(commands);														// release commands
+#ifndef __EMSCRIPTEN__
+	/*
+	 * TODO: wgpuSwapChainPresent is unsupported in Emscripten, so what do we do?
+	 */
 	wgpuSwapChainPresent(swapchain);
+#endif
 	wgpuTextureViewRelease(backBufView);													// release textureView
 
 	return true;
 }
 
-int main(int /*argc*/, char* /*argv*/[]) {
+extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 	if (window::Handle wHnd = window::create()) {
 		if ((device = webgpu::create(wHnd))) {
 			queue = wgpuDeviceCreateQueue(device);
-			
-			WGPUSwapChainDescriptor swapDesc = {};
-			swapDesc.implementation = webgpu::getSwapChainImpl(device);
-			swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);
-		#ifndef __EMSCRIPTEN__
-			wgpuSwapChainConfigure(swapchain,
-				webgpu::getSwapChainFormat(device),
-					WGPUTextureUsage_OutputAttachment, 800, 450); // TODO: currently failing on hi-DPI (with Vulkan at least)
-		#endif
+			swapchain = webgpu::createSwapChain(device);
 			createPipeline();
 
 			window::show(wHnd);

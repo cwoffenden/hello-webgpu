@@ -27,6 +27,9 @@
     <ClCompile Include="src\win\webgpu.cpp">
       <Filter>src\win</Filter>
     </ClCompile>
+    <ClCompile Include="src\win\glue.cpp">
+      <Filter>src\win</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="inc\webgpu.h">
