@@ -39,6 +39,8 @@ namespace wgpu {
         Sampler = 0x00000003,
         SampledTexture = 0x00000004,
         StorageTexture = 0x00000005,
+        ReadonlyStorageTexture = 0x00000006,
+        WriteonlyStorageTexture = 0x00000007,
     };
 
     enum class BlendFactor : uint32_t {
