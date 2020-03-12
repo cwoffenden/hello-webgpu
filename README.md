@@ -4,4 +4,6 @@ Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emsc
 
 The included `libdawn` is pre-built for Windows/MSVC; [see instructions](lib/README.md) if you wish to build it yourself (out of the box Dawn on Windows builds with [Depot Tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools.html)/Clang so MSVC's linker fails with the exposed `std` types).
 
+![Chrome and native side-by-side](screenshot.png)
+
 Dawn is Apache 2.0 licensed (see [LICENSE](lib/dawn/LICENSE)). The example code is released under a [Creative Commons Zero license](//creativecommons.org/publicdomain/zero/1.0/) (or Public Domain, whichever is applicable in your jurisdiction).
