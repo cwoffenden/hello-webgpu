@@ -29,15 +29,30 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]);
 //****************************************************************************/
 
 namespace impl {
-EM_JS(void, glue_preint_webgpu, (), {
+/**
+ * JavaScript async calls that need to finish before calling \c main().
+ */
+EM_JS(void, glue_preint, (), {
 	var entry = Module["__glue_main_"];
 	if (entry) {
-		navigator.gpu.requestAdapter().then(function (adapter) {
-			adapter.requestDevice().then(function (device) {
-				Module.preinitializedWebGPUDevice = device;
-				entry();
+		/*
+		 * None of the WebGPU properties appear to survive Closure, including
+		 * Emscripten's own `preinitializedWebGPUDevice` (which from looking at
+		 *`library_html5` is probably designed to be inited in script before
+		 * loading the Wasm).
+		 */
+		if (navigator["gpu"]) {
+			navigator["gpu"]["requestAdapter"]().then(function (adapter) {
+				adapter["requestDevice"]().then( function (device) {
+					Module["preinitializedWebGPUDevice"] = device;
+					entry();
+				});
+			}, function () {
+				console.error("No WebGPU adapter; not starting");
 			});
-		});
+		} else {
+			console.error("No support for WebGPU; not starting");
+		}
 	} else {
 		console.error("Entry point not found; unable to start");
 	}
@@ -59,7 +74,7 @@ KEEP_IN_MODULE void _glue_main_() {
  * Entry point. Workaround for Emscripten needing an \c async start.
  */
 int main(int /*argc*/, char* /*argv*/[]) {
-    impl::glue_preint_webgpu();
+    impl::glue_preint();
 	emscripten_exit_with_live_runtime();
 	return 0;
 }

@@ -1,7 +1,6 @@
 @echo off
 rem Builds the Emscripten implmentation (on Windows)
 rem TODO: CMake...
-rem TODO: look at why "--closure 1" fails
 rem 
 
 if "%~1"=="/d" (
@@ -20,7 +19,7 @@ if %DEBUG%==true (
   set OPT_FLAGS=%OPT_FLAGS% -O0
 ) else (
   set CPP_FLAGS=%CPP_FLAGS% -g0 -DNDEBUG=1 -flto
-  set EMS_FLAGS=%EMS_FLAGS% --llvm-lto 3 -s ASSERTIONS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s EVAL_CTORS=1
+  set EMS_FLAGS=%EMS_FLAGS% --llvm-lto 3 -s ASSERTIONS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s EVAL_CTORS=1 --closure 1
   set OPT_FLAGS=%OPT_FLAGS% -O3
 )
 
