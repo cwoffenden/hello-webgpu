@@ -1,6 +1,6 @@
-# "Hello, World" WebGPU and Dawn
+# "Hello, Triangle" WebGPU and Dawn
 
-Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emscripten.org) and [Dawn](//dawn.googlesource.com/dawn). Build for Windows using Visual Studio from 2015 onwards. Build for Emscripten (on Windows) using `build-ems.bat` (CMake project to follow).
+Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emscripten.org) and [Dawn](//dawn.googlesource.com/dawn). Build for Windows using Visual Studio from 2015 onwards. Build for Emscripten (on Windows) using `build-web.bat` (CMake project to follow). Tested with Chrome Canary 82.0 with the `--enable-unsafe-webgpu` flag.
 
 The included `libdawn` is pre-built for Windows/MSVC; [see instructions](lib/README.md) if you wish to build it yourself (out of the box Dawn on Windows builds with [Depot Tools](https://commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools.html)/Clang so MSVC's linker fails with the exposed `std` types).
 
