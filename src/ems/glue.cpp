@@ -74,7 +74,7 @@ KEEP_IN_MODULE void _glue_main_() {
  * Entry point. Workaround for Emscripten needing an \c async start.
  */
 int main(int /*argc*/, char* /*argv*/[]) {
-    impl::glue_preint();
+	impl::glue_preint();
 	emscripten_exit_with_live_runtime();
 	return 0;
 }
