@@ -201,6 +201,7 @@ static bool redraw() {
 	colorDesc.clearColor.r = 0.3f;
 	colorDesc.clearColor.g = 0.3f;
 	colorDesc.clearColor.b = 0.3f;
+	colorDesc.clearColor.a = 1.0f;
 
 	WGPURenderPassDescriptor renderpass = {};
 	renderpass.colorAttachmentCount = 1;
