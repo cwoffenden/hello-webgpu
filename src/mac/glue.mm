@@ -1,3 +1,7 @@
+#include "defines.h"
+
+#import <Cocoa/Cocoa.h>
+
 /**
  * Entry point for the 'real' application.
  *
@@ -6,9 +10,33 @@
  */
 extern "C" int __main__(int argc, char* argv[]);
 
-/**
- * Entry point. Workaround for Emscripten needing an \c async start.
+/*
+ * Entry point.
  */
-int main(int argc, char* argv[]) {
-    return __main__(argc, argv);
+int main(int /*argc*/, const char* /*argv*/[]) {
+	int retval = EXIT_FAILURE;
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
+#else
+	@autoreleasepool {
+#endif
+	[NSApplication sharedApplication];
+	
+	[NSApp activateIgnoringOtherApps:YES];
+	[NSApp finishLaunching];
+	
+	/*
+	 * Call the real main but, like all Cocoa apps, no clean-up is needed (since
+	 * terminating will never get beyond here we only return for completeness).
+	 *
+	 * We *don't* [[NSRunLoop currentRunLoop] run] instead __main__ should
+	 * gameloop-style yield().
+	 */
+	retval = __main__(0, NULLPTR);
+#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
+	[pool release];
+#else
+	}
+#endif
+	return retval;
 }

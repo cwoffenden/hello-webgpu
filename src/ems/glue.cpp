@@ -63,7 +63,7 @@ EM_JS(void, glue_preint, (), {
 
 /**
  * Redirector to call \c __main__() (exposed to Emscripten's \c Module).
- * 
+ *
  * \todo pass URL query string for args
  */
 KEEP_IN_MODULE void _glue_main_() {
