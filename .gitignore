@@ -16,3 +16,9 @@ out/web/
 
 # Mac meta files
 .DS_Store
+
+# Xcode project files
+*.mode1v3
+*.pbxuser
+*.xcworkspace
+xcuserdata/
