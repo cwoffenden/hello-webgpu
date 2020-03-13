@@ -1,0 +1,377 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		C3621509241BD27200855E8F /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = C36214EC241BC95600855E8F /* main.cpp */; };
+		C362150E241BD44E00855E8F /* webgpu.mm in Sources */ = {isa = PBXBuildFile; fileRef = C362150C241BD44E00855E8F /* webgpu.mm */; };
+		C362150F241BD44E00855E8F /* window.mm in Sources */ = {isa = PBXBuildFile; fileRef = C362150D241BD44E00855E8F /* window.mm */; };
+		C3621511241BD45800855E8F /* glue.mm in Sources */ = {isa = PBXBuildFile; fileRef = C3621510241BD45800855E8F /* glue.mm */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		C36214E9241BC8FE00855E8F /* inc */ = {isa = PBXFileReference; lastKnownFileType = folder; path = inc; sourceTree = "<group>"; };
+		C36214EC241BC95600855E8F /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; name = main.cpp; path = src/main.cpp; sourceTree = "<group>"; };
+		C36214F1241BCA8B00855E8F /* HelloWebGPU.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HelloWebGPU.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		C362150C241BD44E00855E8F /* webgpu.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = webgpu.mm; path = src/mac/webgpu.mm; sourceTree = "<group>"; };
+		C362150D241BD44E00855E8F /* window.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = window.mm; path = src/mac/window.mm; sourceTree = "<group>"; };
+		C3621510241BD45800855E8F /* glue.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = glue.mm; path = src/mac/glue.mm; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		C36214EE241BCA8B00855E8F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		C36214E0241BC88400855E8F = {
+			isa = PBXGroup;
+			children = (
+				C36214E9241BC8FE00855E8F /* inc */,
+				C36214EA241BC90900855E8F /* src */,
+				C36214F2241BCA8B00855E8F /* out */,
+			);
+			sourceTree = "<group>";
+		};
+		C36214EA241BC90900855E8F /* src */ = {
+			isa = PBXGroup;
+			children = (
+				C362150B241BD43900855E8F /* mac */,
+				C36214EC241BC95600855E8F /* main.cpp */,
+			);
+			name = src;
+			sourceTree = "<group>";
+		};
+		C36214F2241BCA8B00855E8F /* out */ = {
+			isa = PBXGroup;
+			children = (
+				C36214F1241BCA8B00855E8F /* HelloWebGPU.app */,
+			);
+			name = out;
+			sourceTree = "<group>";
+		};
+		C362150B241BD43900855E8F /* mac */ = {
+			isa = PBXGroup;
+			children = (
+				C362150C241BD44E00855E8F /* webgpu.mm */,
+				C362150D241BD44E00855E8F /* window.mm */,
+				C3621510241BD45800855E8F /* glue.mm */,
+			);
+			name = mac;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		C36214F0241BCA8B00855E8F /* HelloWebGPU */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = C3621500241BCA8C00855E8F /* Build configuration list for PBXNativeTarget "HelloWebGPU" */;
+			buildPhases = (
+				C36214ED241BCA8B00855E8F /* Sources */,
+				C36214EE241BCA8B00855E8F /* Frameworks */,
+				C36214EF241BCA8B00855E8F /* Resources */,
+				C362151B241BD81A00855E8F /* Run Script (copy Dawn dylibs) */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HelloWebGPU;
+			productName = HelloWebGPU;
+			productReference = C36214F1241BCA8B00855E8F /* HelloWebGPU.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		C36214E1241BC88400855E8F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1100;
+				TargetAttributes = {
+					C36214F0241BCA8B00855E8F = {
+						CreatedOnToolsVersion = 11.0;
+					};
+				};
+			};
+			buildConfigurationList = C36214E4241BC88400855E8F /* Build configuration list for PBXProject "HelloWebGPU" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = C36214E0241BC88400855E8F;
+			productRefGroup = C36214F2241BCA8B00855E8F /* out */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				C36214F0241BCA8B00855E8F /* HelloWebGPU */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		C36214EF241BCA8B00855E8F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		C362151B241BD81A00855E8F /* Run Script (copy Dawn dylibs) */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script (copy Dawn dylibs)";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "mkdir -p  \"$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks\"\ncp -f lib/dawn/bin/mac/${CONFIGURATION}/*.dylib \"$TARGET_BUILD_DIR/$TARGET_NAME.app/Contents/Frameworks\"\n";
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C36214ED241BCA8B00855E8F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				C3621511241BD45800855E8F /* glue.mm in Sources */,
+				C3621509241BD27200855E8F /* main.cpp in Sources */,
+				C362150F241BD44E00855E8F /* window.mm in Sources */,
+				C362150E241BD44E00855E8F /* webgpu.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		C36214E5241BC88400855E8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = "_DEBUG=1";
+				HEADER_SEARCH_PATHS = (
+					lib/dawn/inc,
+					inc,
+				);
+				INFOPLIST_FILE = src/mac/Info.plist;
+				LIBRARY_SEARCH_PATHS = "lib/dawn/bin/mac/${CONFIGURATION}";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				OTHER_LDFLAGS = (
+					"-ldawn_native",
+					"-ldawn_proc",
+					"-framework",
+					Cocoa,
+				);
+			};
+			name = Debug;
+		};
+		C36214E6241BC88400855E8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_ENABLE_CPP_EXCEPTIONS = NO;
+				GCC_ENABLE_CPP_RTTI = NO;
+				GCC_OPTIMIZATION_LEVEL = 3;
+				GCC_PREPROCESSOR_DEFINITIONS = "NDEBUG=1";
+				HEADER_SEARCH_PATHS = (
+					lib/dawn/inc,
+					inc,
+				);
+				INFOPLIST_FILE = src/mac/Info.plist;
+				LIBRARY_SEARCH_PATHS = "lib/dawn/bin/mac/${CONFIGURATION}";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				OTHER_LDFLAGS = (
+					"-ldawn_native",
+					"-ldawn_proc",
+					"-framework",
+					Cocoa,
+				);
+			};
+			name = Release;
+		};
+		C3621501241BCA8C00855E8F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/dawn/bin/mac/Release",
+					"$(PROJECT_DIR)/lib/dawn/bin/mac/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.numfum.demo.hellowebgpu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		C3621502241BCA8C00855E8F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+				);
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/lib/dawn/bin/mac/Release",
+					"$(PROJECT_DIR)/lib/dawn/bin/mac/Debug",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 10.14;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = com.numfum.demo.hellowebgpu;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		C36214E4241BC88400855E8F /* Build configuration list for PBXProject "HelloWebGPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C36214E5241BC88400855E8F /* Debug */,
+				C36214E6241BC88400855E8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		C3621500241BCA8C00855E8F /* Build configuration list for PBXNativeTarget "HelloWebGPU" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				C3621501241BCA8C00855E8F /* Debug */,
+				C3621502241BCA8C00855E8F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = C36214E1241BC88400855E8F /* Project object */;
+}
