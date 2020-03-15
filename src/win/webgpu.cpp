@@ -1,17 +1,5 @@
 #include "webgpu.h"
 
-/**
-* \def __has_include
-* Dummy \c __has_include implementation for when not using compilers
-* supporting this feature (in which case all requested files are reported as
-* missing).
-*
-* \param header include file to query
-*/
-#ifndef __has_include
-#define __has_include(header) 0
-#endif
-
 /*
  * On Windows Dawn should have been built with the D3D12 and Vulkan support;
  * macOS/iOS it should be Metal only; Linux (and others) should be Vulkan only.

@@ -517,7 +517,7 @@ void window::show(window::Handle wHnd, bool show) {
 	ShowWindow(reinterpret_cast<HWND>(wHnd), (show) ? SW_SHOWDEFAULT : SW_HIDE);
 }
 
-void window::loop(window::Redraw const func) {
+void window::loop(window::Redraw func) {
 	while (impl::yield()) {
 		if (func) {
 			if (!func()) {
