@@ -1,5 +1,5 @@
 @echo off
-rem Builds the Emscripten implmentation (on Windows)
+rem Builds the Emscripten implementation (on Windows)
 rem TODO: CMake...
 rem 
 
