@@ -1,9 +1,18 @@
 #include "webgpu.h"
 
+/*
+ * On Mac Dawn should have been built with Metal support.
+ */
+#define DAWN_ENABLE_BACKEND_METAL
+
 #include <dawn/dawn_proc.h>
 #include <dawn/webgpu_cpp.h>
 #include <dawn_native/MetalBackend.h>
 #include <dawn_native/NullBackend.h>
+
+#import <AppKit/NSWindow.h>
+#import <QuartzCore/QuartzCore.h>
+
 
 namespace impl {
 /*
@@ -52,6 +61,95 @@ static WGPUTextureFormat swapPref;
 //********************************** Helpers *********************************/
 
 /**
+ * Work-in-progress. Metal swap chain implementation (pretty much taken from
+ * Dawn's \c MetalBinding.mm)
+ *
+ * \todo why is this not in the Dawn repo like the D3D or Vulkan version?
+ */
+class MetalSwapChainImpl
+{
+public:
+	MetalSwapChainImpl(NSWindow* window)
+		: window  (window)
+		, device  (nil)
+		, queue   (nil)
+		, layer   (nil)
+		, drawable(nil)
+		, texture (nil) {}
+		
+	void init(DawnWSIContextMetal* ctx) {
+		device = ctx->device;
+		queue  = ctx->queue;
+	}
+	DawnSwapChainError configure(WGPUTextureFormat format, WGPUTextureUsage usage, uint32_t w, uint32_t h) {
+		CGSize size = {
+			.width  = static_cast<CGFloat>(w),
+			.height = static_cast<CGFloat>(h)
+		};
+		layer = CAMetalLayer.layer;
+		layer.device       = device;
+		layer.pixelFormat  = MTLPixelFormatBGRA8Unorm;
+		layer.drawableSize = size;
+		if (usage & (WGPUTextureUsage_OutputAttachment | WGPUTextureUsage_Present)) {
+			layer.framebufferOnly = YES;
+		}
+		
+		NSView* view = window.contentView;
+		view.wantsLayer = YES;
+		view.layer      = layer;
+		
+		return DAWN_SWAP_CHAIN_NO_ERROR;
+	}
+	DawnSwapChainError getNextTexture(DawnSwapChainNextTexture* next) {
+		[drawable release];
+		 drawable = layer.nextDrawable;
+		[drawable retain];
+		[texture release];
+		 texture = drawable.texture;
+		[texture retain];
+		next->texture.ptr = reinterpret_cast<void*>(texture);
+		return DAWN_SWAP_CHAIN_NO_ERROR;
+	}
+	DawnSwapChainError present() {
+		id<MTLCommandBuffer> cmdBuf = [queue commandBuffer];
+		[cmdBuf presentDrawable: drawable];
+		[cmdBuf commit];
+		return DAWN_SWAP_CHAIN_NO_ERROR;
+	}
+private:
+	NSWindow* window;				///< Window the Metal \c #layer will be drawn in
+	id<MTLDevice> device;			///< GPU interface
+	id<MTLCommandQueue> queue;		///< Command queue used to present \c #drawable
+	CAMetalLayer* layer;			///< Render layer attached to \c #window
+	id<CAMetalDrawable> drawable;	///< Current \e drawable associated with the \c #layer (retained)
+	id<MTLTexture> texture;			///< Texture of the current \c #drawable (retained)
+};
+
+/**
+ * Helper to wrap \c #MetalSwapChainImpl in the required \c DawnSwapChainImplementation.
+ */
+DawnSwapChainImplementation createMetalSwapChain(NSWindow* window) {
+	return DawnSwapChainImplementation {
+		.Init           = [](void* userData, void* wsiContext) {
+			static_cast<MetalSwapChainImpl*>(userData)->init(static_cast<DawnWSIContextMetal*>(wsiContext));
+		},
+		.Destroy        = [](void* userData) {
+			delete static_cast<MetalSwapChainImpl*>(userData);
+		},
+		.Configure      = [](void* userData, WGPUTextureFormat format, WGPUTextureUsage usage, uint32_t w, uint32_t h) {
+			return static_cast<MetalSwapChainImpl*>(userData)->configure(format, usage, w, h);
+		},
+		.GetNextTexture = [](void* userData, DawnSwapChainNextTexture* next) {
+			return static_cast<MetalSwapChainImpl*>(userData)->getNextTexture(next);
+		},
+		.Present        = [](void* userData) {
+			return static_cast<MetalSwapChainImpl*>(userData)->present();
+		},
+		.userData       = new MetalSwapChainImpl(window),
+	};
+}
+
+/**
  * Analogous to the browser's \c GPU.requestAdapter().
  * \n
  * The returned \c Adapter is a wrapper around the underlying Dawn adapter (and
@@ -93,7 +191,8 @@ static void initSwapChain(WGPUBackendType backend, WGPUDevice device, window::Ha
 	switch (backend) {
 	case WGPUBackendType_Metal:
 		if (impl::swapImpl.userData == nullptr) {
-			// do the magic here...
+			impl::swapImpl = createMetalSwapChain(reinterpret_cast<NSWindow*>(window));
+			impl::swapPref = WGPUTextureFormat_BGRA8Unorm;
 		}
 		break;
 	default:
@@ -134,8 +233,24 @@ WGPUDevice webgpu::create(window::Handle window, WGPUBackendType type) {
 	return impl::device;
 }
 
-WGPUSwapChain webgpu::createSwapChain(WGPUDevice /*device*/) {
-	return nullptr;
+WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
+	WGPUSwapChainDescriptor swapDesc = {};
+	/*
+	 * See the Windows implementation. This is 100% the same.
+	 *
+	swapDesc.usage  = WGPUTextureUsage_OutputAttachment;
+	swapDesc.format = impl::swapPref;
+	swapDesc.width  = 800;
+	swapDesc.height = 450;
+	swapDesc.presentMode = WGPUPresentMode_VSync;
+	 */
+	swapDesc.implementation = reinterpret_cast<uintptr_t>(&impl::swapImpl);
+	WGPUSwapChain swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);
+	/*
+	 * Currently failing on hi-DPI (with Vulkan on Windows).
+	 */
+	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_OutputAttachment, 800, 450);
+	return swapchain;
 }
 
 WGPUTextureFormat webgpu::getSwapChainFormat(WGPUDevice /*device*/) {
