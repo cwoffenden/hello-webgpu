@@ -1,6 +1,13 @@
 #include "window.h"
 
-#import <Cocoa/Cocoa.h>
+#import <AppKit/NSWindow.h>
+
+/*
+ * When ARC is enabled we can't pass out the window handle.
+ */
+#if __has_feature(objc_arc)
+#error "Cannot build with ARC enabled"
+#endif
 
 /**
  * Default window width.

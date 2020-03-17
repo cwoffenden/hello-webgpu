@@ -27,7 +27,7 @@ typedef bool (*Redraw) ();
  * \param[in] winH optional internal height (or zero to use the default height)
  * \param[in] name optional window title (alternatively repurposed as the element ID for web-based implementations)
  */
-Handle _NULLABLE create(unsigned winW = 0, unsigned winH = 0, const char* _NULLABLE name = nullptr);
+Handle _NULLABLE create(unsigned winW = 0, unsigned winH = 0, const char* _NULLABLE name = NULLPTR);
 
 /**
  * Destroys a window, freeing any resources.
@@ -47,9 +47,11 @@ void show(Handle _NONNULL wHnd, bool show = true);
 /**
  * Registers the redraw function to be called each frame.
  *
+ * \note Currently this blocks, returning only when the redraw function returns.
+ *
  * \todo rethink this - what do we do for multiple windows?
  *
  * \param[in] func function to be called each \e frame (or \c null to do nothing)
  */
-void loop(Redraw _NULLABLE func = nullptr);
+void loop(Redraw _NULLABLE func = NULLPTR);
 }

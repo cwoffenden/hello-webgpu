@@ -8,14 +8,10 @@
  * TODO: are we doing GL?
  */
 #if __has_include("d3d12.h") || (_MSC_VER >= 1900)
-#ifndef DAWN_ENABLE_BACKEND_D3D12
 #define DAWN_ENABLE_BACKEND_D3D12
 #endif
-#endif
 #if __has_include("vulkan/vulkan.h")
-#ifndef DAWN_ENABLE_BACKEND_VULKAN
 #define DAWN_ENABLE_BACKEND_VULKAN
-#endif
 #endif
 
 //****************************************************************************/
