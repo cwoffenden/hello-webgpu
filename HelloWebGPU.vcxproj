@@ -43,7 +43,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <LibraryPath>$(ProjectDir)\lib\dawn\bin\$(PlatformShortName)\$(Configuration);$(VULKAN_SDK)\Lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\lib\dawn\bin\win\$(PlatformShortName)\$(Configuration);$(VULKAN_SDK)\Lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\lib\dawn\inc;$(VULKAN_SDK)\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)out\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>out\$(PlatformShortName)\$(Configuration)\</IntDir>
@@ -52,7 +52,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <LibraryPath>$(ProjectDir)\lib\dawn\bin\$(PlatformShortName)\$(Configuration);$(VULKAN_SDK)\Lib;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)\lib\dawn\bin\win\$(PlatformShortName)\$(Configuration);$(VULKAN_SDK)\Lib;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)\lib\dawn\inc;$(VULKAN_SDK)\include;$(IncludePath)</IncludePath>
     <OutDir>$(SolutionDir)out\$(PlatformShortName)\$(Configuration)\</OutDir>
     <IntDir>out\$(PlatformShortName)\$(Configuration)\</IntDir>
