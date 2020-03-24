@@ -9,47 +9,76 @@ WGPUSwapChain swapchain;
 WGPURenderPipeline pipeline;
 WGPUBuffer vertBuf;
 WGPUBuffer indxBuf;
+WGPUBuffer uRotBuf;
+WGPUBindGroup bindGroup;
+
+/**
+ * Current rotation angle (in degrees, updated per frame).
+ */
+float rotDeg = 0.0f;
 
 /**
  * Vertex shader SPIR-V.
  * \code
  *	// glslc -Os -mfmt=num -o - -c in.vert
  *	#version 450
+ *	layout(set = 0, binding = 0) uniform Rotation {
+ *		float uRot;
+ *	};
  *	layout(location = 0) in  vec2 aPos;
  *	layout(location = 1) in  vec3 aCol;
  *	layout(location = 0) out vec3 vCol;
  *	void main() {
- *		gl_Position = vec4(aPos, 0.0, 1.0);
+ *		float cosA = cos(radians(uRot));
+ *		float sinA = sin(radians(uRot));
+ *		mat3 rot = mat3(cosA, sinA, 0.0,
+ *					   -sinA, cosA, 0.0,
+ *						0.0,  0.0,  1.0);
+ *		gl_Position = vec4(rot * vec3(aPos, 1.0), 1.0);
  *		vCol = aCol;
  *	}
  * \endcode
  */
 static uint32_t const triangle_vert[] = {
-	0x07230203, 0x00010000, 0x000d0007, 0x00000021, 0x00000000, 0x00020011, 0x00000001, 0x0006000b,
+	0x07230203, 0x00010000, 0x000d0008, 0x00000043, 0x00000000, 0x00020011, 0x00000001, 0x0006000b,
 	0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001,
-	0x0009000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x0000000d, 0x00000012, 0x0000001d,
-	0x0000001f, 0x00050048, 0x0000000b, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x0000000b,
-	0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x0000000b, 0x00000002, 0x0000000b, 0x00000003,
-	0x00050048, 0x0000000b, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x0000000b, 0x00000002,
-	0x00040047, 0x00000012, 0x0000001e, 0x00000000, 0x00040047, 0x0000001d, 0x0000001e, 0x00000000,
-	0x00040047, 0x0000001f, 0x0000001e, 0x00000001, 0x00020013, 0x00000002, 0x00030021, 0x00000003,
-	0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x00040017, 0x00000007, 0x00000006, 0x00000004,
-	0x00040015, 0x00000008, 0x00000020, 0x00000000, 0x0004002b, 0x00000008, 0x00000009, 0x00000001,
-	0x0004001c, 0x0000000a, 0x00000006, 0x00000009, 0x0006001e, 0x0000000b, 0x00000007, 0x00000006,
-	0x0000000a, 0x0000000a, 0x00040020, 0x0000000c, 0x00000003, 0x0000000b, 0x0004003b, 0x0000000c,
-	0x0000000d, 0x00000003, 0x00040015, 0x0000000e, 0x00000020, 0x00000001, 0x0004002b, 0x0000000e,
-	0x0000000f, 0x00000000, 0x00040017, 0x00000010, 0x00000006, 0x00000002, 0x00040020, 0x00000011,
-	0x00000001, 0x00000010, 0x0004003b, 0x00000011, 0x00000012, 0x00000001, 0x0004002b, 0x00000006,
-	0x00000014, 0x00000000, 0x0004002b, 0x00000006, 0x00000015, 0x3f800000, 0x00040020, 0x00000019,
-	0x00000003, 0x00000007, 0x00040017, 0x0000001b, 0x00000006, 0x00000003, 0x00040020, 0x0000001c,
-	0x00000003, 0x0000001b, 0x0004003b, 0x0000001c, 0x0000001d, 0x00000003, 0x00040020, 0x0000001e,
-	0x00000001, 0x0000001b, 0x0004003b, 0x0000001e, 0x0000001f, 0x00000001, 0x00050036, 0x00000002,
-	0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x0004003d, 0x00000010, 0x00000013,
-	0x00000012, 0x00050051, 0x00000006, 0x00000016, 0x00000013, 0x00000000, 0x00050051, 0x00000006,
-	0x00000017, 0x00000013, 0x00000001, 0x00070050, 0x00000007, 0x00000018, 0x00000016, 0x00000017,
-	0x00000014, 0x00000015, 0x00050041, 0x00000019, 0x0000001a, 0x0000000d, 0x0000000f, 0x0003003e,
-	0x0000001a, 0x00000018, 0x0004003d, 0x0000001b, 0x00000020, 0x0000001f, 0x0003003e, 0x0000001d,
-	0x00000020, 0x000100fd, 0x00010038
+	0x0009000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x0000002d, 0x00000031, 0x0000003e,
+	0x00000040, 0x00050048, 0x00000009, 0x00000000, 0x00000023, 0x00000000, 0x00030047, 0x00000009,
+	0x00000002, 0x00040047, 0x0000000b, 0x00000022, 0x00000000, 0x00040047, 0x0000000b, 0x00000021,
+	0x00000000, 0x00050048, 0x0000002b, 0x00000000, 0x0000000b, 0x00000000, 0x00050048, 0x0000002b,
+	0x00000001, 0x0000000b, 0x00000001, 0x00050048, 0x0000002b, 0x00000002, 0x0000000b, 0x00000003,
+	0x00050048, 0x0000002b, 0x00000003, 0x0000000b, 0x00000004, 0x00030047, 0x0000002b, 0x00000002,
+	0x00040047, 0x00000031, 0x0000001e, 0x00000000, 0x00040047, 0x0000003e, 0x0000001e, 0x00000000,
+	0x00040047, 0x00000040, 0x0000001e, 0x00000001, 0x00020013, 0x00000002, 0x00030021, 0x00000003,
+	0x00000002, 0x00030016, 0x00000006, 0x00000020, 0x0003001e, 0x00000009, 0x00000006, 0x00040020,
+	0x0000000a, 0x00000002, 0x00000009, 0x0004003b, 0x0000000a, 0x0000000b, 0x00000002, 0x00040015,
+	0x0000000c, 0x00000020, 0x00000001, 0x0004002b, 0x0000000c, 0x0000000d, 0x00000000, 0x00040020,
+	0x0000000e, 0x00000002, 0x00000006, 0x00040017, 0x00000018, 0x00000006, 0x00000003, 0x00040018,
+	0x00000019, 0x00000018, 0x00000003, 0x0004002b, 0x00000006, 0x0000001e, 0x00000000, 0x0004002b,
+	0x00000006, 0x00000022, 0x3f800000, 0x00040017, 0x00000027, 0x00000006, 0x00000004, 0x00040015,
+	0x00000028, 0x00000020, 0x00000000, 0x0004002b, 0x00000028, 0x00000029, 0x00000001, 0x0004001c,
+	0x0000002a, 0x00000006, 0x00000029, 0x0006001e, 0x0000002b, 0x00000027, 0x00000006, 0x0000002a,
+	0x0000002a, 0x00040020, 0x0000002c, 0x00000003, 0x0000002b, 0x0004003b, 0x0000002c, 0x0000002d,
+	0x00000003, 0x00040017, 0x0000002f, 0x00000006, 0x00000002, 0x00040020, 0x00000030, 0x00000001,
+	0x0000002f, 0x0004003b, 0x00000030, 0x00000031, 0x00000001, 0x00040020, 0x0000003b, 0x00000003,
+	0x00000027, 0x00040020, 0x0000003d, 0x00000003, 0x00000018, 0x0004003b, 0x0000003d, 0x0000003e,
+	0x00000003, 0x00040020, 0x0000003f, 0x00000001, 0x00000018, 0x0004003b, 0x0000003f, 0x00000040,
+	0x00000001, 0x0006002c, 0x00000018, 0x00000042, 0x0000001e, 0x0000001e, 0x00000022, 0x00050036,
+	0x00000002, 0x00000004, 0x00000000, 0x00000003, 0x000200f8, 0x00000005, 0x00050041, 0x0000000e,
+	0x0000000f, 0x0000000b, 0x0000000d, 0x0004003d, 0x00000006, 0x00000010, 0x0000000f, 0x0006000c,
+	0x00000006, 0x00000011, 0x00000001, 0x0000000b, 0x00000010, 0x0006000c, 0x00000006, 0x00000012,
+	0x00000001, 0x0000000e, 0x00000011, 0x0006000c, 0x00000006, 0x00000017, 0x00000001, 0x0000000d,
+	0x00000011, 0x0004007f, 0x00000006, 0x00000020, 0x00000017, 0x00060050, 0x00000018, 0x00000023,
+	0x00000012, 0x00000017, 0x0000001e, 0x00060050, 0x00000018, 0x00000024, 0x00000020, 0x00000012,
+	0x0000001e, 0x00060050, 0x00000019, 0x00000026, 0x00000023, 0x00000024, 0x00000042, 0x0004003d,
+	0x0000002f, 0x00000032, 0x00000031, 0x00050051, 0x00000006, 0x00000033, 0x00000032, 0x00000000,
+	0x00050051, 0x00000006, 0x00000034, 0x00000032, 0x00000001, 0x00060050, 0x00000018, 0x00000035,
+	0x00000033, 0x00000034, 0x00000022, 0x00050091, 0x00000018, 0x00000036, 0x00000026, 0x00000035,
+	0x00050051, 0x00000006, 0x00000037, 0x00000036, 0x00000000, 0x00050051, 0x00000006, 0x00000038,
+	0x00000036, 0x00000001, 0x00050051, 0x00000006, 0x00000039, 0x00000036, 0x00000002, 0x00070050,
+	0x00000027, 0x0000003a, 0x00000037, 0x00000038, 0x00000039, 0x00000022, 0x00050041, 0x0000003b,
+	0x0000003c, 0x0000002d, 0x0000000d, 0x0003003e, 0x0000003c, 0x0000003a, 0x0004003d, 0x00000018,
+	0x00000041, 0x00000040, 0x0003003e, 0x0000003e, 0x00000041, 0x000100fd, 0x00010038
 };
 
 /**
@@ -116,12 +145,31 @@ static WGPUBuffer createBuffer(const void* data, size_t size, WGPUBufferUsage us
  * Bare minimum pipeline to draw a triangle using the above shaders.
  */
 static void createPipelineAndBuffers() {
-	// Compile shaders
+	// compile shaders
 	WGPUShaderModule vertMod = createShader(triangle_vert, sizeof triangle_vert);
 	WGPUShaderModule fragMod = createShader(triangle_frag, sizeof triangle_frag);
+
+	// bind group layout (used by both the pipeline layout and uniform bind group, released at the end of this function)
+	WGPUBindGroupLayoutBinding bglBinding = {};
+	bglBinding.binding = 0;
+	bglBinding.visibility = WGPUShaderStage_Vertex;
+	bglBinding.type = WGPUBindingType_UniformBuffer;
+
+	WGPUBindGroupLayoutDescriptor bglDesc = {};
+	bglDesc.bindingCount = 1;
+	bglDesc.bindings = &bglBinding;
+	WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &bglDesc);
+
+	// pipeline layout (used by the render pipeline, released after its creation)
+	WGPUPipelineLayoutDescriptor layoutDesc = {};
+	layoutDesc.bindGroupLayoutCount = 1;
+	layoutDesc.bindGroupLayouts = &bindGroupLayout;
+	WGPUPipelineLayout pipelineLayout = wgpuDeviceCreatePipelineLayout(device, &layoutDesc);
 	
-	// Begin pipeline set-up
+	// begin pipeline set-up
 	WGPURenderPipelineDescriptor desc = {};
+
+	desc.layout = pipelineLayout;
 
 	desc.vertexStage.module = vertMod;
 	desc.vertexStage.entryPoint = "main";
@@ -131,7 +179,7 @@ static void createPipelineAndBuffers() {
 	fragStage.entryPoint = "main";
 	desc.fragmentStage = &fragStage;
 
-	// Describe buffer layouts
+	// describe buffer layouts
 	WGPUVertexAttributeDescriptor vertAttrs[2] = {};
 	vertAttrs[0].format = WGPUVertexFormat_Float2;
 	vertAttrs[0].offset = 0;
@@ -153,7 +201,7 @@ static void createPipelineAndBuffers() {
 
 	desc.sampleCount = 1;
 
-	// Describe blend
+	// describe blend
 	WGPUBlendDescriptor blendDesc = {};
 	blendDesc.operation = WGPUBlendOperation_Add;
 	blendDesc.srcFactor = WGPUBlendFactor_SrcAlpha;
@@ -171,10 +219,13 @@ static void createPipelineAndBuffers() {
 
 	pipeline = wgpuDeviceCreateRenderPipeline(device, &desc);
 
+	// partial clean-up (just move to the end, no?)
+	wgpuPipelineLayoutRelease(pipelineLayout);
+
 	wgpuShaderModuleRelease(fragMod);
 	wgpuShaderModuleRelease(vertMod);
 
-	// Create the buffers
+	// create the buffers (x, y, r, g, b)
 	float const vertData[] = {
 		-0.8f, -0.8f, 0.0f, 0.0f, 1.0f, // BL
 		 0.8f, -0.8f, 0.0f, 1.0f, 0.0f, // BR
@@ -186,6 +237,25 @@ static void createPipelineAndBuffers() {
 	};
 	vertBuf = createBuffer(vertData, sizeof(vertData), WGPUBufferUsage_Vertex);
 	indxBuf = createBuffer(indxData, sizeof(indxData), WGPUBufferUsage_Index);
+
+	// create the uniform bind group (note 'rotDeg' is copied here, not bound in any way)
+	uRotBuf = createBuffer(&rotDeg, sizeof(rotDeg), WGPUBufferUsage_Uniform);
+
+	WGPUBindGroupBinding bgBinding = {};
+	bgBinding.binding = 0;
+	bgBinding.buffer = uRotBuf;
+	bgBinding.offset = 0;
+	bgBinding.size = sizeof(rotDeg);
+
+	WGPUBindGroupDescriptor bgDesc = {};
+	bgDesc.layout = bindGroupLayout;
+	bgDesc.bindingCount = 1;
+	bgDesc.bindings = &bgBinding;
+
+	bindGroup = wgpuDeviceCreateBindGroup(device, &bgDesc);
+
+	// last bit of clean-up
+	wgpuBindGroupLayoutRelease(bindGroupLayout);
 }
 
 /**
@@ -210,8 +280,13 @@ static bool redraw() {
 	WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, nullptr);			// create encoder
 	WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder, &renderpass);	// create pass
 
-	// draw the triangle (comment these four lines to simply clear the screen)
+	// update the rotation
+	rotDeg += 0.1f;
+	wgpuBufferSetSubData(uRotBuf, 0, sizeof(rotDeg), &rotDeg);
+
+	// draw the triangle (comment these five lines to simply clear the screen)
 	wgpuRenderPassEncoderSetPipeline(pass, pipeline);
+	wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, 0);
 	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0);
 	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, 0);
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
@@ -245,6 +320,8 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 			window::loop(redraw);
 
 #ifndef __EMSCRIPTEN__
+			wgpuBindGroupRelease(bindGroup);
+			wgpuBufferRelease(uRotBuf);
 			wgpuBufferRelease(indxBuf);
 			wgpuBufferRelease(vertBuf);
 			wgpuRenderPipelineRelease(pipeline);
