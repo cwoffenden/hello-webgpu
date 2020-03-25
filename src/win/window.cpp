@@ -191,8 +191,17 @@ MAKE_DYNAMIC_FUNC("User32.dll", AdjustWindowRectExForDpi);
 
 //****************************************************************************/
 
+/**
+ * Helper to convert a \c Handle to a window.
+ */
+#define TO_HND(win) reinterpret_cast<window::Handle>(win)
+ /**
+  * Helper to convert a window to a \c Handle.
+  */
+#define TO_WIN(hnd) reinterpret_cast<HWND>(hnd)
+
 namespace impl {
-//*************************** Windows Event Loop ****************************/
+//**************************** Windows Event Loop ****************************/
 
 /**
  * Helper to toggle between windowed mode and fullscreen.
@@ -502,7 +511,7 @@ window::Handle window::create(unsigned winW, unsigned winH, const char* /*name*/
 			 */
 			DragAcceptFiles(window, FALSE);
 			RegisterHotKey (window, VK_SNAPSHOT, 0, VK_SNAPSHOT);
-			return reinterpret_cast<window::Handle>(window);
+			return TO_HND(window);
 		}
 		UnregisterClass(wndClass.lpszClassName, wndClass.hInstance);
 	}
@@ -510,14 +519,14 @@ window::Handle window::create(unsigned winW, unsigned winH, const char* /*name*/
 }
 
 void window::destroy(window::Handle wHnd) {
-	DestroyWindow(reinterpret_cast<HWND>(wHnd));
+	DestroyWindow(TO_WIN(wHnd));
 }
 
 void window::show(window::Handle wHnd, bool show) {
-	ShowWindow(reinterpret_cast<HWND>(wHnd), (show) ? SW_SHOWDEFAULT : SW_HIDE);
+	ShowWindow(TO_WIN(wHnd), (show) ? SW_SHOWDEFAULT : SW_HIDE);
 }
 
-void window::loop(window::Redraw func) {
+void window::loop(window::Handle /*wHnd*/, window::Redraw func) {
 	while (impl::yield()) {
 		if (func) {
 			if (!func()) {
