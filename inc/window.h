@@ -51,7 +51,8 @@ void show(Handle _NONNULL wHnd, bool show = true);
  *
  * \todo rethink this - what do we do for multiple windows?
  *
+ * \param[in] wHnd window to synchronise the redraw with
  * \param[in] func function to be called each \e frame (or \c null to do nothing)
  */
-void loop(Redraw _NULLABLE func = NULLPTR);
+void loop(Handle _NONNULL wHnd, Redraw _NULLABLE func = NULLPTR);
 }

@@ -7,9 +7,9 @@ WGPUQueue queue;
 WGPUSwapChain swapchain;
 
 WGPURenderPipeline pipeline;
-WGPUBuffer vertBuf;
-WGPUBuffer indxBuf;
-WGPUBuffer uRotBuf;
+WGPUBuffer vertBuf; // vertex buffer with triangle position and colours
+WGPUBuffer indxBuf; // index buffer
+WGPUBuffer uRotBuf; // uniform buffer (containing the rotation angle)
 WGPUBindGroup bindGroup;
 
 /**
@@ -112,7 +112,7 @@ static uint32_t const triangle_frag[] = {
 
 /**
  * Helper to create a shader from SPIR-V IR.
- * 
+ *
  * \param[in] code shader source (output using the \c -V \c -x options in \c glslangValidator)
  * \param[in] size size of \a code in bytes
  * \param[in] label optional shader name
@@ -127,7 +127,7 @@ static WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const 
 
 /**
  * Helper to create a buffer.
- * 
+ *
  * \param[in] data pointer to the start of the raw data
  * \param[in] size number of bytes in \a data
  * \param[in] usage type of buffer
@@ -317,7 +317,7 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 			createPipelineAndBuffers();
 
 			window::show(wHnd);
-			window::loop(redraw);
+			window::loop(wHnd, redraw);
 
 #ifndef __EMSCRIPTEN__
 			wgpuBindGroupRelease(bindGroup);
