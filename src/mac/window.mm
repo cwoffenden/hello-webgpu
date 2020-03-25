@@ -1,6 +1,7 @@
 #include "window.h"
 
-#import <AppKit/NSWindow.h>
+#import <AppKit/AppKit.h>
+#import <CoreVideo/CoreVideo.h>
 
 /*
  * When ARC is enabled we can't pass out the window handle.
@@ -67,11 +68,53 @@
 
 //****************************************************************************/
 
+/**
+ * Helper to convert a \c Handle to a window.
+ */
+#define TO_HND(win) reinterpret_cast<window::Handle>(win)
+/**
+ * Helper to convert a window to a \c Handle.
+ */
+#define TO_WIN(hnd) reinterpret_cast<WindowImpl*>(hnd)
+
+namespace impl {
+/**
+ * \c true if the application is still running.
+ *
+ * \todo the currenty only works for a single window
+ */
+bool running = true;
+
+/**
+ * Display link callback (with the \c CVDisplayLinkOutputCallback signature).
+ *
+ * \param[in] dispLink display link requesting the frame
+ * \param[in] callTime time now of the current call
+ * \param[in] drawTime time the frame will be displayed
+ * \param[in] user user defined data (currently the owning \c WindowImpl pointer)
+ */
+static CVReturn update(CVDisplayLinkRef dispLink, const CVTimeStamp* callTime, const CVTimeStamp* drawTime, CVOptionFlags, CVOptionFlags*, void* user);
+}
+
 #if __MAC_OS_X_VERSION_MIN_REQUIRED >= 1070
 @interface WindowImpl : NSWindow<NSWindowDelegate, NSDraggingDestination>
 #else
 @interface WindowImpl : NSWindow
 #endif
+{
+/**
+ * Display link compatible with all displays.
+ *
+ * \todo assign to the window's display (does this guarantee the correct refresh on multi-monitor systems?)
+ * \todo track the window moving monitors
+ */
+CVDisplayLinkRef dispLink;
+
+/**
+ * Registered redraw function to call each frame via \c #dispLink.
+ */
+window::Redraw redrawFunc;
+}
 @end
 
 /**
@@ -83,6 +126,9 @@
  */
 - (id)initWithContentRect:(NSRect)rect styleMask:(NSUInteger)style backing:(NSBackingStoreType)type defer:(BOOL)flag {
 	if ((self = [super initWithContentRect:rect styleMask:style backing:type defer:flag])) {
+		CVDisplayLinkCreateWithActiveCGDisplays(&dispLink);
+		CVDisplayLinkSetOutputCallback(dispLink, &impl::update, self);
+		redrawFunc = NULLPTR;
 		/*
 		 * Note: added as a notification instead of an NSWindowDelegate,
 		 * allowing other parts of metal to add their own.
@@ -95,6 +141,39 @@
 }
 
 /**
+ * \copydoc NSWindow#dealloc
+ */
+- (void)dealloc {
+	CVDisplayLinkRelease(dispLink);
+	[super dealloc];
+}
+
+/**
+ * Hmm, hackily sets the redraw function called by the display link.
+ *
+ *  \param[in] func redraw function (\c null to stop the redraw callbacks)
+ */
+- (void)setRedraw:(window::Redraw) func {
+	if (func) {
+		redrawFunc = func;
+		CVDisplayLinkStart(dispLink);
+	} else {
+		impl::running = false;
+		CVDisplayLinkStop(dispLink);
+		redrawFunc = NULLPTR;
+	}
+}
+
+/**
+ * Called by the \c impl#update() redirector to call and handle \c #redrawFunc.
+ */
+- (void)doRedraw {
+	if (!(redrawFunc && redrawFunc())) {
+		[self setRedraw:NULLPTR];
+	}
+}
+
+/**
  * Called when the window is about to close.
  *
  * \note Added via \c NSNotificationCenter not as a \c NSWindowDelegate.
@@ -102,54 +181,55 @@
  */
 - (void)windowWillClose:(NSNotification*)__unused notification {
 	/*
-	 * The user closed the window so we kill the app (after which, our window
-	 * instance will have been released, unless it was retained otherwise).
+	 * The user closed the window so we kill the app (by removing its display
+	 * link callback, which then stop the global 'running', eventually exiting
+	 * the yield).
 	 */
-	[NSApp terminate:nil];
+	[self setRedraw:NULLPTR];
+	
 }
 @end
 
 namespace impl {
-/*
- * Temporary bad yield...
- */
-bool yield() {
+static CVReturn update(CVDisplayLinkRef dispLink, const CVTimeStamp* callTime, const CVTimeStamp* drawTime, CVOptionFlags, CVOptionFlags*, void* user) {
+	[TO_WIN(user) doRedraw];
 	/*
-	 * In testing, anything other than an 'untilDate' of 'distantPast' uses
-	 * more CPU time (it's a percent or so but it's still more).
-	 * 
-	 * Note: we need to still the OS to deal with most of these events (e.g.
-	 * mouse clicks are used to close the window, click buttons, etc.). There's
-	 * probably a middleground of intercepting some, though.
-	 * 
+	NSLog(@"callTime:%lldms, drawTime:%lldms",
+		  callTime->videoTime / (callTime->videoTimeScale / 1000),
+		  drawTime->videoTime / (drawTime->videoTimeScale / 1000));
+	 */
+	return kCVReturnSuccess;
+}
+
+/*
+ * Blocks waiting for events (processing each). Eventually exiting when \c
+ * #running is \c false.
+ *
+ * \note This seems to run as expected, with 0.1% CPU as long as the display
+ * link callback doesn't draw anything.
+ */
+void wait() {
+	/*
 	 * TODO: do we need the [NSApp updateWindows] call after each event?
 	 */
 	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-	while (true) {
+	while (impl::running) {
 		NSEvent* e = [NSApp nextEventMatchingMask:NSEventMaskAny
-			untilDate:[NSDate distantPast]
+			untilDate:[NSDate distantFuture]
 				inMode:NSDefaultRunLoopMode dequeue:YES];
 		if (e) {
 			switch ([e type]) {
 			/*
-			 * All of the events we're interested in go here.
+			 * Any of the events we're interested in go here.
 			 */
 			default:
 				break;
 			}
 			[NSApp sendEvent:e];
-		} else {
-			break;
+			[NSApp updateWindows];
 		}
 	}
-	[NSThread sleepForTimeInterval:WINDOW_SLEEP_PERIOD / 1000.0];
 	[pool release];
-	/*
-	 * We always return true here, regardless of whether termination has been
-	 * requested. At the point where [NSApp terminate] is called, the app won't
-	 * continue, so any code afterwards won't be run anyway.
-	 */
-	return true;
 }
 }
 
@@ -163,19 +243,22 @@ window::Handle window::create(unsigned /*winW*/, unsigned /*winH*/, const char* 
 	[win center];
 	[win makeKeyAndOrderFront:win];
 	[win makeMainWindow];
-	return reinterpret_cast<window::Handle>(win);
+	return TO_HND(win);
 }
 
-void window::destroy(window::Handle /*wHnd*/) {}
+void window::destroy(window::Handle wHnd) {
+	[TO_WIN(wHnd) close];
+}
 
 void window::show(window::Handle /*wHnd*/, bool /*show*/) {}
 
-void window::loop(window::Redraw func) {
-	while (impl::yield()) {
-		if (func) {
-			if (!func()) {
-				break;
-			}
-		}
+void window::loop(window::Handle wHnd, window::Redraw func) {
+	/*
+	 * Starts with an initial call to the draw function (which, for example,
+	 * clears the screen early).
+	 */
+	if (func && func()) {
+		[TO_WIN(wHnd) setRedraw:func];
+		impl::wait();
 	}
 }
