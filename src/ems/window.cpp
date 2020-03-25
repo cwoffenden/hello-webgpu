@@ -33,7 +33,7 @@ void window::destroy(window::Handle /*wHnd*/) {}
 
 void window::show(window::Handle /*wHnd*/, bool /*show*/) {}
 
-void window::loop(window::Redraw func) {
+void window::loop(window::Handle /*wHnd*/, window::Redraw func) {
 	window::redraw = func;
 	if (func) {
 		emscripten_set_main_loop(window::em_redraw, 0, false);
