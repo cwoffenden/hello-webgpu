@@ -1,6 +1,6 @@
 #include "defines.h"
 
-#import <Cocoa/Cocoa.h>
+#include "glue.h"
 
 /**
  * Entry point for the 'real' application.
@@ -15,11 +15,7 @@ extern "C" int __main__(int argc, char* argv[]);
  */
 int main(int /*argc*/, const char* /*argv*/[]) {
 	int retval = EXIT_FAILURE;
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
-#else
-	@autoreleasepool {
-#endif
+AUTO_RELEASE_POOL_ACQUIRE;
 	[NSApplication sharedApplication];
 	
 	[NSApp activateIgnoringOtherApps:YES];
@@ -33,10 +29,6 @@ int main(int /*argc*/, const char* /*argv*/[]) {
 	 * gameloop-style yield().
 	 */
 	retval = __main__(0, NULLPTR);
-#if __MAC_OS_X_VERSION_MIN_REQUIRED < 1060
-	[pool release];
-#else
-	}
-#endif
+	AUTO_RELEASE_POOL_RELEASE;
 	return retval;
 }

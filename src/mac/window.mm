@@ -1,14 +1,8 @@
 #include "window.h"
 
-#import <AppKit/AppKit.h>
 #import <CoreVideo/CoreVideo.h>
 
-/*
- * When ARC is enabled we can't pass out the window handle.
- */
-#if __has_feature(objc_arc)
-#error "Cannot build with ARC enabled"
-#endif
+#include "glue.h"
 
 /**
  * Default window width.
@@ -168,9 +162,11 @@ window::Redraw redrawFunc;
  * Called by the \c impl#update() redirector to call and handle \c #redrawFunc.
  */
 - (void)doRedraw {
+AUTO_RELEASE_POOL_ACQUIRE;
 	if (!(redrawFunc && redrawFunc())) {
 		[self setRedraw:NULLPTR];
 	}
+AUTO_RELEASE_POOL_RELEASE;
 }
 
 /**
@@ -209,10 +205,10 @@ static CVReturn update(CVDisplayLinkRef dispLink, const CVTimeStamp* callTime, c
  * link callback doesn't draw anything.
  */
 void wait() {
+AUTO_RELEASE_POOL_ACQUIRE;
 	/*
 	 * TODO: do we need the [NSApp updateWindows] call after each event?
 	 */
-	NSAutoreleasePool* pool = [[NSAutoreleasePool alloc] init];
 	while (impl::running) {
 		NSEvent* e = [NSApp nextEventMatchingMask:NSEventMaskAny
 			untilDate:[NSDate distantFuture]
@@ -229,7 +225,7 @@ void wait() {
 			[NSApp updateWindows];
 		}
 	}
-	[pool release];
+AUTO_RELEASE_POOL_RELEASE;
 }
 }
 

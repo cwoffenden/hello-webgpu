@@ -273,12 +273,12 @@ static bool redraw() {
 	colorDesc.clearColor.b = 0.3f;
 	colorDesc.clearColor.a = 1.0f;
 
-	WGPURenderPassDescriptor renderpass = {};
-	renderpass.colorAttachmentCount = 1;
-	renderpass.colorAttachments = &colorDesc;
+	WGPURenderPassDescriptor renderPass = {};
+	renderPass.colorAttachmentCount = 1;
+	renderPass.colorAttachments = &colorDesc;
 
 	WGPUCommandEncoder encoder = wgpuDeviceCreateCommandEncoder(device, nullptr);			// create encoder
-	WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder, &renderpass);	// create pass
+	WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPass);	// create pass
 
 	// update the rotation
 	rotDeg += 0.1f;
