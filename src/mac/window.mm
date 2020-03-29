@@ -145,7 +145,9 @@ window::Redraw redrawFunc;
 /**
  * Hmm, hackily sets the redraw function called by the display link.
  *
- *  \param[in] func redraw function (\c null to stop the redraw callbacks)
+ * \todo tidy!
+ *
+ * \param[in] func redraw function (\c null to stop the redraw callbacks)
  */
 - (void)setRedraw:(window::Redraw) func {
 	if (func) {
@@ -188,7 +190,9 @@ AUTO_RELEASE_POOL_RELEASE;
 
 namespace impl {
 static CVReturn update(CVDisplayLinkRef dispLink, const CVTimeStamp* callTime, const CVTimeStamp* drawTime, CVOptionFlags, CVOptionFlags*, void* user) {
-	[TO_WIN(user) doRedraw];
+	[TO_WIN(user)
+		performSelectorOnMainThread:@selector(doRedraw)
+			withObject:nil waitUntilDone:YES];
 	/*
 	NSLog(@"callTime:%lldms, drawTime:%lldms",
 		  callTime->videoTime / (callTime->videoTimeScale / 1000),
