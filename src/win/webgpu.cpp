@@ -218,7 +218,7 @@ WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	swapDesc.format = impl::swapPref;
 	swapDesc.width  = 800;
 	swapDesc.height = 450;
-	swapDesc.presentMode = WGPUPresentMode_VSync;
+	swapDesc.presentMode = WGPUPresentMode_Mailbox;
 	 */
 	swapDesc.implementation = reinterpret_cast<uintptr_t>(&impl::swapImpl);
 	WGPUSwapChain swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);

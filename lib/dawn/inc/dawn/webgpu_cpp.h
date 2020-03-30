@@ -138,8 +138,9 @@ namespace wgpu {
     };
 
     enum class PresentMode : uint32_t {
-        NoVSync = 0x00000000,
-        VSync = 0x00000001,
+        Immediate = 0x00000000,
+        Mailbox = 0x00000001,
+        Fifo = 0x00000002,
     };
 
     enum class PrimitiveTopology : uint32_t {
@@ -893,6 +894,7 @@ namespace wgpu {
         bool multisampled = false;
         TextureViewDimension textureDimension = TextureViewDimension::Undefined;
         TextureComponentType textureComponentType = TextureComponentType::Float;
+        TextureFormat storageTextureFormat = TextureFormat::Undefined;
     };
 
     struct BlendDescriptor {

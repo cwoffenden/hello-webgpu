@@ -225,8 +225,9 @@ typedef enum WGPULoadOp {
 } WGPULoadOp;
 
 typedef enum WGPUPresentMode {
-    WGPUPresentMode_NoVSync = 0x00000000,
-    WGPUPresentMode_VSync = 0x00000001,
+    WGPUPresentMode_Immediate = 0x00000000,
+    WGPUPresentMode_Mailbox = 0x00000001,
+    WGPUPresentMode_Fifo = 0x00000002,
     WGPUPresentMode_Force32 = 0x7FFFFFFF
 } WGPUPresentMode;
 
@@ -468,6 +469,7 @@ typedef struct WGPUBindGroupLayoutBinding {
     bool multisampled;
     WGPUTextureViewDimension textureDimension;
     WGPUTextureComponentType textureComponentType;
+    WGPUTextureFormat storageTextureFormat;
 } WGPUBindGroupLayoutBinding;
 
 typedef struct WGPUBlendDescriptor {
