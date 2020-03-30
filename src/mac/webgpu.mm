@@ -236,13 +236,14 @@ WGPUDevice webgpu::create(window::Handle window, WGPUBackendType type) {
 WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	WGPUSwapChainDescriptor swapDesc = {};
 	/*
-	 * See the Windows implementation. This is 100% the same.
+	 * See the Windows implementation. This is mostly the same (find the docs
+	 * re. Metal's preference for presenting immediately).
 	 *
 	swapDesc.usage  = WGPUTextureUsage_OutputAttachment;
 	swapDesc.format = impl::swapPref;
 	swapDesc.width  = 800;
 	swapDesc.height = 450;
-	swapDesc.presentMode = WGPUPresentMode_VSync;
+	swapDesc.presentMode = WGPUPresentMode_Immediate;
 	 */
 	swapDesc.implementation = reinterpret_cast<uintptr_t>(&impl::swapImpl);
 	WGPUSwapChain swapchain = wgpuDeviceCreateSwapChain(device, nullptr, &swapDesc);
