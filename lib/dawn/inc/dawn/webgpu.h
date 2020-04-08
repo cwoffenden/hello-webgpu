@@ -246,6 +246,8 @@ typedef enum WGPUSType {
     WGPUSType_SurfaceDescriptorFromWindowsHWND = 0x00000002,
     WGPUSType_SurfaceDescriptorFromXlib = 0x00000003,
     WGPUSType_SurfaceDescriptorFromHTMLCanvasId = 0x00000004,
+    WGPUSType_SamplerDescriptorDummyAnisotropicFiltering = 0x00000005,
+    WGPUSType_RenderPipelineDescriptorDummyExtension = 0x00000006,
     WGPUSType_Force32 = 0x7FFFFFFF
 } WGPUSType;
 
@@ -452,16 +454,16 @@ typedef struct WGPUAdapterProperties {
     WGPUBackendType backendType;
 } WGPUAdapterProperties;
 
-typedef struct WGPUBindGroupBinding {
+typedef struct WGPUBindGroupEntry {
     uint32_t binding;
     WGPUBuffer buffer;
     uint64_t offset;
     uint64_t size;
     WGPUSampler sampler;
     WGPUTextureView textureView;
-} WGPUBindGroupBinding;
+} WGPUBindGroupEntry;
 
-typedef struct WGPUBindGroupLayoutBinding {
+typedef struct WGPUBindGroupLayoutEntry {
     uint32_t binding;
     WGPUShaderStageFlags visibility;
     WGPUBindingType type;
@@ -470,7 +472,7 @@ typedef struct WGPUBindGroupLayoutBinding {
     WGPUTextureViewDimension textureDimension;
     WGPUTextureComponentType textureComponentType;
     WGPUTextureFormat storageTextureFormat;
-} WGPUBindGroupLayoutBinding;
+} WGPUBindGroupLayoutEntry;
 
 typedef struct WGPUBlendDescriptor {
     WGPUBlendOperation operation;
@@ -607,6 +609,11 @@ typedef struct WGPUSamplerDescriptor {
     WGPUCompareFunction compare;
 } WGPUSamplerDescriptor;
 
+typedef struct WGPUSamplerDescriptorDummyAnisotropicFiltering {
+    WGPUChainedStruct chain;
+    float maxAnisotropy;
+} WGPUSamplerDescriptorDummyAnisotropicFiltering;
+
 typedef struct WGPUShaderModuleDescriptor {
     WGPUChainedStruct const * nextInChain;
     char const * label;
@@ -682,14 +689,14 @@ typedef struct WGPUBindGroupDescriptor {
     char const * label;
     WGPUBindGroupLayout layout;
     uint32_t bindingCount;
-    WGPUBindGroupBinding const * bindings;
+    WGPUBindGroupEntry const * bindings;
 } WGPUBindGroupDescriptor;
 
 typedef struct WGPUBindGroupLayoutDescriptor {
     WGPUChainedStruct const * nextInChain;
     char const * label;
     uint32_t bindingCount;
-    WGPUBindGroupLayoutBinding const * bindings;
+    WGPUBindGroupLayoutEntry const * bindings;
 } WGPUBindGroupLayoutDescriptor;
 
 typedef struct WGPUColorStateDescriptor {
@@ -725,6 +732,11 @@ typedef struct WGPURenderPassColorAttachmentDescriptor {
     WGPUStoreOp storeOp;
     WGPUColor clearColor;
 } WGPURenderPassColorAttachmentDescriptor;
+
+typedef struct WGPURenderPipelineDescriptorDummyExtension {
+    WGPUChainedStruct chain;
+    WGPUProgrammableStageDescriptor dummyStage;
+} WGPURenderPipelineDescriptorDummyExtension;
 
 typedef struct WGPUTextureCopyView {
     WGPUChainedStruct const * nextInChain;
@@ -786,6 +798,10 @@ typedef struct WGPURenderPipelineDescriptor {
 } WGPURenderPipelineDescriptor;
 
 
+// TODO(dawn:22): Remove this once users use the "Entry" version.
+typedef WGPUBindGroupEntry WGPUBindGroupBinding;
+typedef WGPUBindGroupLayoutEntry WGPUBindGroupLayoutBinding;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -797,7 +813,7 @@ typedef void (*WGPUDeviceLostCallback)(char const * message, void * userdata);
 typedef void (*WGPUErrorCallback)(WGPUErrorType type, char const * message, void * userdata);
 typedef void (*WGPUFenceOnCompletionCallback)(WGPUFenceCompletionStatus status, void * userdata);
 
-typedef void (*WGPUProc)();
+typedef void (*WGPUProc)(void);
 
 #if !defined(WGPU_SKIP_PROCS)
 
@@ -852,7 +868,7 @@ typedef void (*WGPUProcComputePassEncoderReference)(WGPUComputePassEncoder compu
 typedef void (*WGPUProcComputePassEncoderRelease)(WGPUComputePassEncoder computePassEncoder);
 
 // Procs of ComputePipeline
-typedef WGPUBindGroupLayout (*WGPUProcComputePipelineGetBindGroupLayout)(WGPUComputePipeline computePipeline, uint32_t group);
+typedef WGPUBindGroupLayout (*WGPUProcComputePipelineGetBindGroupLayout)(WGPUComputePipeline computePipeline, uint32_t groupIndex);
 typedef void (*WGPUProcComputePipelineReference)(WGPUComputePipeline computePipeline);
 typedef void (*WGPUProcComputePipelineRelease)(WGPUComputePipeline computePipeline);
 
@@ -946,7 +962,7 @@ typedef void (*WGPUProcRenderPassEncoderReference)(WGPURenderPassEncoder renderP
 typedef void (*WGPUProcRenderPassEncoderRelease)(WGPURenderPassEncoder renderPassEncoder);
 
 // Procs of RenderPipeline
-typedef WGPUBindGroupLayout (*WGPUProcRenderPipelineGetBindGroupLayout)(WGPURenderPipeline renderPipeline, uint32_t group);
+typedef WGPUBindGroupLayout (*WGPUProcRenderPipelineGetBindGroupLayout)(WGPURenderPipeline renderPipeline, uint32_t groupIndex);
 typedef void (*WGPUProcRenderPipelineReference)(WGPURenderPipeline renderPipeline);
 typedef void (*WGPUProcRenderPipelineRelease)(WGPURenderPipeline renderPipeline);
 
@@ -1034,7 +1050,7 @@ WGPU_EXPORT void wgpuComputePassEncoderReference(WGPUComputePassEncoder computeP
 WGPU_EXPORT void wgpuComputePassEncoderRelease(WGPUComputePassEncoder computePassEncoder);
 
 // Methods of ComputePipeline
-WGPU_EXPORT WGPUBindGroupLayout wgpuComputePipelineGetBindGroupLayout(WGPUComputePipeline computePipeline, uint32_t group);
+WGPU_EXPORT WGPUBindGroupLayout wgpuComputePipelineGetBindGroupLayout(WGPUComputePipeline computePipeline, uint32_t groupIndex);
 WGPU_EXPORT void wgpuComputePipelineReference(WGPUComputePipeline computePipeline);
 WGPU_EXPORT void wgpuComputePipelineRelease(WGPUComputePipeline computePipeline);
 
@@ -1128,7 +1144,7 @@ WGPU_EXPORT void wgpuRenderPassEncoderReference(WGPURenderPassEncoder renderPass
 WGPU_EXPORT void wgpuRenderPassEncoderRelease(WGPURenderPassEncoder renderPassEncoder);
 
 // Methods of RenderPipeline
-WGPU_EXPORT WGPUBindGroupLayout wgpuRenderPipelineGetBindGroupLayout(WGPURenderPipeline renderPipeline, uint32_t group);
+WGPU_EXPORT WGPUBindGroupLayout wgpuRenderPipelineGetBindGroupLayout(WGPURenderPipeline renderPipeline, uint32_t groupIndex);
 WGPU_EXPORT void wgpuRenderPipelineReference(WGPURenderPipeline renderPipeline);
 WGPU_EXPORT void wgpuRenderPipelineRelease(WGPURenderPipeline renderPipeline);
 
