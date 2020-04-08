@@ -27,7 +27,7 @@
 #include <vulkan/vulkan_win32.h>
 #endif
 
-#pragma comment(lib, "libdawn_native.dll.lib")
+#pragma comment(lib, "dawn_native.dll.lib")
 #pragma comment(lib, "libdawn_proc.dll.lib")
 #ifdef DAWN_ENABLE_BACKEND_VULKAN
 #pragma comment(lib, "vulkan-1.lib")

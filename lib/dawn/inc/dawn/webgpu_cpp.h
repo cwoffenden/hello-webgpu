@@ -157,6 +157,8 @@ namespace wgpu {
         SurfaceDescriptorFromWindowsHWND = 0x00000002,
         SurfaceDescriptorFromXlib = 0x00000003,
         SurfaceDescriptorFromHTMLCanvasId = 0x00000004,
+        SamplerDescriptorDummyAnisotropicFiltering = 0x00000005,
+        RenderPipelineDescriptorDummyExtension = 0x00000006,
     };
 
     enum class StencilOperation : uint32_t {
@@ -386,8 +388,8 @@ namespace wgpu {
     class TextureView;
 
     struct AdapterProperties;
-    struct BindGroupBinding;
-    struct BindGroupLayoutBinding;
+    struct BindGroupEntry;
+    struct BindGroupLayoutEntry;
     struct BlendDescriptor;
     struct BufferCopyView;
     struct BufferDescriptor;
@@ -408,6 +410,7 @@ namespace wgpu {
     struct RenderBundleEncoderDescriptor;
     struct RenderPassDepthStencilAttachmentDescriptor;
     struct SamplerDescriptor;
+    struct SamplerDescriptorDummyAnisotropicFiltering;
     struct ShaderModuleDescriptor;
     struct StencilStateFaceDescriptor;
     struct SurfaceDescriptor;
@@ -424,6 +427,7 @@ namespace wgpu {
     struct ComputePipelineDescriptor;
     struct DepthStencilStateDescriptor;
     struct RenderPassColorAttachmentDescriptor;
+    struct RenderPipelineDescriptorDummyExtension;
     struct TextureCopyView;
     struct TextureDescriptor;
     struct VertexBufferLayoutDescriptor;
@@ -608,7 +612,7 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
-        BindGroupLayout GetBindGroupLayout(uint32_t group) const;
+        BindGroupLayout GetBindGroupLayout(uint32_t groupIndex) const;
 
       private:
         friend ObjectBase<ComputePipeline, WGPUComputePipeline>;
@@ -721,8 +725,8 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
-        void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) const;
-        void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t baseVertex, uint32_t firstInstance) const;
+        void Draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0) const;
+        void DrawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t baseVertex = 0, uint32_t firstInstance = 0) const;
         void DrawIndexedIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
         void DrawIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
         RenderBundle Finish(RenderBundleDescriptor const * descriptor = nullptr) const;
@@ -745,8 +749,8 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
-        void Draw(uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance) const;
-        void DrawIndexed(uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, int32_t baseVertex, uint32_t firstInstance) const;
+        void Draw(uint32_t vertexCount, uint32_t instanceCount = 1, uint32_t firstVertex = 0, uint32_t firstInstance = 0) const;
+        void DrawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t baseVertex = 0, uint32_t firstInstance = 0) const;
         void DrawIndexedIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
         void DrawIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
         void EndPass() const;
@@ -774,7 +778,7 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
-        BindGroupLayout GetBindGroupLayout(uint32_t group) const;
+        BindGroupLayout GetBindGroupLayout(uint32_t groupIndex) const;
 
       private:
         friend ObjectBase<RenderPipeline, WGPURenderPipeline>;
@@ -877,7 +881,7 @@ namespace wgpu {
         BackendType backendType;
     };
 
-    struct BindGroupBinding {
+    struct BindGroupEntry {
         uint32_t binding;
         Buffer buffer;
         uint64_t offset = 0;
@@ -886,7 +890,7 @@ namespace wgpu {
         TextureView textureView;
     };
 
-    struct BindGroupLayoutBinding {
+    struct BindGroupLayoutEntry {
         uint32_t binding;
         ShaderStage visibility;
         BindingType type;
@@ -1032,6 +1036,13 @@ namespace wgpu {
         CompareFunction compare = CompareFunction::Never;
     };
 
+    struct SamplerDescriptorDummyAnisotropicFiltering : ChainedStruct {
+        SamplerDescriptorDummyAnisotropicFiltering() {
+            sType = SType::SamplerDescriptorDummyAnisotropicFiltering;
+        }
+        alignas(ChainedStruct) float maxAnisotropy;
+    };
+
     struct ShaderModuleDescriptor {
         ChainedStruct const * nextInChain = nullptr;
         char const * label = nullptr;
@@ -1055,21 +1066,21 @@ namespace wgpu {
         SurfaceDescriptorFromHTMLCanvasId() {
             sType = SType::SurfaceDescriptorFromHTMLCanvasId;
         }
-        char const * id;
+        alignas(ChainedStruct) char const * id;
     };
 
     struct SurfaceDescriptorFromMetalLayer : ChainedStruct {
         SurfaceDescriptorFromMetalLayer() {
             sType = SType::SurfaceDescriptorFromMetalLayer;
         }
-        void * layer;
+        alignas(ChainedStruct) void * layer;
     };
 
     struct SurfaceDescriptorFromWindowsHWND : ChainedStruct {
         SurfaceDescriptorFromWindowsHWND() {
             sType = SType::SurfaceDescriptorFromWindowsHWND;
         }
-        void * hinstance;
+        alignas(ChainedStruct) void * hinstance;
         void * hwnd;
     };
 
@@ -1077,7 +1088,7 @@ namespace wgpu {
         SurfaceDescriptorFromXlib() {
             sType = SType::SurfaceDescriptorFromXlib;
         }
-        void * display;
+        alignas(ChainedStruct) void * display;
         uint32_t window;
     };
 
@@ -1115,14 +1126,14 @@ namespace wgpu {
         char const * label = nullptr;
         BindGroupLayout layout;
         uint32_t bindingCount;
-        BindGroupBinding const * bindings;
+        BindGroupEntry const * bindings;
     };
 
     struct BindGroupLayoutDescriptor {
         ChainedStruct const * nextInChain = nullptr;
         char const * label = nullptr;
         uint32_t bindingCount;
-        BindGroupLayoutBinding const * bindings;
+        BindGroupLayoutEntry const * bindings;
     };
 
     struct ColorStateDescriptor {
@@ -1157,6 +1168,13 @@ namespace wgpu {
         LoadOp loadOp;
         StoreOp storeOp;
         Color clearColor;
+    };
+
+    struct RenderPipelineDescriptorDummyExtension : ChainedStruct {
+        RenderPipelineDescriptorDummyExtension() {
+            sType = SType::RenderPipelineDescriptorDummyExtension;
+        }
+        alignas(ChainedStruct) ProgrammableStageDescriptor dummyStage;
     };
 
     struct TextureCopyView {
@@ -1218,6 +1236,10 @@ namespace wgpu {
         bool alphaToCoverageEnabled = false;
     };
 
+
+    // TODO(dawn:22): Remove this once users use the "Entry" version.
+    using BindGroupBinding = BindGroupEntry;
+    using BindGroupLayoutBinding = BindGroupLayoutEntry;
 
 }  // namespace wgpu
 
