@@ -57,17 +57,16 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateBindGroupLayout deviceCreateBindGroupLayout;
     WGPUProcDeviceCreateBuffer deviceCreateBuffer;
     WGPUProcDeviceCreateBufferMapped deviceCreateBufferMapped;
-    WGPUProcDeviceCreateBufferMappedAsync deviceCreateBufferMappedAsync;
     WGPUProcDeviceCreateCommandEncoder deviceCreateCommandEncoder;
     WGPUProcDeviceCreateComputePipeline deviceCreateComputePipeline;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
-    WGPUProcDeviceCreateQueue deviceCreateQueue;
     WGPUProcDeviceCreateRenderBundleEncoder deviceCreateRenderBundleEncoder;
     WGPUProcDeviceCreateRenderPipeline deviceCreateRenderPipeline;
     WGPUProcDeviceCreateSampler deviceCreateSampler;
     WGPUProcDeviceCreateShaderModule deviceCreateShaderModule;
     WGPUProcDeviceCreateSwapChain deviceCreateSwapChain;
     WGPUProcDeviceCreateTexture deviceCreateTexture;
+    WGPUProcDeviceGetDefaultQueue deviceGetDefaultQueue;
     WGPUProcDeviceInjectError deviceInjectError;
     WGPUProcDeviceLoseForTesting deviceLoseForTesting;
     WGPUProcDevicePopErrorScope devicePopErrorScope;

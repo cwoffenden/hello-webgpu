@@ -42,7 +42,7 @@ namespace dawn_wire {
     class DAWN_WIRE_EXPORT WireClient : public CommandHandler {
       public:
         WireClient(const WireClientDescriptor& descriptor);
-        ~WireClient();
+        ~WireClient() override;
 
         static DawnProcTable GetProcs();
 
@@ -51,6 +51,10 @@ namespace dawn_wire {
                                             size_t size) override final;
 
         ReservedTexture ReserveTexture(WGPUDevice device);
+
+        // Disconnects the client.
+        // Commands allocated after this point will not be sent.
+        void Disconnect();
 
       private:
         std::unique_ptr<client::Client> mImpl;
