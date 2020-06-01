@@ -1,6 +1,6 @@
 #include "webgpu.h"
 
-#include <cstring>
+#include <string.h>
 
 WGPUDevice device;
 WGPUQueue queue;
@@ -118,10 +118,13 @@ static uint32_t const triangle_frag[] = {
  * \param[in] label optional shader name
  */
 static WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
+	WGPUShaderModuleSPIRVDescriptor spirv = {};
+	spirv.chain.sType = WGPUSType_ShaderModuleSPIRVDescriptor;
+	spirv.codeSize = size / sizeof(uint32_t);
+	spirv.code = code;
 	WGPUShaderModuleDescriptor desc = {};
-	desc.label    = label;
-	desc.codeSize = size / sizeof(uint32_t);
-	desc.code     = code;
+	desc.nextInChain = reinterpret_cast<WGPUChainedStruct*>(&spirv);
+	desc.label = label;
 	return wgpuDeviceCreateShaderModule(device, &desc);
 }
 
@@ -146,18 +149,19 @@ static WGPUBuffer createBuffer(const void* data, size_t size, WGPUBufferUsage us
  */
 static void createPipelineAndBuffers() {
 	// compile shaders
+	
 	WGPUShaderModule vertMod = createShader(triangle_vert, sizeof triangle_vert);
 	WGPUShaderModule fragMod = createShader(triangle_frag, sizeof triangle_frag);
 
 	// bind group layout (used by both the pipeline layout and uniform bind group, released at the end of this function)
-	WGPUBindGroupLayoutBinding bglBinding = {};
-	bglBinding.binding = 0;
-	bglBinding.visibility = WGPUShaderStage_Vertex;
-	bglBinding.type = WGPUBindingType_UniformBuffer;
+	WGPUBindGroupLayoutEntry bglEntry = {};
+	bglEntry.binding = 0;
+	bglEntry.visibility = WGPUShaderStage_Vertex;
+	bglEntry.type = WGPUBindingType_UniformBuffer;
 
 	WGPUBindGroupLayoutDescriptor bglDesc = {};
-	bglDesc.bindingCount = 1;
-	bglDesc.bindings = &bglBinding;
+	bglDesc.entryCount = 1;
+	bglDesc.entries = &bglEntry;
 	WGPUBindGroupLayout bindGroupLayout = wgpuDeviceCreateBindGroupLayout(device, &bglDesc);
 
 	// pipeline layout (used by the render pipeline, released after its creation)
@@ -215,7 +219,7 @@ static void createPipelineAndBuffers() {
 	desc.colorStateCount = 1;
 	desc.colorStates = &colorDesc;
 
-	desc.sampleMask = 0xFFFFFFFF;
+	desc.sampleMask = 0xFFFFFFFF; //<-- Note: this currently causes Emscripten to fail (sampleMask ends up as -1, which trips an assert)
 
 	pipeline = wgpuDeviceCreateRenderPipeline(device, &desc);
 
@@ -241,16 +245,16 @@ static void createPipelineAndBuffers() {
 	// create the uniform bind group (note 'rotDeg' is copied here, not bound in any way)
 	uRotBuf = createBuffer(&rotDeg, sizeof(rotDeg), WGPUBufferUsage_Uniform);
 
-	WGPUBindGroupBinding bgBinding = {};
-	bgBinding.binding = 0;
-	bgBinding.buffer = uRotBuf;
-	bgBinding.offset = 0;
-	bgBinding.size = sizeof(rotDeg);
+	WGPUBindGroupEntry bgEntry = {};
+	bgEntry.binding = 0;
+	bgEntry.buffer = uRotBuf;
+	bgEntry.offset = 0;
+	bgEntry.size = sizeof(rotDeg);
 
 	WGPUBindGroupDescriptor bgDesc = {};
 	bgDesc.layout = bindGroupLayout;
-	bgDesc.bindingCount = 1;
-	bgDesc.bindings = &bgBinding;
+	bgDesc.entryCount = 1;
+	bgDesc.entries = &bgEntry;
 
 	bindGroup = wgpuDeviceCreateBindGroup(device, &bgDesc);
 
@@ -287,8 +291,8 @@ static bool redraw() {
 	// draw the triangle (comment these five lines to simply clear the screen)
 	wgpuRenderPassEncoderSetPipeline(pass, pipeline);
 	wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, 0);
-	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0);
-	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, 0);
+	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0, 0);
+	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, 0, 0);
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
 
 	wgpuRenderPassEncoderEndPass(pass);
@@ -312,7 +316,7 @@ static bool redraw() {
 extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 	if (window::Handle wHnd = window::create()) {
 		if ((device = webgpu::create(wHnd))) {
-			queue = wgpuDeviceCreateQueue(device);
+			queue = wgpuDeviceGetDefaultQueue(device);
 			swapchain = webgpu::createSwapChain(device);
 			createPipelineAndBuffers();
 
