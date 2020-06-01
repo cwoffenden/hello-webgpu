@@ -59,7 +59,7 @@ typedef struct {
 } DawnSwapChainImplementation;
 
 #if defined(DAWN_ENABLE_BACKEND_D3D12) && defined(__cplusplus)
-typedef struct {
+typedef struct DawnWSIContextD3D12 {
     WGPUDevice device = nullptr;
 } DawnWSIContextD3D12;
 #endif

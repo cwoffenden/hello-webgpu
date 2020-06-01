@@ -28,7 +28,7 @@
 #endif
 
 #pragma comment(lib, "dawn_native.dll.lib")
-#pragma comment(lib, "libdawn_proc.dll.lib")
+#pragma comment(lib, "dawn_proc.dll.lib")
 #ifdef DAWN_ENABLE_BACKEND_VULKAN
 #pragma comment(lib, "vulkan-1.lib")
 #endif

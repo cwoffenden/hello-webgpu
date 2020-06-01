@@ -21,7 +21,7 @@ WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	 * should be the same regardless.
 	 */
 	WGPUSurfaceDescriptorFromHTMLCanvasId canvDesc = {};
-	canvDesc.sType = WGPUSType_SurfaceDescriptorFromHTMLCanvasId;
+	canvDesc.chain.sType = WGPUSType_SurfaceDescriptorFromHTMLCanvasId;
 	canvDesc.id = "canvas";
 	
 	WGPUSurfaceDescriptor surfDesc = {};
@@ -34,7 +34,7 @@ WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	swapDesc.format = WGPUTextureFormat_BGRA8Unorm;
 	swapDesc.width  = 800;
 	swapDesc.height = 450;
-	swapDesc.presentMode = WGPUPresentMode_VSync;
+	swapDesc.presentMode = WGPUPresentMode_Fifo;
 	
 	WGPUSwapChain swapchain = wgpuDeviceCreateSwapChain(device, surface, &swapDesc);
 	
