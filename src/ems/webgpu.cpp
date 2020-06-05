@@ -14,12 +14,6 @@ WGPUDevice webgpu::create(window::Handle /*window*/, WGPUBackendType /*type*/) {
 }
 
 WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
-	/*
-	 * Note: this struct differs between the Dawn and Emscripten headers. The
-	 * 'sType' property in Dawn is a member of the WGPUChainedStruct (which is
-	 * a member of 'chain'). The address offset (how Emscripten looks it up)
-	 * should be the same regardless.
-	 */
 	WGPUSurfaceDescriptorFromHTMLCanvasId canvDesc = {};
 	canvDesc.chain.sType = WGPUSType_SurfaceDescriptorFromHTMLCanvasId;
 	canvDesc.id = "canvas";
