@@ -1,6 +1,6 @@
 #include "window.h"
 
-#include <emscripten/emscripten.h>
+#include <emscripten/html5.h>
 
 namespace window {
 /**
@@ -8,19 +8,11 @@ namespace window {
  */ 
 struct HandleImpl {} DUMMY;
 
-/**
- * Current redraw function.
- */
-window::Redraw redraw = nullptr;
-
-void em_redraw() {
-	if (redraw) {
-		if (redraw() == false) {
-			redraw = nullptr;
-			emscripten_cancel_main_loop();
-		}
-	}
+EM_BOOL em_redraw(double /*time*/, void *userData) {
+	window::Redraw redraw = (window::Redraw)userData;
+	return redraw(); // If this returns true, rAF() will continue, otherwise it will terminate
 }
+
 }
 
 //******************************** Public API ********************************/
@@ -34,10 +26,5 @@ void window::destroy(window::Handle /*wHnd*/) {}
 void window::show(window::Handle /*wHnd*/, bool /*show*/) {}
 
 void window::loop(window::Handle /*wHnd*/, window::Redraw func) {
-	window::redraw = func;
-	if (func) {
-		emscripten_set_main_loop(window::em_redraw, 0, false);
-	} else {
-		emscripten_cancel_main_loop();
-	}
+	emscripten_request_animation_frame_loop(window::em_redraw, (void*)func);
 }
