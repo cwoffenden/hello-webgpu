@@ -1,6 +1,15 @@
 #include "webgpu.h"
 
+/*
+ * WebGPU specific header added in 1.39.18.
+ *
+ * TODO: remove eventually
+ */
+#if __EMSCRIPTEN_major__ == 1 && (__EMSCRIPTEN_minor__ < 39 || (__EMSCRIPTEN_minor__ == 39 && __EMSCRIPTEN_tiny__ < 18))
+#include <emscripten/html5.h>
+#else
 #include <emscripten/html5_webgpu.h>
+#endif
 
 //******************************** Public API ********************************/
 
