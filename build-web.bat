@@ -3,13 +3,21 @@ rem Builds the Emscripten implementation (on Windows)
 rem TODO: CMake...
 rem 
 
+set COMPUTE=false
+
 if "%~1"=="/d" (
   set DEBUG=true
+  if "%~2"=="/c" (
+    set COMPUTE=true
+  )
 ) else (
   set DEBUG=false
+  if "%~1"=="/c" (
+    set COMPUTE=true
+  )
 )
 
-set CPP_FLAGS=-std=c++11 -Wall -Wextra -Werror -Wno-nonportable-include-path -fno-exceptions -fno-rtti
+set CPP_FLAGS=-std=c++11 -Wall -Wextra -Werror -Wno-nonportable-include-path -fno-exceptions -fno-rtti -Wno-missing-field-initializers -Wno-unused-function
 set EMS_FLAGS=-s ENVIRONMENT=web -s WASM=1 -s USE_WEBGPU=1 -s NO_EXIT_RUNTIME=1 -s STRICT=1 --shell-file src/ems/shell.html
 set OPT_FLAGS=
 
@@ -21,6 +29,10 @@ if %DEBUG%==true (
   set CPP_FLAGS=%CPP_FLAGS% -g0 -DNDEBUG=1 -flto
   set EMS_FLAGS=%EMS_FLAGS% -s ASSERTIONS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s EVAL_CTORS=1 --closure 1
   set OPT_FLAGS=%OPT_FLAGS% -O3
+)
+
+if %COMPUTE%==true (
+  set CPP_FLAGS=%CPP_FLAGS% -DHELLO_COMPUTE
 )
 
 set SRC=
