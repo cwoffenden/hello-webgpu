@@ -219,7 +219,7 @@ static void createPipelineAndBuffers() {
 	desc.colorStateCount = 1;
 	desc.colorStates = &colorDesc;
 
-	desc.sampleMask = 0xFFFFFFFF; //<-- Note: this currently causes Emscripten to fail (sampleMask ends up as -1, which trips an assert)
+	desc.sampleMask = 0xFFFFFFFF; // <-- Note: this currently causes Emscripten to fail (sampleMask ends up as -1, which trips an assert)
 
 	pipeline = wgpuDeviceCreateRenderPipeline(device, &desc);
 
