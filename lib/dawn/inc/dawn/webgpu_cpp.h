@@ -139,6 +139,14 @@ namespace wgpu {
         Load = 0x00000001,
     };
 
+    enum class PipelineStatisticsName : uint32_t {
+        VertexShaderInvocations = 0x00000000,
+        ClipperInvocations = 0x00000001,
+        ClipperPrimitivesOut = 0x00000002,
+        FragmentShaderInvocations = 0x00000003,
+        ComputeShaderInvocations = 0x00000004,
+    };
+
     enum class PresentMode : uint32_t {
         Immediate = 0x00000000,
         Mailbox = 0x00000001,
@@ -151,6 +159,12 @@ namespace wgpu {
         LineStrip = 0x00000002,
         TriangleList = 0x00000003,
         TriangleStrip = 0x00000004,
+    };
+
+    enum class QueryType : uint32_t {
+        Occlusion = 0x00000000,
+        PipelineStatistics = 0x00000001,
+        Timestamp = 0x00000002,
     };
 
     enum class SType : uint32_t {
@@ -378,6 +392,7 @@ namespace wgpu {
     class Fence;
     class Instance;
     class PipelineLayout;
+    class QuerySet;
     class Queue;
     class RenderBundle;
     class RenderBundleEncoder;
@@ -408,6 +423,7 @@ namespace wgpu {
     struct Origin3D;
     struct PipelineLayoutDescriptor;
     struct ProgrammableStageDescriptor;
+    struct QuerySetDescriptor;
     struct RasterizationStateDescriptor;
     struct RenderBundleDescriptor;
     struct RenderBundleEncoderDescriptor;
@@ -547,6 +563,8 @@ namespace wgpu {
         using ObjectBase::operator=;
 
         void Destroy() const;
+        void const * GetConstMappedRange() const;
+        void * GetMappedRange() const;
         void MapReadAsync(BufferMapReadCallback callback, void * userdata) const;
         void MapWriteAsync(BufferMapWriteCallback callback, void * userdata) const;
         void SetSubData(uint64_t start, uint64_t count, void const * data) const;
@@ -585,6 +603,7 @@ namespace wgpu {
         void InsertDebugMarker(char const * groupLabel) const;
         void PopDebugGroup() const;
         void PushDebugGroup(char const * groupLabel) const;
+        void WriteTimestamp(QuerySet const& querySet, uint32_t queryIndex) const;
 
       private:
         friend ObjectBase<CommandEncoder, WGPUCommandEncoder>;
@@ -605,6 +624,7 @@ namespace wgpu {
         void PushDebugGroup(char const * groupLabel) const;
         void SetBindGroup(uint32_t groupIndex, BindGroup const& group, uint32_t dynamicOffsetCount = 0, uint32_t const * dynamicOffsets = nullptr) const;
         void SetPipeline(ComputePipeline const& pipeline) const;
+        void WriteTimestamp(QuerySet const& querySet, uint32_t queryIndex) const;
 
       private:
         friend ObjectBase<ComputePassEncoder, WGPUComputePassEncoder>;
@@ -636,7 +656,9 @@ namespace wgpu {
         CreateBufferMappedResult CreateBufferMapped(BufferDescriptor const * descriptor) const;
         CommandEncoder CreateCommandEncoder(CommandEncoderDescriptor const * descriptor = nullptr) const;
         ComputePipeline CreateComputePipeline(ComputePipelineDescriptor const * descriptor) const;
+        Buffer CreateErrorBuffer() const;
         PipelineLayout CreatePipelineLayout(PipelineLayoutDescriptor const * descriptor) const;
+        QuerySet CreateQuerySet(QuerySetDescriptor const * descriptor) const;
         RenderBundleEncoder CreateRenderBundleEncoder(RenderBundleEncoderDescriptor const * descriptor) const;
         RenderPipeline CreateRenderPipeline(RenderPipelineDescriptor const * descriptor) const;
         Sampler CreateSampler(SamplerDescriptor const * descriptor) const;
@@ -697,6 +719,19 @@ namespace wgpu {
         static void WGPURelease(WGPUPipelineLayout handle);
     };
 
+    class QuerySet : public ObjectBase<QuerySet, WGPUQuerySet> {
+      public:
+        using ObjectBase::ObjectBase;
+        using ObjectBase::operator=;
+
+        void Destroy() const;
+
+      private:
+        friend ObjectBase<QuerySet, WGPUQuerySet>;
+        static void WGPUReference(WGPUQuerySet handle);
+        static void WGPURelease(WGPUQuerySet handle);
+    };
+
     class Queue : public ObjectBase<Queue, WGPUQueue> {
       public:
         using ObjectBase::ObjectBase;
@@ -705,6 +740,7 @@ namespace wgpu {
         Fence CreateFence(FenceDescriptor const * descriptor = nullptr) const;
         void Signal(Fence const& fence, uint64_t signalValue) const;
         void Submit(uint32_t commandCount, CommandBuffer const * commands) const;
+        void WriteBuffer(Buffer const& buffer, uint64_t bufferOffset, void const * data, size_t size) const;
 
       private:
         friend ObjectBase<Queue, WGPUQueue>;
@@ -770,6 +806,7 @@ namespace wgpu {
         void SetStencilReference(uint32_t reference) const;
         void SetVertexBuffer(uint32_t slot, Buffer const& buffer, uint64_t offset = 0, uint64_t size = 0) const;
         void SetViewport(float x, float y, float width, float height, float minDepth, float maxDepth) const;
+        void WriteTimestamp(QuerySet const& querySet, uint32_t queryIndex) const;
 
       private:
         friend ObjectBase<RenderPassEncoder, WGPURenderPassEncoder>;
@@ -903,6 +940,7 @@ namespace wgpu {
         TextureViewDimension viewDimension = TextureViewDimension::Undefined;
         TextureComponentType textureComponentType = TextureComponentType::Float;
         TextureFormat storageTextureFormat = TextureFormat::Undefined;
+        uint64_t minBufferBindingSize = 0;
     };
 
     struct BlendDescriptor {
@@ -956,6 +994,7 @@ namespace wgpu {
 
     struct DeviceProperties {
         bool textureCompressionBC = false;
+        bool shaderFloat16 = false;
         bool pipelineStatisticsQuery = false;
         bool timestampQuery = false;
     };
@@ -993,6 +1032,15 @@ namespace wgpu {
         ChainedStruct const * nextInChain = nullptr;
         ShaderModule module;
         char const * entryPoint;
+    };
+
+    struct QuerySetDescriptor {
+        ChainedStruct const * nextInChain = nullptr;
+        char const * label = nullptr;
+        QueryType type;
+        uint32_t count;
+        uint32_t pipelineStatisticsCount = 0;
+        PipelineStatisticsName const * pipelineStatistics;
     };
 
     struct RasterizationStateDescriptor {

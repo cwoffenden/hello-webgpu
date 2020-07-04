@@ -155,8 +155,8 @@ window::Redraw redrawFunc;
 		CVDisplayLinkStart(dispLink);
 	} else {
 		impl::running = false;
-		CVDisplayLinkStop(dispLink);
 		redrawFunc = NULLPTR;
+		CVDisplayLinkStop(dispLink);
 	}
 }
 

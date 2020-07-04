@@ -15,6 +15,8 @@ typedef struct DawnProcTable {
     WGPUProcBindGroupLayoutRelease bindGroupLayoutRelease;
 
     WGPUProcBufferDestroy bufferDestroy;
+    WGPUProcBufferGetConstMappedRange bufferGetConstMappedRange;
+    WGPUProcBufferGetMappedRange bufferGetMappedRange;
     WGPUProcBufferMapReadAsync bufferMapReadAsync;
     WGPUProcBufferMapWriteAsync bufferMapWriteAsync;
     WGPUProcBufferSetSubData bufferSetSubData;
@@ -35,6 +37,7 @@ typedef struct DawnProcTable {
     WGPUProcCommandEncoderInsertDebugMarker commandEncoderInsertDebugMarker;
     WGPUProcCommandEncoderPopDebugGroup commandEncoderPopDebugGroup;
     WGPUProcCommandEncoderPushDebugGroup commandEncoderPushDebugGroup;
+    WGPUProcCommandEncoderWriteTimestamp commandEncoderWriteTimestamp;
     WGPUProcCommandEncoderReference commandEncoderReference;
     WGPUProcCommandEncoderRelease commandEncoderRelease;
 
@@ -46,6 +49,7 @@ typedef struct DawnProcTable {
     WGPUProcComputePassEncoderPushDebugGroup computePassEncoderPushDebugGroup;
     WGPUProcComputePassEncoderSetBindGroup computePassEncoderSetBindGroup;
     WGPUProcComputePassEncoderSetPipeline computePassEncoderSetPipeline;
+    WGPUProcComputePassEncoderWriteTimestamp computePassEncoderWriteTimestamp;
     WGPUProcComputePassEncoderReference computePassEncoderReference;
     WGPUProcComputePassEncoderRelease computePassEncoderRelease;
 
@@ -59,7 +63,9 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateBufferMapped deviceCreateBufferMapped;
     WGPUProcDeviceCreateCommandEncoder deviceCreateCommandEncoder;
     WGPUProcDeviceCreateComputePipeline deviceCreateComputePipeline;
+    WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
+    WGPUProcDeviceCreateQuerySet deviceCreateQuerySet;
     WGPUProcDeviceCreateRenderBundleEncoder deviceCreateRenderBundleEncoder;
     WGPUProcDeviceCreateRenderPipeline deviceCreateRenderPipeline;
     WGPUProcDeviceCreateSampler deviceCreateSampler;
@@ -89,9 +95,14 @@ typedef struct DawnProcTable {
     WGPUProcPipelineLayoutReference pipelineLayoutReference;
     WGPUProcPipelineLayoutRelease pipelineLayoutRelease;
 
+    WGPUProcQuerySetDestroy querySetDestroy;
+    WGPUProcQuerySetReference querySetReference;
+    WGPUProcQuerySetRelease querySetRelease;
+
     WGPUProcQueueCreateFence queueCreateFence;
     WGPUProcQueueSignal queueSignal;
     WGPUProcQueueSubmit queueSubmit;
+    WGPUProcQueueWriteBuffer queueWriteBuffer;
     WGPUProcQueueReference queueReference;
     WGPUProcQueueRelease queueRelease;
 
@@ -130,6 +141,7 @@ typedef struct DawnProcTable {
     WGPUProcRenderPassEncoderSetStencilReference renderPassEncoderSetStencilReference;
     WGPUProcRenderPassEncoderSetVertexBuffer renderPassEncoderSetVertexBuffer;
     WGPUProcRenderPassEncoderSetViewport renderPassEncoderSetViewport;
+    WGPUProcRenderPassEncoderWriteTimestamp renderPassEncoderWriteTimestamp;
     WGPUProcRenderPassEncoderReference renderPassEncoderReference;
     WGPUProcRenderPassEncoderRelease renderPassEncoderRelease;
 
