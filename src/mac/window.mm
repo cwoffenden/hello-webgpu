@@ -146,6 +146,7 @@ window::Redraw redrawFunc;
  * Hmm, hackily sets the redraw function called by the display link.
  *
  * \todo tidy!
+ * \todo this is freezing sometime on calling CVDisplayLinkStop (reproducible more in debug and with the Big Sur beta)
  *
  * \param[in] func redraw function (\c null to stop the redraw callbacks)
  */
