@@ -17,6 +17,7 @@ typedef struct DawnProcTable {
     WGPUProcBufferDestroy bufferDestroy;
     WGPUProcBufferGetConstMappedRange bufferGetConstMappedRange;
     WGPUProcBufferGetMappedRange bufferGetMappedRange;
+    WGPUProcBufferMapAsync bufferMapAsync;
     WGPUProcBufferMapReadAsync bufferMapReadAsync;
     WGPUProcBufferMapWriteAsync bufferMapWriteAsync;
     WGPUProcBufferSetSubData bufferSetSubData;
@@ -37,6 +38,7 @@ typedef struct DawnProcTable {
     WGPUProcCommandEncoderInsertDebugMarker commandEncoderInsertDebugMarker;
     WGPUProcCommandEncoderPopDebugGroup commandEncoderPopDebugGroup;
     WGPUProcCommandEncoderPushDebugGroup commandEncoderPushDebugGroup;
+    WGPUProcCommandEncoderResolveQuerySet commandEncoderResolveQuerySet;
     WGPUProcCommandEncoderWriteTimestamp commandEncoderWriteTimestamp;
     WGPUProcCommandEncoderReference commandEncoderReference;
     WGPUProcCommandEncoderRelease commandEncoderRelease;
@@ -103,6 +105,7 @@ typedef struct DawnProcTable {
     WGPUProcQueueSignal queueSignal;
     WGPUProcQueueSubmit queueSubmit;
     WGPUProcQueueWriteBuffer queueWriteBuffer;
+    WGPUProcQueueWriteTexture queueWriteTexture;
     WGPUProcQueueReference queueReference;
     WGPUProcQueueRelease queueRelease;
 
