@@ -3,6 +3,7 @@ out/x86/
 out/x64/
 out/mac/
 out/web/
+out/ARM64/
 
 # VS project files
 *.vcxproj.user
