@@ -62,26 +62,35 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	For release I went with:
 
 	```ini
+	# Build with VS
 	is_clang=false
-	is_debug=false
+	visual_studio_version="2019"
+	
+	# Make the smallest release
+	is_official_build=true
 	strip_debug_info=true
 	symbol_level=0
 	asan_globals=false
 	```
 
-	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs).
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs). Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations.
 
 	For debug:
 
 	```ini
+	# Build with VS
 	is_clang=false
+	visual_studio_version="2019"
+	
+	# Debug build
 	is_debug=true
 	enable_iterator_debugging=true
+	symbol_level=1
 	```
 
 	If you don't set the `enable_iterator_debugging` option then you'll need [`_ITERATOR_DEBUG_LEVEL=0`](//docs.microsoft.com/en-us/cpp/standard-library/iterator-debug-level?view=vs-2019) setting in the preprocessor.
 
-	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`.
+	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`, and optionally for the ARM64-based [Surface Pro X](https://www.microsoft.com/en-us/p/surface-pro-x/8vdnrp2m6hhc), with `target_cpu="arm64"` and `dawn_enable_vulkan=false` (Windows on ARM only supports DX).
 	
 10. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
