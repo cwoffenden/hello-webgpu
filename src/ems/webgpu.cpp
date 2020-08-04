@@ -1,15 +1,13 @@
 #include "webgpu.h"
 
 /*
- * WebGPU specific header added in 1.39.18.
- *
- * TODO: remove eventually
+ * We need an up-to-date version of Emscripten for the API support.
  */
-#if __EMSCRIPTEN_major__ == 1 && (__EMSCRIPTEN_minor__ < 39 || (__EMSCRIPTEN_minor__ == 39 && __EMSCRIPTEN_tiny__ < 18))
-#include <emscripten/html5.h>
-#else
-#include <emscripten/html5_webgpu.h>
+#if __EMSCRIPTEN_major__ == 1 && (__EMSCRIPTEN_minor__ < 40 || (__EMSCRIPTEN_minor__ == 40 && __EMSCRIPTEN_tiny__ < 1))
+#error "Emscripten 1.40.1 or higher required"
 #endif
+
+#include <emscripten/html5_webgpu.h>
 
 //******************************** Public API ********************************/
 
@@ -23,9 +21,9 @@ WGPUDevice webgpu::create(window::Handle /*window*/, WGPUBackendType /*type*/) {
 }
 
 WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
-	WGPUSurfaceDescriptorFromHTMLCanvasId canvDesc = {};
-	canvDesc.chain.sType = WGPUSType_SurfaceDescriptorFromHTMLCanvasId;
-	canvDesc.id = "canvas";
+	WGPUSurfaceDescriptorFromCanvasHTMLSelector canvDesc = {};
+	canvDesc.chain.sType = WGPUSType_SurfaceDescriptorFromCanvasHTMLSelector;
+	canvDesc.selector = "canvas";
 	
 	WGPUSurfaceDescriptor surfDesc = {};
 	surfDesc.nextInChain = reinterpret_cast<WGPUChainedStruct*>(&canvDesc);
