@@ -10,7 +10,7 @@ if "%~1"=="/d" (
 )
 
 set CPP_FLAGS=-std=c++11 -Wall -Wextra -Werror -Wno-nonportable-include-path -fno-exceptions -fno-rtti
-set EMS_FLAGS=-s ENVIRONMENT=web -s WASM=1 -s USE_WEBGPU=1 -s NO_EXIT_RUNTIME=1 -s STRICT=1 --shell-file src/ems/shell.html
+set EMS_FLAGS=--output_eol linux -s ALLOW_MEMORY_GROWTH=0 -s ENVIRONMENT=web -s MINIMAL_RUNTIME=2 -s NO_EXIT_RUNTIME=1 -s NO_FILESYSTEM=1 -s STRICT=1 -s TEXTDECODER=2 -s USE_WEBGPU=1 -s WASM=1 --shell-file src/ems/shell.html
 set OPT_FLAGS=
 
 if %DEBUG%==true (
@@ -19,8 +19,8 @@ if %DEBUG%==true (
   set OPT_FLAGS=%OPT_FLAGS% -O0
 ) else (
   set CPP_FLAGS=%CPP_FLAGS% -g0 -DNDEBUG=1 -flto
-  set EMS_FLAGS=%EMS_FLAGS% -s ASSERTIONS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s EVAL_CTORS=1 --closure 1
-  set OPT_FLAGS=%OPT_FLAGS% -O3
+  set EMS_FLAGS=%EMS_FLAGS% -s ABORTING_MALLOC=0 -s ASSERTIONS=0 -s DISABLE_EXCEPTION_CATCHING=1 -s EVAL_CTORS=1 -s FAST_UNROLLED_MEMCPY_AND_MEMSET=0 -s SUPPORT_ERRNO=0 --closure 1
+  set OPT_FLAGS=%OPT_FLAGS% -O3 
 )
 
 set SRC=
