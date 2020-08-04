@@ -1,25 +1,47 @@
 <!doctype html>
-<html>
-<head>
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
-	<meta name="apple-mobile-web-app-capable" content="yes" />
-	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-	<title>Emscripten Shell</title>
-	<style>
-body   {background:#333; font-family:"Verdana","Helvetica Neue","Helvetica","Arial",sans-serif; margin:1em 0;}
-#canvas{position:absolute; top:0px; left:0px; border:none; margin:0; width: 100%; height: 100%; overflow: hidden; display: block;}
-	</style>
-</head>
+<html lang="en-us">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+		<meta name="apple-mobile-web-app-capable" content="yes" />
+		<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+		<title>Emscripten Shell</title>
+		<style>
+			body { background:#333; font-family:"Verdana","Helvetica Neue","Helvetica","Arial",sans-serif; margin:1em 0; }
+			canvas { position:absolute; top:0px; left:0px; border:none; margin:0; width: 100%; height: 100%; overflow: hidden; display: block; }
+		</style>
+	</head>
 <body>
-	<canvas id="canvas" oncontextmenu="event.preventDefault()"></canvas>
-	<script>
-var Module = {
-	canvas: (function() {
-		return document.getElementById("canvas");
-	})()
+<canvas></canvas>
+<script>
+#if !MODULARIZE
+  var Module = {
+#if USE_PTHREADS
+    worker: '{{{ PTHREAD_WORKER_FILE }}}'
+#endif
 };
-	</script>
-{{{ SCRIPT }}}
+#endif
+
+#if WASM == 2
+  var supportsWasm = window.WebAssembly;
+#endif
+
+// Depending on the build flags that one uses, different files need to be downloaded
+// to load the compiled page. The right set of files will be expanded to be downloaded
+// via the directive below.
+{{{ DOWNLOAD_JS_AND_WASM_FILES }}}
+
+#if SINGLE_FILE
+// If we are doing a SINGLE_FILE=1 build, inlined JS runtime code follows here:
+{{{ JS_CONTENTS_IN_SINGLE_FILE_BUILD }}}
+
+#if MODULARIZE
+// Launch the MODULARIZEd build.
+{{{ EXPORT_NAME }}}({});
+#endif
+
+#endif
+
+</script>
 </body>
 </html>
