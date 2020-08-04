@@ -33,7 +33,7 @@ namespace impl {
  * JavaScript async calls that need to finish before calling \c main().
  */
 EM_JS(void, glue_preint, (), {
-	var entry = Module["__glue_main_"];
+	var entry = __glue_main_;
 	if (entry) {
 		/*
 		 * None of the WebGPU properties appear to survive Closure, including
@@ -75,6 +75,5 @@ KEEP_IN_MODULE void _glue_main_() {
  */
 int main(int /*argc*/, char* /*argv*/[]) {
 	impl::glue_preint();
-	emscripten_exit_with_live_runtime();
 	return 0;
 }
