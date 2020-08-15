@@ -4,7 +4,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
 
-2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); the VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/).
+2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); the VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/) (alternatively this can be added afterwards [following the Chrome build instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md#Visual-Studio)).
 
 3. Make sure you have up-to-date graphics drivers. If you're running Windows on Boot Camp install one of the [unofficial AMD drivers](//www.bootcampdrivers.com) (if only to get Vulkan support; it'd be nice if Apple made this step unnecessary).
 
