@@ -53,7 +53,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 	2. In the text file that just opened add `is_debug=false` then save and close it.
 
-	3. `ninja -C out\Release`
+	3. `ninja -C out\Release dawn_samples` (omit `dawn_samples` to build the unit tests, etc.)
 
 9. That should be it. Run the samples in the `out` directory (`CHelloTriangle.exe`, for example). Now that the basic install builds and runs the configuration can be investigated and tweaked:
 
