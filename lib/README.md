@@ -53,7 +53,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 	2. In the text file that just opened add `is_debug=false` then save and close it.
 
-	3. `ninja -C out\Release dawn_native_shared dawn_proc_shared dawn_samples` (omit the targets to build the unit tests, etc.)
+	3. `ninja -C out\Release dawn_samples` (omit the samples target to build the unit tests, etc.)
 
 9. That should be it. Run the samples in the `out` directory (`CHelloTriangle.exe`, for example). Now that the basic install builds and runs the configuration can be investigated and tweaked:
 
@@ -68,12 +68,13 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	
 	# Make the smallest release
 	is_official_build=true
+	is_component_build=true
 	strip_debug_info=true
 	symbol_level=0
 	asan_globals=false
 	```
 
-	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs). Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations.
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs). Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations. Adding `is_component_build=true` dynamically links Dawn (otherwise release builds are static).
 
 	For debug:
 
