@@ -4,6 +4,7 @@
 
 #include "dawn/webgpu.h"
 
+// Note: Often allocated as a static global. Do not add a complex constructor.
 typedef struct DawnProcTable {
     WGPUProcGetProcAddress getProcAddress;
     WGPUProcCreateInstance createInstance;
@@ -18,9 +19,6 @@ typedef struct DawnProcTable {
     WGPUProcBufferGetConstMappedRange bufferGetConstMappedRange;
     WGPUProcBufferGetMappedRange bufferGetMappedRange;
     WGPUProcBufferMapAsync bufferMapAsync;
-    WGPUProcBufferMapReadAsync bufferMapReadAsync;
-    WGPUProcBufferMapWriteAsync bufferMapWriteAsync;
-    WGPUProcBufferSetSubData bufferSetSubData;
     WGPUProcBufferUnmap bufferUnmap;
     WGPUProcBufferReference bufferReference;
     WGPUProcBufferRelease bufferRelease;
@@ -62,7 +60,6 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateBindGroup deviceCreateBindGroup;
     WGPUProcDeviceCreateBindGroupLayout deviceCreateBindGroupLayout;
     WGPUProcDeviceCreateBuffer deviceCreateBuffer;
-    WGPUProcDeviceCreateBufferMapped deviceCreateBufferMapped;
     WGPUProcDeviceCreateCommandEncoder deviceCreateCommandEncoder;
     WGPUProcDeviceCreateComputePipeline deviceCreateComputePipeline;
     WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
@@ -122,6 +119,7 @@ typedef struct DawnProcTable {
     WGPUProcRenderBundleEncoderPushDebugGroup renderBundleEncoderPushDebugGroup;
     WGPUProcRenderBundleEncoderSetBindGroup renderBundleEncoderSetBindGroup;
     WGPUProcRenderBundleEncoderSetIndexBuffer renderBundleEncoderSetIndexBuffer;
+    WGPUProcRenderBundleEncoderSetIndexBufferWithFormat renderBundleEncoderSetIndexBufferWithFormat;
     WGPUProcRenderBundleEncoderSetPipeline renderBundleEncoderSetPipeline;
     WGPUProcRenderBundleEncoderSetVertexBuffer renderBundleEncoderSetVertexBuffer;
     WGPUProcRenderBundleEncoderReference renderBundleEncoderReference;
@@ -139,6 +137,7 @@ typedef struct DawnProcTable {
     WGPUProcRenderPassEncoderSetBindGroup renderPassEncoderSetBindGroup;
     WGPUProcRenderPassEncoderSetBlendColor renderPassEncoderSetBlendColor;
     WGPUProcRenderPassEncoderSetIndexBuffer renderPassEncoderSetIndexBuffer;
+    WGPUProcRenderPassEncoderSetIndexBufferWithFormat renderPassEncoderSetIndexBufferWithFormat;
     WGPUProcRenderPassEncoderSetPipeline renderPassEncoderSetPipeline;
     WGPUProcRenderPassEncoderSetScissorRect renderPassEncoderSetScissorRect;
     WGPUProcRenderPassEncoderSetStencilReference renderPassEncoderSetStencilReference;
