@@ -38,11 +38,11 @@ rem
 for /f "tokens=*" %%t in ('em-config BINARYEN_ROOT') do (set BINARYEN_ROOT=%%t)
 set "BINARYEN_ROOT=%BINARYEN_ROOT:/=\%"
 
-cmd /c "emcc %CPP_FLAGS% %OPT_FLAGS% %EMS_FLAGS% %INC% %SRC% -o %OUT%.html"
+%SystemRoot%\system32\cmd /c "emcc %CPP_FLAGS% %OPT_FLAGS% %EMS_FLAGS% %INC% %SRC% -o %OUT%.html"
 set EMCC_ERR=%errorlevel%
 if %DEBUG%==false (
   if %EMCC_ERR%==0 (
-    cmd /c "%BINARYEN_ROOT%\bin\wasm-opt %OPT_FLAGS% --converge %OUT%.wasm -o %OUT%.wasm"
+    %SystemRoot%\system32\cmd /c "%BINARYEN_ROOT%\bin\wasm-opt %OPT_FLAGS% --converge %OUT%.wasm -o %OUT%.wasm"
     set EMCC_ERR=%errorlevel%
   )
 )
