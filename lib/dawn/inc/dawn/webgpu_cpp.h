@@ -88,6 +88,13 @@ namespace wgpu {
         Always = 0x00000008,
     };
 
+    enum class CreateReadyPipelineStatus : uint32_t {
+        Success = 0x00000000,
+        Error = 0x00000001,
+        DeviceLost = 0x00000002,
+        Unknown = 0x00000003,
+    };
+
     enum class CullMode : uint32_t {
         None = 0x00000000,
         Front = 0x00000001,
@@ -207,6 +214,7 @@ namespace wgpu {
         Float = 0x00000000,
         Sint = 0x00000001,
         Uint = 0x00000002,
+        DepthComparison = 0x00000003,
     };
 
     enum class TextureDimension : uint32_t {
@@ -393,6 +401,8 @@ namespace wgpu {
 
     using Proc = WGPUProc;
     using BufferMapCallback = WGPUBufferMapCallback;
+    using CreateReadyComputePipelineCallback = WGPUCreateReadyComputePipelineCallback;
+    using CreateReadyRenderPipelineCallback = WGPUCreateReadyRenderPipelineCallback;
     using DeviceLostCallback = WGPUDeviceLostCallback;
     using ErrorCallback = WGPUErrorCallback;
     using FenceOnCompletionCallback = WGPUFenceOnCompletionCallback;
@@ -673,6 +683,8 @@ namespace wgpu {
         Buffer CreateErrorBuffer() const;
         PipelineLayout CreatePipelineLayout(PipelineLayoutDescriptor const * descriptor) const;
         QuerySet CreateQuerySet(QuerySetDescriptor const * descriptor) const;
+        void CreateReadyComputePipeline(ComputePipelineDescriptor const * descriptor, CreateReadyComputePipelineCallback callback, void * userdata) const;
+        void CreateReadyRenderPipeline(RenderPipelineDescriptor const * descriptor, CreateReadyRenderPipelineCallback callback, void * userdata) const;
         RenderBundleEncoder CreateRenderBundleEncoder(RenderBundleEncoderDescriptor const * descriptor) const;
         RenderPipeline CreateRenderPipeline(RenderPipelineDescriptor const * descriptor) const;
         Sampler CreateSampler(SamplerDescriptor const * descriptor) const;
@@ -935,6 +947,7 @@ namespace wgpu {
         uint32_t deviceID;
         uint32_t vendorID;
         char const * name;
+        char const * driverDescription;
         AdapterType adapterType;
         BackendType backendType;
     };
@@ -1004,9 +1017,9 @@ namespace wgpu {
     };
 
     struct Extent3D {
-        uint32_t width;
-        uint32_t height;
-        uint32_t depth;
+        uint32_t width = 1;
+        uint32_t height = 1;
+        uint32_t depth = 1;
     };
 
     struct FenceDescriptor {

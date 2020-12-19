@@ -65,6 +65,8 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
     WGPUProcDeviceCreateQuerySet deviceCreateQuerySet;
+    WGPUProcDeviceCreateReadyComputePipeline deviceCreateReadyComputePipeline;
+    WGPUProcDeviceCreateReadyRenderPipeline deviceCreateReadyRenderPipeline;
     WGPUProcDeviceCreateRenderBundleEncoder deviceCreateRenderBundleEncoder;
     WGPUProcDeviceCreateRenderPipeline deviceCreateRenderPipeline;
     WGPUProcDeviceCreateSampler deviceCreateSampler;

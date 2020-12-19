@@ -168,6 +168,14 @@ typedef enum WGPUCompareFunction {
     WGPUCompareFunction_Force32 = 0x7FFFFFFF
 } WGPUCompareFunction;
 
+typedef enum WGPUCreateReadyPipelineStatus {
+    WGPUCreateReadyPipelineStatus_Success = 0x00000000,
+    WGPUCreateReadyPipelineStatus_Error = 0x00000001,
+    WGPUCreateReadyPipelineStatus_DeviceLost = 0x00000002,
+    WGPUCreateReadyPipelineStatus_Unknown = 0x00000003,
+    WGPUCreateReadyPipelineStatus_Force32 = 0x7FFFFFFF
+} WGPUCreateReadyPipelineStatus;
+
 typedef enum WGPUCullMode {
     WGPUCullMode_None = 0x00000000,
     WGPUCullMode_Front = 0x00000001,
@@ -304,6 +312,7 @@ typedef enum WGPUTextureComponentType {
     WGPUTextureComponentType_Float = 0x00000000,
     WGPUTextureComponentType_Sint = 0x00000001,
     WGPUTextureComponentType_Uint = 0x00000002,
+    WGPUTextureComponentType_DepthComparison = 0x00000003,
     WGPUTextureComponentType_Force32 = 0x7FFFFFFF
 } WGPUTextureComponentType;
 
@@ -486,6 +495,7 @@ typedef struct WGPUAdapterProperties {
     uint32_t deviceID;
     uint32_t vendorID;
     char const * name;
+    char const * driverDescription;
     WGPUAdapterType adapterType;
     WGPUBackendType backendType;
 } WGPUAdapterProperties;
@@ -863,6 +873,8 @@ extern "C" {
 #endif
 
 typedef void (*WGPUBufferMapCallback)(WGPUBufferMapAsyncStatus status, void * userdata);
+typedef void (*WGPUCreateReadyComputePipelineCallback)(WGPUCreateReadyPipelineStatus status, WGPUComputePipeline pipeline, char const * message, void * userdata);
+typedef void (*WGPUCreateReadyRenderPipelineCallback)(WGPUCreateReadyPipelineStatus status, WGPURenderPipeline pipeline, char const * message, void * userdata);
 typedef void (*WGPUDeviceLostCallback)(char const * message, void * userdata);
 typedef void (*WGPUErrorCallback)(WGPUErrorType type, char const * message, void * userdata);
 typedef void (*WGPUFenceOnCompletionCallback)(WGPUFenceCompletionStatus status, void * userdata);
@@ -938,6 +950,8 @@ typedef WGPUComputePipeline (*WGPUProcDeviceCreateComputePipeline)(WGPUDevice de
 typedef WGPUBuffer (*WGPUProcDeviceCreateErrorBuffer)(WGPUDevice device);
 typedef WGPUPipelineLayout (*WGPUProcDeviceCreatePipelineLayout)(WGPUDevice device, WGPUPipelineLayoutDescriptor const * descriptor);
 typedef WGPUQuerySet (*WGPUProcDeviceCreateQuerySet)(WGPUDevice device, WGPUQuerySetDescriptor const * descriptor);
+typedef void (*WGPUProcDeviceCreateReadyComputePipeline)(WGPUDevice device, WGPUComputePipelineDescriptor const * descriptor, WGPUCreateReadyComputePipelineCallback callback, void * userdata);
+typedef void (*WGPUProcDeviceCreateReadyRenderPipeline)(WGPUDevice device, WGPURenderPipelineDescriptor const * descriptor, WGPUCreateReadyRenderPipelineCallback callback, void * userdata);
 typedef WGPURenderBundleEncoder (*WGPUProcDeviceCreateRenderBundleEncoder)(WGPUDevice device, WGPURenderBundleEncoderDescriptor const * descriptor);
 typedef WGPURenderPipeline (*WGPUProcDeviceCreateRenderPipeline)(WGPUDevice device, WGPURenderPipelineDescriptor const * descriptor);
 typedef WGPUSampler (*WGPUProcDeviceCreateSampler)(WGPUDevice device, WGPUSamplerDescriptor const * descriptor);
@@ -1133,6 +1147,8 @@ WGPU_EXPORT WGPUComputePipeline wgpuDeviceCreateComputePipeline(WGPUDevice devic
 WGPU_EXPORT WGPUBuffer wgpuDeviceCreateErrorBuffer(WGPUDevice device);
 WGPU_EXPORT WGPUPipelineLayout wgpuDeviceCreatePipelineLayout(WGPUDevice device, WGPUPipelineLayoutDescriptor const * descriptor);
 WGPU_EXPORT WGPUQuerySet wgpuDeviceCreateQuerySet(WGPUDevice device, WGPUQuerySetDescriptor const * descriptor);
+WGPU_EXPORT void wgpuDeviceCreateReadyComputePipeline(WGPUDevice device, WGPUComputePipelineDescriptor const * descriptor, WGPUCreateReadyComputePipelineCallback callback, void * userdata);
+WGPU_EXPORT void wgpuDeviceCreateReadyRenderPipeline(WGPUDevice device, WGPURenderPipelineDescriptor const * descriptor, WGPUCreateReadyRenderPipelineCallback callback, void * userdata);
 WGPU_EXPORT WGPURenderBundleEncoder wgpuDeviceCreateRenderBundleEncoder(WGPUDevice device, WGPURenderBundleEncoderDescriptor const * descriptor);
 WGPU_EXPORT WGPURenderPipeline wgpuDeviceCreateRenderPipeline(WGPUDevice device, WGPURenderPipelineDescriptor const * descriptor);
 WGPU_EXPORT WGPUSampler wgpuDeviceCreateSampler(WGPUDevice device, WGPUSamplerDescriptor const * descriptor);
