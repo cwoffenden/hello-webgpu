@@ -329,7 +329,7 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 			window::show(wHnd);
 			window::loop(wHnd, redraw);
 
-#ifndef __EMSCRIPTEN__
+		#ifndef __EMSCRIPTEN__
 			wgpuBindGroupRelease(bindGroup);
 			wgpuBufferRelease(uRotBuf);
 			wgpuBufferRelease(indxBuf);
