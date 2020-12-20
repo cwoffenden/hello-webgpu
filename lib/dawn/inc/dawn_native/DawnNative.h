@@ -45,6 +45,7 @@ namespace dawn_native {
         Metal,
         Null,
         OpenGL,
+        OpenGLES,
         Vulkan,
     };
 
@@ -92,6 +93,9 @@ namespace dawn_native {
         Adapter();
         Adapter(AdapterBase* impl);
         ~Adapter();
+
+        Adapter(const Adapter& other);
+        Adapter& operator=(const Adapter& other);
 
         // DEPRECATED: use GetProperties instead.
         BackendType GetBackendType() const;
