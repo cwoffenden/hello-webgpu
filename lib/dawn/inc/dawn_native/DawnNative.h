@@ -45,6 +45,7 @@ namespace dawn_native {
         Metal,
         Null,
         OpenGL,
+        OpenGLES,
         Vulkan,
     };
 
@@ -92,6 +93,9 @@ namespace dawn_native {
         Adapter();
         Adapter(AdapterBase* impl);
         ~Adapter();
+
+        Adapter(const Adapter& other);
+        Adapter& operator=(const Adapter& other);
 
         // DEPRECATED: use GetProperties instead.
         BackendType GetBackendType() const;
@@ -193,6 +197,8 @@ namespace dawn_native {
     // Backdoor to get the order of the ProcMap for testing
     DAWN_NATIVE_EXPORT std::vector<const char*> GetProcMapNamesForTesting();
 
+    DAWN_NATIVE_EXPORT bool DeviceTick(WGPUDevice device);
+
     // ErrorInjector functions used for testing only. Defined in dawn_native/ErrorInjector.cpp
     DAWN_NATIVE_EXPORT void EnableErrorInjector();
     DAWN_NATIVE_EXPORT void DisableErrorInjector();
@@ -213,10 +219,7 @@ namespace dawn_native {
       public:
         const ExternalImageType type;
         const WGPUTextureDescriptor* cTextureDescriptor;  // Must match image creation params
-        union {
-            bool isInitialized;  // Whether the texture is initialized on import
-            bool isCleared;      // DEPRECATED: Sets whether the texture will be cleared before use
-        };
+        bool isInitialized;  // Whether the texture is initialized on import
 
       protected:
         ExternalImageDescriptor(ExternalImageType type);

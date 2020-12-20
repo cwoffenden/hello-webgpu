@@ -29,6 +29,6 @@ AUTO_RELEASE_POOL_ACQUIRE;
 	 * gameloop-style yield().
 	 */
 	retval = __main__(0, NULLPTR);
-	AUTO_RELEASE_POOL_RELEASE;
+AUTO_RELEASE_POOL_RELEASE;
 	return retval;
 }

@@ -33,6 +33,7 @@ typedef struct DawnProcTable {
     WGPUProcCommandEncoderCopyTextureToBuffer commandEncoderCopyTextureToBuffer;
     WGPUProcCommandEncoderCopyTextureToTexture commandEncoderCopyTextureToTexture;
     WGPUProcCommandEncoderFinish commandEncoderFinish;
+    WGPUProcCommandEncoderInjectValidationError commandEncoderInjectValidationError;
     WGPUProcCommandEncoderInsertDebugMarker commandEncoderInsertDebugMarker;
     WGPUProcCommandEncoderPopDebugGroup commandEncoderPopDebugGroup;
     WGPUProcCommandEncoderPushDebugGroup commandEncoderPushDebugGroup;
@@ -65,6 +66,8 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
     WGPUProcDeviceCreateQuerySet deviceCreateQuerySet;
+    WGPUProcDeviceCreateReadyComputePipeline deviceCreateReadyComputePipeline;
+    WGPUProcDeviceCreateReadyRenderPipeline deviceCreateReadyRenderPipeline;
     WGPUProcDeviceCreateRenderBundleEncoder deviceCreateRenderBundleEncoder;
     WGPUProcDeviceCreateRenderPipeline deviceCreateRenderPipeline;
     WGPUProcDeviceCreateSampler deviceCreateSampler;
@@ -98,6 +101,7 @@ typedef struct DawnProcTable {
     WGPUProcQuerySetReference querySetReference;
     WGPUProcQuerySetRelease querySetRelease;
 
+    WGPUProcQueueCopyTextureForBrowser queueCopyTextureForBrowser;
     WGPUProcQueueCreateFence queueCreateFence;
     WGPUProcQueueSignal queueSignal;
     WGPUProcQueueSubmit queueSubmit;
@@ -125,10 +129,12 @@ typedef struct DawnProcTable {
     WGPUProcRenderBundleEncoderReference renderBundleEncoderReference;
     WGPUProcRenderBundleEncoderRelease renderBundleEncoderRelease;
 
+    WGPUProcRenderPassEncoderBeginOcclusionQuery renderPassEncoderBeginOcclusionQuery;
     WGPUProcRenderPassEncoderDraw renderPassEncoderDraw;
     WGPUProcRenderPassEncoderDrawIndexed renderPassEncoderDrawIndexed;
     WGPUProcRenderPassEncoderDrawIndexedIndirect renderPassEncoderDrawIndexedIndirect;
     WGPUProcRenderPassEncoderDrawIndirect renderPassEncoderDrawIndirect;
+    WGPUProcRenderPassEncoderEndOcclusionQuery renderPassEncoderEndOcclusionQuery;
     WGPUProcRenderPassEncoderEndPass renderPassEncoderEndPass;
     WGPUProcRenderPassEncoderExecuteBundles renderPassEncoderExecuteBundles;
     WGPUProcRenderPassEncoderInsertDebugMarker renderPassEncoderInsertDebugMarker;
