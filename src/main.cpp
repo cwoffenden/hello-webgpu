@@ -297,7 +297,7 @@ static bool redraw() {
 #ifdef __EMSCRIPTEN__ // Emscripten hasn't yet caught up with the API changes
 	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, 0, 0);
 #else
-	wgpuRenderPassEncoderSetIndexBufferWithFormat(pass, indxBuf, WGPUIndexFormat_Uint16, 0, 0);
+	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, WGPUIndexFormat_Uint16, 0, 0);
 #endif
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
 
@@ -329,7 +329,7 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 			window::show(wHnd);
 			window::loop(wHnd, redraw);
 
-#ifndef __EMSCRIPTEN__
+		#ifndef __EMSCRIPTEN__
 			wgpuBindGroupRelease(bindGroup);
 			wgpuBufferRelease(uRotBuf);
 			wgpuBufferRelease(indxBuf);
