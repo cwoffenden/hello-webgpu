@@ -1,6 +1,6 @@
 # Building Windows Dawn (and optionally [ANGLE](https://chromium.googlesource.com/angle/angle))
 
-These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HEAD/docs/buiding.md) but tailored for Windows (and specifically a DLL that can be linked with MSVC).
+These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HEAD/docs/building.md) but tailored for Windows (and specifically a DLL that can be linked with MSVC).
 
 1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
 
