@@ -71,7 +71,6 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	is_component_build=true
 	strip_debug_info=true
 	symbol_level=0
-	asan_globals=false
 	```
 
 	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs). Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations. Adding `is_component_build=true` dynamically links Dawn (otherwise release builds are static).
