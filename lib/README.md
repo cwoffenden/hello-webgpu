@@ -49,7 +49,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 8. Configure then build Dawn:
 
-	1. `gn args out/Release`
+	1. `gn args out\Release`
 
 	2. In the text file that just opened add `is_debug=false` then save and close it.
 
@@ -57,7 +57,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 9. That should be it. Run the samples in the `out` directory (`CHelloTriangle.exe`, for example). Now that the basic install builds and runs the configuration can be investigated and tweaked:
 
-	`gn args out/Release --list`
+	`gn args out\Release --list`
 
 	For release I went with:
 
@@ -68,12 +68,11 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	
 	# Make the smallest release
 	is_official_build=true
-	is_component_build=true
 	strip_debug_info=true
 	symbol_level=0
 	```
 
-	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. It's safe to ignore the many `D9002 : ignoring unknown option '/Zc:twoPhase'` warnings (which need fixing in Dawn's build to keep up-to-date with newer MSVCs). Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations. Adding `is_component_build=true` dynamically links Dawn (otherwise release builds are static).
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations.
 
 	For debug:
 
@@ -91,8 +90,16 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	If you don't set the `enable_iterator_debugging` option then you'll need [`_ITERATOR_DEBUG_LEVEL=0`](//docs.microsoft.com/en-us/cpp/standard-library/iterator-debug-level?view=vs-2019) setting in the preprocessor.
 
 	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`, and optionally for the ARM64-based [Surface Pro X](https://www.microsoft.com/en-us/p/surface-pro-x/8vdnrp2m6hhc), with `target_cpu="arm64"` and `dawn_enable_vulkan=false` (Windows on ARM only supports DX).
+
+10. If you only built the samples, to get the DLLs you'll need to either build all (omit `dawn_samples` in step 8) or specify the shared libraries you need. See the full list here:
+
+	`gn ls out\Release`
 	
-10. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
+	These should be enough:
+	
+	`ninja -C out\Release dawn_native_shared dawn_platform_shared dawn_proc_shared`
+
+11. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
 	Taking the same arguments as Dawn plus:
 
