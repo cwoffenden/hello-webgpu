@@ -205,6 +205,7 @@ static WGPUBuffer createBuffer(const void* data, size_t size, WGPUBufferUsage us
  */
 static void createPipelineAndBuffers() {
 	// compile shaders
+	// NOTE: these are now the WGSL shaders (tested with Dawn and Chrome Canary)
 	WGPUShaderModule vertMod = createShader(triangle_vert_wgsl);
 	WGPUShaderModule fragMod = createShader(triangle_frag_wgsl);
 	
