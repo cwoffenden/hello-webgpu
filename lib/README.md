@@ -70,6 +70,9 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	is_official_build=true
 	strip_debug_info=true
 	symbol_level=0
+	
+	# Dawn's ANGLE is currently broken
+	dawn_use_angle=false
 	```
 
 	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations.
@@ -85,6 +88,9 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	is_debug=true
 	enable_iterator_debugging=true
 	symbol_level=1
+	
+	# Dawn's ANGLE is currently broken
+	dawn_use_angle=false
 	```
 
 	If you don't set the `enable_iterator_debugging` option then you'll need [`_ITERATOR_DEBUG_LEVEL=0`](//docs.microsoft.com/en-us/cpp/standard-library/iterator-debug-level?view=vs-2019) setting in the preprocessor.
