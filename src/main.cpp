@@ -39,7 +39,7 @@ float rotDeg = 0.0f;
  *	}
  * \endcode
  */
-static uint32_t const triangle_vert[] = {
+static uint32_t const triangle_vert_spirv[] = {
 	0x07230203, 0x00010000, 0x000d0008, 0x00000043, 0x00000000, 0x00020011, 0x00000001, 0x0006000b,
 	0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001,
 	0x0009000f, 0x00000000, 0x00000004, 0x6e69616d, 0x00000000, 0x0000002d, 0x00000031, 0x0000003e,
@@ -82,6 +82,35 @@ static uint32_t const triangle_vert[] = {
 };
 
 /**
+ * WGSL equivalent of \c triangle_vert_spirv.
+ */
+static char const triangle_vert_wgsl[] = R"(
+	const PI : f32 = 3.141592653589793;
+	fn radians(degs : f32) -> f32 {
+		return (degs * PI) / 180.0;
+	}
+	[[block]] struct Rotation {
+		[[offset(0)]] degs : f32;
+	};
+	[[set(0), binding(0)]] var<uniform> uRot : Rotation;
+	[[location(0)]] var<in>  aPos : vec2<f32>;
+	[[location(1)]] var<in>  aCol : vec3<f32>;
+	[[location(0)]] var<out> vCol : vec3<f32>;
+	[[builtin(position)]] var<out> Position : vec4<f32>;
+	[[stage(vertex)]] fn main() -> void {
+		var rads : f32 = radians(uRot.degs);
+		var cosA : f32 = cos(rads);
+		var sinA : f32 = sin(rads);
+		var rot : mat3x3<f32> = mat3x3<f32>(
+			vec3<f32>( cosA, sinA, 0.0),
+			vec3<f32>(-sinA, cosA, 0.0),
+			vec3<f32>( 0.0,  0.0,  1.0));
+		Position = vec4<f32>(rot * vec3<f32>(aPos, 1.0), 1.0);
+		vCol = aCol;
+	}
+)";
+
+/**
  * Fragment shader SPIR-V.
  * \code
  *	// glslc -Os -mfmt=num -o - -c in.frag
@@ -93,7 +122,7 @@ static uint32_t const triangle_vert[] = {
  *	}
  * \endcode
  */
-static uint32_t const triangle_frag[] = {
+static uint32_t const triangle_frag_spirv[] = {
 	0x07230203, 0x00010000, 0x000d0007, 0x00000013, 0x00000000, 0x00020011, 0x00000001, 0x0006000b,
 	0x00000001, 0x4c534c47, 0x6474732e, 0x3035342e, 0x00000000, 0x0003000e, 0x00000000, 0x00000001,
 	0x0007000f, 0x00000004, 0x00000004, 0x6e69616d, 0x00000000, 0x00000009, 0x0000000c, 0x00030010,
@@ -111,19 +140,46 @@ static uint32_t const triangle_frag[] = {
 };
 
 /**
+ * WGSL equivalent of \c triangle_frag_spirv.
+ */
+static char const triangle_frag_wgsl[] = R"(
+	[[location(0)]] var<in> vCol : vec3<f32>;
+	[[location(0)]] var<out> fragColor : vec4<f32>;
+	[[stage(fragment)]] fn main() -> void {
+		fragColor = vec4<f32>(vCol, 1.0);
+	}
+)";
+
+/**
  * Helper to create a shader from SPIR-V IR.
  *
  * \param[in] code shader source (output using the \c -V \c -x options in \c glslangValidator)
  * \param[in] size size of \a code in bytes
  * \param[in] label optional shader name
  */
-static WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
+/*static*/ WGPUShaderModule createShader(const uint32_t* code, uint32_t size, const char* label = nullptr) {
 	WGPUShaderModuleSPIRVDescriptor spirv = {};
 	spirv.chain.sType = WGPUSType_ShaderModuleSPIRVDescriptor;
 	spirv.codeSize = size / sizeof(uint32_t);
 	spirv.code = code;
 	WGPUShaderModuleDescriptor desc = {};
 	desc.nextInChain = reinterpret_cast<WGPUChainedStruct*>(&spirv);
+	desc.label = label;
+	return wgpuDeviceCreateShaderModule(device, &desc);
+}
+
+/**
+ * Helper to create a shader from WGSL source.
+ *
+ * \param[in] code WGSL shader source
+ * \param[in] label optional shader name
+ */
+static WGPUShaderModule createShader(const char* const code, const char* label = nullptr) {
+	WGPUShaderModuleWGSLDescriptor wgsl = {};
+	wgsl.chain.sType = WGPUSType_ShaderModuleWGSLDescriptor;
+	wgsl.source = code;
+	WGPUShaderModuleDescriptor desc = {};
+	desc.nextInChain = reinterpret_cast<WGPUChainedStruct*>(&wgsl);
 	desc.label = label;
 	return wgpuDeviceCreateShaderModule(device, &desc);
 }
@@ -149,9 +205,12 @@ static WGPUBuffer createBuffer(const void* data, size_t size, WGPUBufferUsage us
  */
 static void createPipelineAndBuffers() {
 	// compile shaders
+	WGPUShaderModule vertMod = createShader(triangle_vert_wgsl);
+	WGPUShaderModule fragMod = createShader(triangle_frag_wgsl);
 	
-	WGPUShaderModule vertMod = createShader(triangle_vert, sizeof triangle_vert);
-	WGPUShaderModule fragMod = createShader(triangle_frag, sizeof triangle_frag);
+	// keep the old unused SPIR-V shaders around for a while...
+	(void) triangle_vert_spirv;
+	(void) triangle_frag_spirv;
 
 	// bind group layout (used by both the pipeline layout and uniform bind group, released at the end of this function)
 	WGPUBindGroupLayoutEntry bglEntry = {};
