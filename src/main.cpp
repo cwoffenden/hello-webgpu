@@ -255,9 +255,6 @@ static void createPipelineAndBuffers() {
 	vertDesc.attributeCount = 2;
 	vertDesc.attributes = vertAttrs;
 	WGPUVertexStateDescriptor vertState = {};
-#ifdef __EMSCRIPTEN__ // Emscripten hasn't yet caught up with the API changes
-	vertState.indexFormat = WGPUIndexFormat_Uint16;
-#endif
 	vertState.vertexBufferCount = 1;
 	vertState.vertexBuffers = &vertDesc;
 
@@ -353,11 +350,7 @@ static bool redraw() {
 	wgpuRenderPassEncoderSetPipeline(pass, pipeline);
 	wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, 0);
 	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0, 0);
-#ifdef __EMSCRIPTEN__ // Emscripten hasn't yet caught up with the API changes
-	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, 0, 0);
-#else
 	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, WGPUIndexFormat_Uint16, 0, 0);
-#endif
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
 
 	wgpuRenderPassEncoderEndPass(pass);
