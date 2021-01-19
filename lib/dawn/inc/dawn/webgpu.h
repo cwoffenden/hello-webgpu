@@ -697,6 +697,7 @@ typedef struct WGPUSamplerDescriptor {
     float lodMinClamp;
     float lodMaxClamp;
     WGPUCompareFunction compare;
+    uint16_t maxAnisotropy;
 } WGPUSamplerDescriptor;
 
 typedef struct WGPUSamplerDescriptorDummyAnisotropicFiltering {

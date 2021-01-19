@@ -1154,6 +1154,7 @@ namespace wgpu {
         float lodMinClamp = 0.0f;
         float lodMaxClamp = 1000.0f;
         CompareFunction compare = CompareFunction::Undefined;
+        uint16_t maxAnisotropy = 1;
     };
 
     struct SamplerDescriptorDummyAnisotropicFiltering : ChainedStruct {
