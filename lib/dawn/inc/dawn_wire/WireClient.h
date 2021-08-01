@@ -38,6 +38,20 @@ namespace dawn_wire {
         uint32_t deviceGeneration;
     };
 
+    struct ReservedSwapChain {
+        WGPUSwapChain swapchain;
+        uint32_t id;
+        uint32_t generation;
+        uint32_t deviceId;
+        uint32_t deviceGeneration;
+    };
+
+    struct ReservedDevice {
+        WGPUDevice device;
+        uint32_t id;
+        uint32_t generation;
+    };
+
     struct DAWN_WIRE_EXPORT WireClientDescriptor {
         CommandSerializer* serializer;
         client::MemoryTransferService* memoryTransferService = nullptr;
@@ -48,11 +62,16 @@ namespace dawn_wire {
         WireClient(const WireClientDescriptor& descriptor);
         ~WireClient() override;
 
-        WGPUDevice GetDevice() const;
         const volatile char* HandleCommands(const volatile char* commands,
                                             size_t size) override final;
 
         ReservedTexture ReserveTexture(WGPUDevice device);
+        ReservedSwapChain ReserveSwapChain(WGPUDevice device);
+        ReservedDevice ReserveDevice();
+
+        void ReclaimTextureReservation(const ReservedTexture& reservation);
+        void ReclaimSwapChainReservation(const ReservedSwapChain& reservation);
+        void ReclaimDeviceReservation(const ReservedDevice& reservation);
 
         // Disconnects the client.
         // Commands allocated after this point will not be sent.
@@ -79,12 +98,6 @@ namespace dawn_wire {
             // This may fail and return nullptr.
             virtual WriteHandle* CreateWriteHandle(size_t) = 0;
 
-            // Imported memory implementation needs to override these to create Read/Write
-            // handles associated with a particular buffer. The client should receive a file
-            // descriptor for the buffer out-of-band.
-            virtual ReadHandle* CreateReadHandle(WGPUBuffer, uint64_t offset, size_t size);
-            virtual WriteHandle* CreateWriteHandle(WGPUBuffer, uint64_t offset, size_t size);
-
             class DAWN_WIRE_EXPORT ReadHandle {
               public:
                 ReadHandle();
@@ -96,16 +109,20 @@ namespace dawn_wire {
                 // Serialize the handle into |serializePointer| so it can be received by the server.
                 virtual void SerializeCreate(void* serializePointer) = 0;
 
-                // Load initial data and open the handle for reading.
-                // This function takes in the serialized result of
-                // server::MemoryTransferService::ReadHandle::SerializeInitialData.
-                // This function should write to |data| and |dataLength| the pointer and size of the
-                // mapped data for reading. It must live at least until the ReadHandle is
-                // destructed.
-                virtual bool DeserializeInitialData(const void* deserializePointer,
-                                                    size_t deserializeSize,
-                                                    const void** data,
-                                                    size_t* dataLength) = 0;
+                // Simply return the base address of the allocation (without applying any offset)
+                // Returns nullptr if the allocation failed.
+                // The data must live at least until the ReadHandle is destructued
+                virtual const void* GetData() = 0;
+
+                // Gets called when a MapReadCallback resolves.
+                // deserialize the data update and apply
+                // it to the range (offset, offset + size) of allocation
+                // There could be nothing to be deserialized (if using shared memory)
+                // Needs to check potential offset/size OOB and overflow
+                virtual bool DeserializeDataUpdate(const void* deserializePointer,
+                                                   size_t deserializeSize,
+                                                   size_t offset,
+                                                   size_t size) = 0;
 
               private:
                 ReadHandle(const ReadHandle&) = delete;
@@ -123,17 +140,22 @@ namespace dawn_wire {
                 // Serialize the handle into |serializePointer| so it can be received by the server.
                 virtual void SerializeCreate(void* serializePointer) = 0;
 
-                // Open the handle for reading. The data returned should be zero-initialized.
+                // Simply return the base address of the allocation (without applying any offset)
+                // The data returned should be zero-initialized.
                 // The data returned must live at least until the WriteHandle is destructed.
                 // On failure, the pointer returned should be null.
-                virtual std::pair<void*, size_t> Open() = 0;
+                virtual void* GetData() = 0;
 
-                // Get the required serialization size for SerializeFlush
-                virtual size_t SerializeFlushSize() = 0;
+                // Get the required serialization size for SerializeDataUpdate
+                virtual size_t SizeOfSerializeDataUpdate(size_t offset, size_t size) = 0;
 
-                // Flush writes to the handle. This should serialize info to send updates to the
-                // server.
-                virtual void SerializeFlush(void* serializePointer) = 0;
+                // Serialize a command to send the modified contents of
+                // the subrange (offset, offset + size) of the allocation at buffer unmap
+                // This subrange is always the whole mapped region for now
+                // There could be nothing to be serialized (if using shared memory)
+                virtual void SerializeDataUpdate(void* serializePointer,
+                                                 size_t offset,
+                                                 size_t size) = 0;
 
               private:
                 WriteHandle(const WriteHandle&) = delete;

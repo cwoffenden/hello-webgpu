@@ -63,32 +63,34 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateBuffer deviceCreateBuffer;
     WGPUProcDeviceCreateCommandEncoder deviceCreateCommandEncoder;
     WGPUProcDeviceCreateComputePipeline deviceCreateComputePipeline;
+    WGPUProcDeviceCreateComputePipelineAsync deviceCreateComputePipelineAsync;
     WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
+    WGPUProcDeviceCreateExternalTexture deviceCreateExternalTexture;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
     WGPUProcDeviceCreateQuerySet deviceCreateQuerySet;
-    WGPUProcDeviceCreateReadyComputePipeline deviceCreateReadyComputePipeline;
-    WGPUProcDeviceCreateReadyRenderPipeline deviceCreateReadyRenderPipeline;
     WGPUProcDeviceCreateRenderBundleEncoder deviceCreateRenderBundleEncoder;
     WGPUProcDeviceCreateRenderPipeline deviceCreateRenderPipeline;
+    WGPUProcDeviceCreateRenderPipeline2 deviceCreateRenderPipeline2;
+    WGPUProcDeviceCreateRenderPipelineAsync deviceCreateRenderPipelineAsync;
     WGPUProcDeviceCreateSampler deviceCreateSampler;
     WGPUProcDeviceCreateShaderModule deviceCreateShaderModule;
     WGPUProcDeviceCreateSwapChain deviceCreateSwapChain;
     WGPUProcDeviceCreateTexture deviceCreateTexture;
-    WGPUProcDeviceGetDefaultQueue deviceGetDefaultQueue;
+    WGPUProcDeviceGetQueue deviceGetQueue;
     WGPUProcDeviceInjectError deviceInjectError;
     WGPUProcDeviceLoseForTesting deviceLoseForTesting;
     WGPUProcDevicePopErrorScope devicePopErrorScope;
     WGPUProcDevicePushErrorScope devicePushErrorScope;
     WGPUProcDeviceSetDeviceLostCallback deviceSetDeviceLostCallback;
+    WGPUProcDeviceSetLoggingCallback deviceSetLoggingCallback;
     WGPUProcDeviceSetUncapturedErrorCallback deviceSetUncapturedErrorCallback;
     WGPUProcDeviceTick deviceTick;
     WGPUProcDeviceReference deviceReference;
     WGPUProcDeviceRelease deviceRelease;
 
-    WGPUProcFenceGetCompletedValue fenceGetCompletedValue;
-    WGPUProcFenceOnCompletion fenceOnCompletion;
-    WGPUProcFenceReference fenceReference;
-    WGPUProcFenceRelease fenceRelease;
+    WGPUProcExternalTextureDestroy externalTextureDestroy;
+    WGPUProcExternalTextureReference externalTextureReference;
+    WGPUProcExternalTextureRelease externalTextureRelease;
 
     WGPUProcInstanceCreateSurface instanceCreateSurface;
     WGPUProcInstanceReference instanceReference;
@@ -102,8 +104,7 @@ typedef struct DawnProcTable {
     WGPUProcQuerySetRelease querySetRelease;
 
     WGPUProcQueueCopyTextureForBrowser queueCopyTextureForBrowser;
-    WGPUProcQueueCreateFence queueCreateFence;
-    WGPUProcQueueSignal queueSignal;
+    WGPUProcQueueOnSubmittedWorkDone queueOnSubmittedWorkDone;
     WGPUProcQueueSubmit queueSubmit;
     WGPUProcQueueWriteBuffer queueWriteBuffer;
     WGPUProcQueueWriteTexture queueWriteTexture;
@@ -123,7 +124,6 @@ typedef struct DawnProcTable {
     WGPUProcRenderBundleEncoderPushDebugGroup renderBundleEncoderPushDebugGroup;
     WGPUProcRenderBundleEncoderSetBindGroup renderBundleEncoderSetBindGroup;
     WGPUProcRenderBundleEncoderSetIndexBuffer renderBundleEncoderSetIndexBuffer;
-    WGPUProcRenderBundleEncoderSetIndexBufferWithFormat renderBundleEncoderSetIndexBufferWithFormat;
     WGPUProcRenderBundleEncoderSetPipeline renderBundleEncoderSetPipeline;
     WGPUProcRenderBundleEncoderSetVertexBuffer renderBundleEncoderSetVertexBuffer;
     WGPUProcRenderBundleEncoderReference renderBundleEncoderReference;
@@ -142,8 +142,8 @@ typedef struct DawnProcTable {
     WGPUProcRenderPassEncoderPushDebugGroup renderPassEncoderPushDebugGroup;
     WGPUProcRenderPassEncoderSetBindGroup renderPassEncoderSetBindGroup;
     WGPUProcRenderPassEncoderSetBlendColor renderPassEncoderSetBlendColor;
+    WGPUProcRenderPassEncoderSetBlendConstant renderPassEncoderSetBlendConstant;
     WGPUProcRenderPassEncoderSetIndexBuffer renderPassEncoderSetIndexBuffer;
-    WGPUProcRenderPassEncoderSetIndexBufferWithFormat renderPassEncoderSetIndexBufferWithFormat;
     WGPUProcRenderPassEncoderSetPipeline renderPassEncoderSetPipeline;
     WGPUProcRenderPassEncoderSetScissorRect renderPassEncoderSetScissorRect;
     WGPUProcRenderPassEncoderSetStencilReference renderPassEncoderSetStencilReference;
@@ -160,6 +160,7 @@ typedef struct DawnProcTable {
     WGPUProcSamplerReference samplerReference;
     WGPUProcSamplerRelease samplerRelease;
 
+    WGPUProcShaderModuleGetCompilationInfo shaderModuleGetCompilationInfo;
     WGPUProcShaderModuleReference shaderModuleReference;
     WGPUProcShaderModuleRelease shaderModuleRelease;
 
