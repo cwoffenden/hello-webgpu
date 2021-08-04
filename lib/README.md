@@ -67,7 +67,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	visual_studio_version="2019"
 	
 	# Make the smallest release
-	is_official_build=true
+	is_debug=false
 	strip_debug_info=true
 	symbol_level=0
 	
@@ -75,7 +75,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	dawn_use_angle=false
 	```
 
-	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. Also note the `is_official_build=true`, which whilst seemingly advised against is the easiest way to enable optimisations.
+	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. Also note the `is_debug=false`, which is the only option for optimised MSVC builds (`is_official_build=true` does a better job with the optimisation flags but is currently broken).
 
 	For debug:
 
