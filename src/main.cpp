@@ -85,19 +85,26 @@ static uint32_t const triangle_vert_spirv[] = {
  * WGSL equivalent of \c triangle_vert_spirv.
  */
 static char const triangle_vert_wgsl[] = R"(
-	const PI : f32 = 3.141592653589793;
+	let PI : f32 = 3.141592653589793;
 	fn radians(degs : f32) -> f32 {
 		return (degs * PI) / 180.0;
 	}
-	[[block]] struct Rotation {
-		[[offset(0)]] degs : f32;
+	[[block]]
+	struct VertexIn {
+		[[location(0)]] aPos : vec2<f32>;
+		[[location(1)]] aCol : vec3<f32>;
 	};
-	[[set(0), binding(0)]] var<uniform> uRot : Rotation;
-	[[location(0)]] var<in>  aPos : vec2<f32>;
-	[[location(1)]] var<in>  aCol : vec3<f32>;
-	[[location(0)]] var<out> vCol : vec3<f32>;
-	[[builtin(position)]] var<out> Position : vec4<f32>;
-	[[stage(vertex)]] fn main() -> void {
+	struct VertexOut {
+		[[location(0)]] vCol : vec3<f32>;
+		[[builtin(position)]] Position : vec4<f32>;
+	};
+	[[block]]
+	struct Rotation {
+		[[location(0)]] degs : f32;
+	};
+	[[group(0), binding(0)]] var<uniform> uRot : Rotation;
+	[[stage(vertex)]]
+	fn main(input : VertexIn) -> VertexOut {
 		var rads : f32 = radians(uRot.degs);
 		var cosA : f32 = cos(rads);
 		var sinA : f32 = sin(rads);
@@ -105,8 +112,10 @@ static char const triangle_vert_wgsl[] = R"(
 			vec3<f32>( cosA, sinA, 0.0),
 			vec3<f32>(-sinA, cosA, 0.0),
 			vec3<f32>( 0.0,  0.0,  1.0));
-		Position = vec4<f32>(rot * vec3<f32>(aPos, 1.0), 1.0);
-		vCol = aCol;
+		var output : VertexOut;
+		output.Position = vec4<f32>(rot * vec3<f32>(input.aPos, 1.0), 1.0);
+		output.vCol = input.aCol;
+		return output;
 	}
 )";
 
@@ -143,10 +152,9 @@ static uint32_t const triangle_frag_spirv[] = {
  * WGSL equivalent of \c triangle_frag_spirv.
  */
 static char const triangle_frag_wgsl[] = R"(
-	[[location(0)]] var<in> vCol : vec3<f32>;
-	[[location(0)]] var<out> fragColor : vec4<f32>;
-	[[stage(fragment)]] fn main() -> void {
-		fragColor = vec4<f32>(vCol, 1.0);
+	[[stage(fragment)]]
+	fn main([[location(0)]] vCol : vec3<f32>) -> [[location(0)]] vec4<f32> {
+		return vec4<f32>(vCol, 1.0);
 	}
 )";
 
@@ -213,11 +221,14 @@ static void createPipelineAndBuffers() {
 	(void) triangle_vert_spirv;
 	(void) triangle_frag_spirv;
 
+	WGPUBufferBindingLayout buf = { };
+	buf.type = WGPUBufferBindingType_Uniform;
+
 	// bind group layout (used by both the pipeline layout and uniform bind group, released at the end of this function)
 	WGPUBindGroupLayoutEntry bglEntry = {};
 	bglEntry.binding = 0;
 	bglEntry.visibility = WGPUShaderStage_Vertex;
-	bglEntry.type = WGPUBindingType_UniformBuffer;
+	bglEntry.buffer = buf;
 
 	WGPUBindGroupLayoutDescriptor bglDesc = {};
 	bglDesc.entryCount = 1;
@@ -229,56 +240,60 @@ static void createPipelineAndBuffers() {
 	layoutDesc.bindGroupLayoutCount = 1;
 	layoutDesc.bindGroupLayouts = &bindGroupLayout;
 	WGPUPipelineLayout pipelineLayout = wgpuDeviceCreatePipelineLayout(device, &layoutDesc);
-	
-	// begin pipeline set-up
-	WGPURenderPipelineDescriptor desc = {};
-
-	desc.layout = pipelineLayout;
-
-	desc.vertexStage.module = vertMod;
-	desc.vertexStage.entryPoint = "main";
-
-	WGPUProgrammableStageDescriptor fragStage = {};
-	fragStage.module = fragMod;
-	fragStage.entryPoint = "main";
-	desc.fragmentStage = &fragStage;
 
 	// describe buffer layouts
-	WGPUVertexAttributeDescriptor vertAttrs[2] = {};
-	vertAttrs[0].format = WGPUVertexFormat_Float2;
+	WGPUVertexAttribute vertAttrs[2] = {};
+	vertAttrs[0].format = WGPUVertexFormat_Float32x2;
 	vertAttrs[0].offset = 0;
 	vertAttrs[0].shaderLocation = 0;
-	vertAttrs[1].format = WGPUVertexFormat_Float3;
+	vertAttrs[1].format = WGPUVertexFormat_Float32x3;
 	vertAttrs[1].offset = 2 * sizeof(float);
 	vertAttrs[1].shaderLocation = 1;
-	WGPUVertexBufferLayoutDescriptor vertDesc = {};
-	vertDesc.arrayStride = 5 * sizeof(float);
-	vertDesc.attributeCount = 2;
-	vertDesc.attributes = vertAttrs;
-	WGPUVertexStateDescriptor vertState = {};
-	vertState.vertexBufferCount = 1;
-	vertState.vertexBuffers = &vertDesc;
+	WGPUVertexBufferLayout vertexBufferLayout = {};
+	vertexBufferLayout.arrayStride = 5 * sizeof(float);
+	vertexBufferLayout.attributeCount = 2;
+	vertexBufferLayout.attributes = vertAttrs;
 
-	desc.vertexState = &vertState;
-	desc.primitiveTopology = WGPUPrimitiveTopology_TriangleList;
+	// Fragment state
+	WGPUBlendState blend = {};
+	blend.color.operation = WGPUBlendOperation_Add;
+	blend.color.srcFactor = WGPUBlendFactor_One;
+	blend.color.dstFactor = WGPUBlendFactor_One;
+	blend.alpha.operation = WGPUBlendOperation_Add;
+	blend.alpha.srcFactor = WGPUBlendFactor_One;
+	blend.alpha.dstFactor = WGPUBlendFactor_One;
 
-	desc.sampleCount = 1;
+	WGPUColorTargetState colorTarget = {};
+	colorTarget.format = webgpu::getSwapChainFormat(device); // swapChainFormat;
+	colorTarget.blend = &blend;
+	colorTarget.writeMask = WGPUColorWriteMask_All;
 
-	// describe blend
-	WGPUBlendDescriptor blendDesc = {};
-	blendDesc.operation = WGPUBlendOperation_Add;
-	blendDesc.srcFactor = WGPUBlendFactor_SrcAlpha;
-	blendDesc.dstFactor = WGPUBlendFactor_OneMinusSrcAlpha;
-	WGPUColorStateDescriptor colorDesc = {};
-	colorDesc.format = webgpu::getSwapChainFormat(device);
-	colorDesc.alphaBlend = blendDesc;
-	colorDesc.colorBlend = blendDesc;
-	colorDesc.writeMask = WGPUColorWriteMask_All;
+	WGPUFragmentState fragment = {};
+	fragment.module = fragMod;
+	fragment.entryPoint = "main";
+	fragment.targetCount = 1;
+	fragment.targets = &colorTarget;
 
-	desc.colorStateCount = 1;
-	desc.colorStates = &colorDesc;
+	WGPURenderPipelineDescriptor desc = {};
+	desc.fragment = &fragment;
 
-	desc.sampleMask = 0xFFFFFFFF; // <-- Note: this currently causes Emscripten to fail (sampleMask ends up as -1, which trips an assert)
+	// Other state
+	desc.layout = pipelineLayout;//nullptr;
+	desc.depthStencil = nullptr;
+
+	desc.vertex.module = vertMod;
+	desc.vertex.entryPoint = "main";
+	desc.vertex.bufferCount = 1;//0;
+	desc.vertex.buffers = &vertexBufferLayout;//nullptr;
+
+	desc.multisample.count = 1;
+	desc.multisample.mask = 0xFFFFFFFF;
+	desc.multisample.alphaToCoverageEnabled = false;
+
+	desc.primitive.frontFace = WGPUFrontFace_CCW;
+	desc.primitive.cullMode = WGPUCullMode_None;
+	desc.primitive.topology = WGPUPrimitiveTopology_TriangleList;
+	desc.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
 
 	pipeline = wgpuDeviceCreateRenderPipeline(device, &desc);
 
@@ -375,7 +390,7 @@ static bool redraw() {
 extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 	if (window::Handle wHnd = window::create()) {
 		if ((device = webgpu::create(wHnd))) {
-			queue = wgpuDeviceGetDefaultQueue(device);
+			queue = wgpuDeviceGetQueue(device);
 			swapchain = webgpu::createSwapChain(device);
 			createPipelineAndBuffers();
 

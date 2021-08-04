@@ -225,7 +225,7 @@ WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	/*
 	 * Currently failing on hi-DPI (with Vulkan).
 	 */
-	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_OutputAttachment, 800, 450);
+	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_RenderAttachment, 800, 450);
 	return swapchain;
 }
 
