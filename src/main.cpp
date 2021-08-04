@@ -221,7 +221,7 @@ static void createPipelineAndBuffers() {
 	(void) triangle_vert_spirv;
 	(void) triangle_frag_spirv;
 
-	WGPUBufferBindingLayout buf = { };
+	WGPUBufferBindingLayout buf = {};
 	buf.type = WGPUBufferBindingType_Uniform;
 
 	// bind group layout (used by both the pipeline layout and uniform bind group, released at the end of this function)
@@ -264,7 +264,7 @@ static void createPipelineAndBuffers() {
 	blend.alpha.dstFactor = WGPUBlendFactor_One;
 
 	WGPUColorTargetState colorTarget = {};
-	colorTarget.format = webgpu::getSwapChainFormat(device); // swapChainFormat;
+	colorTarget.format = webgpu::getSwapChainFormat(device);
 	colorTarget.blend = &blend;
 	colorTarget.writeMask = WGPUColorWriteMask_All;
 
@@ -278,13 +278,13 @@ static void createPipelineAndBuffers() {
 	desc.fragment = &fragment;
 
 	// Other state
-	desc.layout = pipelineLayout;//nullptr;
+	desc.layout = pipelineLayout;
 	desc.depthStencil = nullptr;
 
 	desc.vertex.module = vertMod;
 	desc.vertex.entryPoint = "main";
 	desc.vertex.bufferCount = 1;//0;
-	desc.vertex.buffers = &vertexBufferLayout;//nullptr;
+	desc.vertex.buffers = &vertexBufferLayout;
 
 	desc.multisample.count = 1;
 	desc.multisample.mask = 0xFFFFFFFF;
@@ -343,7 +343,7 @@ static bool redraw() {
 	WGPUTextureView backBufView = wgpuSwapChainGetCurrentTextureView(swapchain);			// create textureView
 
 	WGPURenderPassColorAttachmentDescriptor colorDesc = {};
-	colorDesc.attachment = backBufView;
+	colorDesc.view    = backBufView;
 	colorDesc.loadOp  = WGPULoadOp_Clear;
 	colorDesc.storeOp = WGPUStoreOp_Store;
 	colorDesc.clearColor.r = 0.3f;
