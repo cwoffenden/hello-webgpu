@@ -1,0 +1,1453 @@
+
+#ifndef WEBGPU_CPP_PRINT_H_
+#define WEBGPU_CPP_PRINT_H_
+
+#include "dawn/webgpu_cpp.h"
+
+#include <iomanip>
+#include <ios>
+#include <ostream>
+#include <type_traits>
+
+namespace wgpu {
+
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, AdapterType value) {
+      switch (value) {
+      case AdapterType::DiscreteGPU:
+        o << "AdapterType::DiscreteGPU";
+        break;
+      case AdapterType::IntegratedGPU:
+        o << "AdapterType::IntegratedGPU";
+        break;
+      case AdapterType::CPU:
+        o << "AdapterType::CPU";
+        break;
+      case AdapterType::Unknown:
+        o << "AdapterType::Unknown";
+        break;
+          default:
+            o << "AdapterType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AdapterType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, AddressMode value) {
+      switch (value) {
+      case AddressMode::Repeat:
+        o << "AddressMode::Repeat";
+        break;
+      case AddressMode::MirrorRepeat:
+        o << "AddressMode::MirrorRepeat";
+        break;
+      case AddressMode::ClampToEdge:
+        o << "AddressMode::ClampToEdge";
+        break;
+          default:
+            o << "AddressMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AddressMode>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, AlphaOp value) {
+      switch (value) {
+      case AlphaOp::DontChange:
+        o << "AlphaOp::DontChange";
+        break;
+      case AlphaOp::Premultiply:
+        o << "AlphaOp::Premultiply";
+        break;
+      case AlphaOp::Unpremultiply:
+        o << "AlphaOp::Unpremultiply";
+        break;
+          default:
+            o << "AlphaOp::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AlphaOp>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BackendType value) {
+      switch (value) {
+      case BackendType::Null:
+        o << "BackendType::Null";
+        break;
+      case BackendType::D3D11:
+        o << "BackendType::D3D11";
+        break;
+      case BackendType::D3D12:
+        o << "BackendType::D3D12";
+        break;
+      case BackendType::Metal:
+        o << "BackendType::Metal";
+        break;
+      case BackendType::Vulkan:
+        o << "BackendType::Vulkan";
+        break;
+      case BackendType::OpenGL:
+        o << "BackendType::OpenGL";
+        break;
+      case BackendType::OpenGLES:
+        o << "BackendType::OpenGLES";
+        break;
+          default:
+            o << "BackendType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BackendType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BlendFactor value) {
+      switch (value) {
+      case BlendFactor::Zero:
+        o << "BlendFactor::Zero";
+        break;
+      case BlendFactor::One:
+        o << "BlendFactor::One";
+        break;
+      case BlendFactor::Src:
+        o << "BlendFactor::Src";
+        break;
+      case BlendFactor::OneMinusSrc:
+        o << "BlendFactor::OneMinusSrc";
+        break;
+      case BlendFactor::SrcAlpha:
+        o << "BlendFactor::SrcAlpha";
+        break;
+      case BlendFactor::OneMinusSrcAlpha:
+        o << "BlendFactor::OneMinusSrcAlpha";
+        break;
+      case BlendFactor::Dst:
+        o << "BlendFactor::Dst";
+        break;
+      case BlendFactor::OneMinusDst:
+        o << "BlendFactor::OneMinusDst";
+        break;
+      case BlendFactor::DstAlpha:
+        o << "BlendFactor::DstAlpha";
+        break;
+      case BlendFactor::OneMinusDstAlpha:
+        o << "BlendFactor::OneMinusDstAlpha";
+        break;
+      case BlendFactor::SrcAlphaSaturated:
+        o << "BlendFactor::SrcAlphaSaturated";
+        break;
+      case BlendFactor::Constant:
+        o << "BlendFactor::Constant";
+        break;
+      case BlendFactor::OneMinusConstant:
+        o << "BlendFactor::OneMinusConstant";
+        break;
+      case BlendFactor::SrcColor:
+        o << "BlendFactor::SrcColor";
+        break;
+      case BlendFactor::OneMinusSrcColor:
+        o << "BlendFactor::OneMinusSrcColor";
+        break;
+      case BlendFactor::DstColor:
+        o << "BlendFactor::DstColor";
+        break;
+      case BlendFactor::OneMinusDstColor:
+        o << "BlendFactor::OneMinusDstColor";
+        break;
+      case BlendFactor::BlendColor:
+        o << "BlendFactor::BlendColor";
+        break;
+      case BlendFactor::OneMinusBlendColor:
+        o << "BlendFactor::OneMinusBlendColor";
+        break;
+          default:
+            o << "BlendFactor::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BlendFactor>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BlendOperation value) {
+      switch (value) {
+      case BlendOperation::Add:
+        o << "BlendOperation::Add";
+        break;
+      case BlendOperation::Subtract:
+        o << "BlendOperation::Subtract";
+        break;
+      case BlendOperation::ReverseSubtract:
+        o << "BlendOperation::ReverseSubtract";
+        break;
+      case BlendOperation::Min:
+        o << "BlendOperation::Min";
+        break;
+      case BlendOperation::Max:
+        o << "BlendOperation::Max";
+        break;
+          default:
+            o << "BlendOperation::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BlendOperation>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BufferBindingType value) {
+      switch (value) {
+      case BufferBindingType::Undefined:
+        o << "BufferBindingType::Undefined";
+        break;
+      case BufferBindingType::Uniform:
+        o << "BufferBindingType::Uniform";
+        break;
+      case BufferBindingType::Storage:
+        o << "BufferBindingType::Storage";
+        break;
+      case BufferBindingType::ReadOnlyStorage:
+        o << "BufferBindingType::ReadOnlyStorage";
+        break;
+          default:
+            o << "BufferBindingType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BufferBindingType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BufferMapAsyncStatus value) {
+      switch (value) {
+      case BufferMapAsyncStatus::Success:
+        o << "BufferMapAsyncStatus::Success";
+        break;
+      case BufferMapAsyncStatus::Error:
+        o << "BufferMapAsyncStatus::Error";
+        break;
+      case BufferMapAsyncStatus::Unknown:
+        o << "BufferMapAsyncStatus::Unknown";
+        break;
+      case BufferMapAsyncStatus::DeviceLost:
+        o << "BufferMapAsyncStatus::DeviceLost";
+        break;
+      case BufferMapAsyncStatus::DestroyedBeforeCallback:
+        o << "BufferMapAsyncStatus::DestroyedBeforeCallback";
+        break;
+      case BufferMapAsyncStatus::UnmappedBeforeCallback:
+        o << "BufferMapAsyncStatus::UnmappedBeforeCallback";
+        break;
+          default:
+            o << "BufferMapAsyncStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BufferMapAsyncStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CompareFunction value) {
+      switch (value) {
+      case CompareFunction::Undefined:
+        o << "CompareFunction::Undefined";
+        break;
+      case CompareFunction::Never:
+        o << "CompareFunction::Never";
+        break;
+      case CompareFunction::Less:
+        o << "CompareFunction::Less";
+        break;
+      case CompareFunction::LessEqual:
+        o << "CompareFunction::LessEqual";
+        break;
+      case CompareFunction::Greater:
+        o << "CompareFunction::Greater";
+        break;
+      case CompareFunction::GreaterEqual:
+        o << "CompareFunction::GreaterEqual";
+        break;
+      case CompareFunction::Equal:
+        o << "CompareFunction::Equal";
+        break;
+      case CompareFunction::NotEqual:
+        o << "CompareFunction::NotEqual";
+        break;
+      case CompareFunction::Always:
+        o << "CompareFunction::Always";
+        break;
+          default:
+            o << "CompareFunction::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CompareFunction>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CompilationInfoRequestStatus value) {
+      switch (value) {
+      case CompilationInfoRequestStatus::Success:
+        o << "CompilationInfoRequestStatus::Success";
+        break;
+      case CompilationInfoRequestStatus::Error:
+        o << "CompilationInfoRequestStatus::Error";
+        break;
+      case CompilationInfoRequestStatus::DeviceLost:
+        o << "CompilationInfoRequestStatus::DeviceLost";
+        break;
+      case CompilationInfoRequestStatus::Unknown:
+        o << "CompilationInfoRequestStatus::Unknown";
+        break;
+          default:
+            o << "CompilationInfoRequestStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CompilationInfoRequestStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CompilationMessageType value) {
+      switch (value) {
+      case CompilationMessageType::Error:
+        o << "CompilationMessageType::Error";
+        break;
+      case CompilationMessageType::Warning:
+        o << "CompilationMessageType::Warning";
+        break;
+      case CompilationMessageType::Info:
+        o << "CompilationMessageType::Info";
+        break;
+          default:
+            o << "CompilationMessageType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CompilationMessageType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CreatePipelineAsyncStatus value) {
+      switch (value) {
+      case CreatePipelineAsyncStatus::Success:
+        o << "CreatePipelineAsyncStatus::Success";
+        break;
+      case CreatePipelineAsyncStatus::Error:
+        o << "CreatePipelineAsyncStatus::Error";
+        break;
+      case CreatePipelineAsyncStatus::DeviceLost:
+        o << "CreatePipelineAsyncStatus::DeviceLost";
+        break;
+      case CreatePipelineAsyncStatus::DeviceDestroyed:
+        o << "CreatePipelineAsyncStatus::DeviceDestroyed";
+        break;
+      case CreatePipelineAsyncStatus::Unknown:
+        o << "CreatePipelineAsyncStatus::Unknown";
+        break;
+          default:
+            o << "CreatePipelineAsyncStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CreatePipelineAsyncStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CullMode value) {
+      switch (value) {
+      case CullMode::None:
+        o << "CullMode::None";
+        break;
+      case CullMode::Front:
+        o << "CullMode::Front";
+        break;
+      case CullMode::Back:
+        o << "CullMode::Back";
+        break;
+          default:
+            o << "CullMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CullMode>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ErrorFilter value) {
+      switch (value) {
+      case ErrorFilter::None:
+        o << "ErrorFilter::None";
+        break;
+      case ErrorFilter::Validation:
+        o << "ErrorFilter::Validation";
+        break;
+      case ErrorFilter::OutOfMemory:
+        o << "ErrorFilter::OutOfMemory";
+        break;
+          default:
+            o << "ErrorFilter::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ErrorFilter>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ErrorType value) {
+      switch (value) {
+      case ErrorType::NoError:
+        o << "ErrorType::NoError";
+        break;
+      case ErrorType::Validation:
+        o << "ErrorType::Validation";
+        break;
+      case ErrorType::OutOfMemory:
+        o << "ErrorType::OutOfMemory";
+        break;
+      case ErrorType::Unknown:
+        o << "ErrorType::Unknown";
+        break;
+      case ErrorType::DeviceLost:
+        o << "ErrorType::DeviceLost";
+        break;
+          default:
+            o << "ErrorType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ErrorType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, FilterMode value) {
+      switch (value) {
+      case FilterMode::Nearest:
+        o << "FilterMode::Nearest";
+        break;
+      case FilterMode::Linear:
+        o << "FilterMode::Linear";
+        break;
+          default:
+            o << "FilterMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<FilterMode>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, FrontFace value) {
+      switch (value) {
+      case FrontFace::CCW:
+        o << "FrontFace::CCW";
+        break;
+      case FrontFace::CW:
+        o << "FrontFace::CW";
+        break;
+          default:
+            o << "FrontFace::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<FrontFace>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, IndexFormat value) {
+      switch (value) {
+      case IndexFormat::Undefined:
+        o << "IndexFormat::Undefined";
+        break;
+      case IndexFormat::Uint16:
+        o << "IndexFormat::Uint16";
+        break;
+      case IndexFormat::Uint32:
+        o << "IndexFormat::Uint32";
+        break;
+          default:
+            o << "IndexFormat::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<IndexFormat>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, LoadOp value) {
+      switch (value) {
+      case LoadOp::Clear:
+        o << "LoadOp::Clear";
+        break;
+      case LoadOp::Load:
+        o << "LoadOp::Load";
+        break;
+          default:
+            o << "LoadOp::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<LoadOp>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, LoggingType value) {
+      switch (value) {
+      case LoggingType::Verbose:
+        o << "LoggingType::Verbose";
+        break;
+      case LoggingType::Info:
+        o << "LoggingType::Info";
+        break;
+      case LoggingType::Warning:
+        o << "LoggingType::Warning";
+        break;
+      case LoggingType::Error:
+        o << "LoggingType::Error";
+        break;
+          default:
+            o << "LoggingType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<LoggingType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PipelineStatisticName value) {
+      switch (value) {
+      case PipelineStatisticName::VertexShaderInvocations:
+        o << "PipelineStatisticName::VertexShaderInvocations";
+        break;
+      case PipelineStatisticName::ClipperInvocations:
+        o << "PipelineStatisticName::ClipperInvocations";
+        break;
+      case PipelineStatisticName::ClipperPrimitivesOut:
+        o << "PipelineStatisticName::ClipperPrimitivesOut";
+        break;
+      case PipelineStatisticName::FragmentShaderInvocations:
+        o << "PipelineStatisticName::FragmentShaderInvocations";
+        break;
+      case PipelineStatisticName::ComputeShaderInvocations:
+        o << "PipelineStatisticName::ComputeShaderInvocations";
+        break;
+          default:
+            o << "PipelineStatisticName::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PipelineStatisticName>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PresentMode value) {
+      switch (value) {
+      case PresentMode::Immediate:
+        o << "PresentMode::Immediate";
+        break;
+      case PresentMode::Mailbox:
+        o << "PresentMode::Mailbox";
+        break;
+      case PresentMode::Fifo:
+        o << "PresentMode::Fifo";
+        break;
+          default:
+            o << "PresentMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PresentMode>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PrimitiveTopology value) {
+      switch (value) {
+      case PrimitiveTopology::PointList:
+        o << "PrimitiveTopology::PointList";
+        break;
+      case PrimitiveTopology::LineList:
+        o << "PrimitiveTopology::LineList";
+        break;
+      case PrimitiveTopology::LineStrip:
+        o << "PrimitiveTopology::LineStrip";
+        break;
+      case PrimitiveTopology::TriangleList:
+        o << "PrimitiveTopology::TriangleList";
+        break;
+      case PrimitiveTopology::TriangleStrip:
+        o << "PrimitiveTopology::TriangleStrip";
+        break;
+          default:
+            o << "PrimitiveTopology::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PrimitiveTopology>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, QueryType value) {
+      switch (value) {
+      case QueryType::Occlusion:
+        o << "QueryType::Occlusion";
+        break;
+      case QueryType::PipelineStatistics:
+        o << "QueryType::PipelineStatistics";
+        break;
+      case QueryType::Timestamp:
+        o << "QueryType::Timestamp";
+        break;
+          default:
+            o << "QueryType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<QueryType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, QueueWorkDoneStatus value) {
+      switch (value) {
+      case QueueWorkDoneStatus::Success:
+        o << "QueueWorkDoneStatus::Success";
+        break;
+      case QueueWorkDoneStatus::Error:
+        o << "QueueWorkDoneStatus::Error";
+        break;
+      case QueueWorkDoneStatus::Unknown:
+        o << "QueueWorkDoneStatus::Unknown";
+        break;
+      case QueueWorkDoneStatus::DeviceLost:
+        o << "QueueWorkDoneStatus::DeviceLost";
+        break;
+          default:
+            o << "QueueWorkDoneStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<QueueWorkDoneStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, SType value) {
+      switch (value) {
+      case SType::Invalid:
+        o << "SType::Invalid";
+        break;
+      case SType::SurfaceDescriptorFromMetalLayer:
+        o << "SType::SurfaceDescriptorFromMetalLayer";
+        break;
+      case SType::SurfaceDescriptorFromWindowsHWND:
+        o << "SType::SurfaceDescriptorFromWindowsHWND";
+        break;
+      case SType::SurfaceDescriptorFromXlib:
+        o << "SType::SurfaceDescriptorFromXlib";
+        break;
+      case SType::SurfaceDescriptorFromCanvasHTMLSelector:
+        o << "SType::SurfaceDescriptorFromCanvasHTMLSelector";
+        break;
+      case SType::ShaderModuleSPIRVDescriptor:
+        o << "SType::ShaderModuleSPIRVDescriptor";
+        break;
+      case SType::ShaderModuleWGSLDescriptor:
+        o << "SType::ShaderModuleWGSLDescriptor";
+        break;
+      case SType::PrimitiveDepthClampingState:
+        o << "SType::PrimitiveDepthClampingState";
+        break;
+      case SType::SurfaceDescriptorFromWindowsCoreWindow:
+        o << "SType::SurfaceDescriptorFromWindowsCoreWindow";
+        break;
+      case SType::ExternalTextureBindingEntry:
+        o << "SType::ExternalTextureBindingEntry";
+        break;
+      case SType::ExternalTextureBindingLayout:
+        o << "SType::ExternalTextureBindingLayout";
+        break;
+      case SType::SurfaceDescriptorFromWindowsSwapChainPanel:
+        o << "SType::SurfaceDescriptorFromWindowsSwapChainPanel";
+        break;
+      case SType::DawnTextureInternalUsageDescriptor:
+        o << "SType::DawnTextureInternalUsageDescriptor";
+        break;
+          default:
+            o << "SType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<SType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, SamplerBindingType value) {
+      switch (value) {
+      case SamplerBindingType::Undefined:
+        o << "SamplerBindingType::Undefined";
+        break;
+      case SamplerBindingType::Filtering:
+        o << "SamplerBindingType::Filtering";
+        break;
+      case SamplerBindingType::NonFiltering:
+        o << "SamplerBindingType::NonFiltering";
+        break;
+      case SamplerBindingType::Comparison:
+        o << "SamplerBindingType::Comparison";
+        break;
+          default:
+            o << "SamplerBindingType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<SamplerBindingType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, StencilOperation value) {
+      switch (value) {
+      case StencilOperation::Keep:
+        o << "StencilOperation::Keep";
+        break;
+      case StencilOperation::Zero:
+        o << "StencilOperation::Zero";
+        break;
+      case StencilOperation::Replace:
+        o << "StencilOperation::Replace";
+        break;
+      case StencilOperation::Invert:
+        o << "StencilOperation::Invert";
+        break;
+      case StencilOperation::IncrementClamp:
+        o << "StencilOperation::IncrementClamp";
+        break;
+      case StencilOperation::DecrementClamp:
+        o << "StencilOperation::DecrementClamp";
+        break;
+      case StencilOperation::IncrementWrap:
+        o << "StencilOperation::IncrementWrap";
+        break;
+      case StencilOperation::DecrementWrap:
+        o << "StencilOperation::DecrementWrap";
+        break;
+          default:
+            o << "StencilOperation::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<StencilOperation>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, StorageTextureAccess value) {
+      switch (value) {
+      case StorageTextureAccess::Undefined:
+        o << "StorageTextureAccess::Undefined";
+        break;
+      case StorageTextureAccess::ReadOnly:
+        o << "StorageTextureAccess::ReadOnly";
+        break;
+      case StorageTextureAccess::WriteOnly:
+        o << "StorageTextureAccess::WriteOnly";
+        break;
+          default:
+            o << "StorageTextureAccess::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<StorageTextureAccess>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, StoreOp value) {
+      switch (value) {
+      case StoreOp::Store:
+        o << "StoreOp::Store";
+        break;
+      case StoreOp::Discard:
+        o << "StoreOp::Discard";
+        break;
+      case StoreOp::Clear:
+        o << "StoreOp::Clear";
+        break;
+          default:
+            o << "StoreOp::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<StoreOp>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureAspect value) {
+      switch (value) {
+      case TextureAspect::All:
+        o << "TextureAspect::All";
+        break;
+      case TextureAspect::StencilOnly:
+        o << "TextureAspect::StencilOnly";
+        break;
+      case TextureAspect::DepthOnly:
+        o << "TextureAspect::DepthOnly";
+        break;
+      case TextureAspect::Plane0Only:
+        o << "TextureAspect::Plane0Only";
+        break;
+      case TextureAspect::Plane1Only:
+        o << "TextureAspect::Plane1Only";
+        break;
+          default:
+            o << "TextureAspect::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureAspect>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureComponentType value) {
+      switch (value) {
+      case TextureComponentType::Float:
+        o << "TextureComponentType::Float";
+        break;
+      case TextureComponentType::Sint:
+        o << "TextureComponentType::Sint";
+        break;
+      case TextureComponentType::Uint:
+        o << "TextureComponentType::Uint";
+        break;
+      case TextureComponentType::DepthComparison:
+        o << "TextureComponentType::DepthComparison";
+        break;
+          default:
+            o << "TextureComponentType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureComponentType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureDimension value) {
+      switch (value) {
+      case TextureDimension::e1D:
+        o << "TextureDimension::e1D";
+        break;
+      case TextureDimension::e2D:
+        o << "TextureDimension::e2D";
+        break;
+      case TextureDimension::e3D:
+        o << "TextureDimension::e3D";
+        break;
+          default:
+            o << "TextureDimension::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureDimension>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureFormat value) {
+      switch (value) {
+      case TextureFormat::Undefined:
+        o << "TextureFormat::Undefined";
+        break;
+      case TextureFormat::R8Unorm:
+        o << "TextureFormat::R8Unorm";
+        break;
+      case TextureFormat::R8Snorm:
+        o << "TextureFormat::R8Snorm";
+        break;
+      case TextureFormat::R8Uint:
+        o << "TextureFormat::R8Uint";
+        break;
+      case TextureFormat::R8Sint:
+        o << "TextureFormat::R8Sint";
+        break;
+      case TextureFormat::R16Uint:
+        o << "TextureFormat::R16Uint";
+        break;
+      case TextureFormat::R16Sint:
+        o << "TextureFormat::R16Sint";
+        break;
+      case TextureFormat::R16Float:
+        o << "TextureFormat::R16Float";
+        break;
+      case TextureFormat::RG8Unorm:
+        o << "TextureFormat::RG8Unorm";
+        break;
+      case TextureFormat::RG8Snorm:
+        o << "TextureFormat::RG8Snorm";
+        break;
+      case TextureFormat::RG8Uint:
+        o << "TextureFormat::RG8Uint";
+        break;
+      case TextureFormat::RG8Sint:
+        o << "TextureFormat::RG8Sint";
+        break;
+      case TextureFormat::R32Float:
+        o << "TextureFormat::R32Float";
+        break;
+      case TextureFormat::R32Uint:
+        o << "TextureFormat::R32Uint";
+        break;
+      case TextureFormat::R32Sint:
+        o << "TextureFormat::R32Sint";
+        break;
+      case TextureFormat::RG16Uint:
+        o << "TextureFormat::RG16Uint";
+        break;
+      case TextureFormat::RG16Sint:
+        o << "TextureFormat::RG16Sint";
+        break;
+      case TextureFormat::RG16Float:
+        o << "TextureFormat::RG16Float";
+        break;
+      case TextureFormat::RGBA8Unorm:
+        o << "TextureFormat::RGBA8Unorm";
+        break;
+      case TextureFormat::RGBA8UnormSrgb:
+        o << "TextureFormat::RGBA8UnormSrgb";
+        break;
+      case TextureFormat::RGBA8Snorm:
+        o << "TextureFormat::RGBA8Snorm";
+        break;
+      case TextureFormat::RGBA8Uint:
+        o << "TextureFormat::RGBA8Uint";
+        break;
+      case TextureFormat::RGBA8Sint:
+        o << "TextureFormat::RGBA8Sint";
+        break;
+      case TextureFormat::BGRA8Unorm:
+        o << "TextureFormat::BGRA8Unorm";
+        break;
+      case TextureFormat::BGRA8UnormSrgb:
+        o << "TextureFormat::BGRA8UnormSrgb";
+        break;
+      case TextureFormat::RGB10A2Unorm:
+        o << "TextureFormat::RGB10A2Unorm";
+        break;
+      case TextureFormat::RG11B10Ufloat:
+        o << "TextureFormat::RG11B10Ufloat";
+        break;
+      case TextureFormat::RGB9E5Ufloat:
+        o << "TextureFormat::RGB9E5Ufloat";
+        break;
+      case TextureFormat::RG32Float:
+        o << "TextureFormat::RG32Float";
+        break;
+      case TextureFormat::RG32Uint:
+        o << "TextureFormat::RG32Uint";
+        break;
+      case TextureFormat::RG32Sint:
+        o << "TextureFormat::RG32Sint";
+        break;
+      case TextureFormat::RGBA16Uint:
+        o << "TextureFormat::RGBA16Uint";
+        break;
+      case TextureFormat::RGBA16Sint:
+        o << "TextureFormat::RGBA16Sint";
+        break;
+      case TextureFormat::RGBA16Float:
+        o << "TextureFormat::RGBA16Float";
+        break;
+      case TextureFormat::RGBA32Float:
+        o << "TextureFormat::RGBA32Float";
+        break;
+      case TextureFormat::RGBA32Uint:
+        o << "TextureFormat::RGBA32Uint";
+        break;
+      case TextureFormat::RGBA32Sint:
+        o << "TextureFormat::RGBA32Sint";
+        break;
+      case TextureFormat::Depth32Float:
+        o << "TextureFormat::Depth32Float";
+        break;
+      case TextureFormat::Depth24Plus:
+        o << "TextureFormat::Depth24Plus";
+        break;
+      case TextureFormat::Stencil8:
+        o << "TextureFormat::Stencil8";
+        break;
+      case TextureFormat::Depth24PlusStencil8:
+        o << "TextureFormat::Depth24PlusStencil8";
+        break;
+      case TextureFormat::BC1RGBAUnorm:
+        o << "TextureFormat::BC1RGBAUnorm";
+        break;
+      case TextureFormat::BC1RGBAUnormSrgb:
+        o << "TextureFormat::BC1RGBAUnormSrgb";
+        break;
+      case TextureFormat::BC2RGBAUnorm:
+        o << "TextureFormat::BC2RGBAUnorm";
+        break;
+      case TextureFormat::BC2RGBAUnormSrgb:
+        o << "TextureFormat::BC2RGBAUnormSrgb";
+        break;
+      case TextureFormat::BC3RGBAUnorm:
+        o << "TextureFormat::BC3RGBAUnorm";
+        break;
+      case TextureFormat::BC3RGBAUnormSrgb:
+        o << "TextureFormat::BC3RGBAUnormSrgb";
+        break;
+      case TextureFormat::BC4RUnorm:
+        o << "TextureFormat::BC4RUnorm";
+        break;
+      case TextureFormat::BC4RSnorm:
+        o << "TextureFormat::BC4RSnorm";
+        break;
+      case TextureFormat::BC5RGUnorm:
+        o << "TextureFormat::BC5RGUnorm";
+        break;
+      case TextureFormat::BC5RGSnorm:
+        o << "TextureFormat::BC5RGSnorm";
+        break;
+      case TextureFormat::BC6HRGBUfloat:
+        o << "TextureFormat::BC6HRGBUfloat";
+        break;
+      case TextureFormat::BC6HRGBFloat:
+        o << "TextureFormat::BC6HRGBFloat";
+        break;
+      case TextureFormat::BC7RGBAUnorm:
+        o << "TextureFormat::BC7RGBAUnorm";
+        break;
+      case TextureFormat::BC7RGBAUnormSrgb:
+        o << "TextureFormat::BC7RGBAUnormSrgb";
+        break;
+      case TextureFormat::R8BG8Biplanar420Unorm:
+        o << "TextureFormat::R8BG8Biplanar420Unorm";
+        break;
+          default:
+            o << "TextureFormat::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureFormat>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureSampleType value) {
+      switch (value) {
+      case TextureSampleType::Undefined:
+        o << "TextureSampleType::Undefined";
+        break;
+      case TextureSampleType::Float:
+        o << "TextureSampleType::Float";
+        break;
+      case TextureSampleType::UnfilterableFloat:
+        o << "TextureSampleType::UnfilterableFloat";
+        break;
+      case TextureSampleType::Depth:
+        o << "TextureSampleType::Depth";
+        break;
+      case TextureSampleType::Sint:
+        o << "TextureSampleType::Sint";
+        break;
+      case TextureSampleType::Uint:
+        o << "TextureSampleType::Uint";
+        break;
+          default:
+            o << "TextureSampleType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureSampleType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureViewDimension value) {
+      switch (value) {
+      case TextureViewDimension::Undefined:
+        o << "TextureViewDimension::Undefined";
+        break;
+      case TextureViewDimension::e1D:
+        o << "TextureViewDimension::e1D";
+        break;
+      case TextureViewDimension::e2D:
+        o << "TextureViewDimension::e2D";
+        break;
+      case TextureViewDimension::e2DArray:
+        o << "TextureViewDimension::e2DArray";
+        break;
+      case TextureViewDimension::Cube:
+        o << "TextureViewDimension::Cube";
+        break;
+      case TextureViewDimension::CubeArray:
+        o << "TextureViewDimension::CubeArray";
+        break;
+      case TextureViewDimension::e3D:
+        o << "TextureViewDimension::e3D";
+        break;
+          default:
+            o << "TextureViewDimension::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureViewDimension>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, VertexFormat value) {
+      switch (value) {
+      case VertexFormat::Undefined:
+        o << "VertexFormat::Undefined";
+        break;
+      case VertexFormat::Uint8x2:
+        o << "VertexFormat::Uint8x2";
+        break;
+      case VertexFormat::Uint8x4:
+        o << "VertexFormat::Uint8x4";
+        break;
+      case VertexFormat::Sint8x2:
+        o << "VertexFormat::Sint8x2";
+        break;
+      case VertexFormat::Sint8x4:
+        o << "VertexFormat::Sint8x4";
+        break;
+      case VertexFormat::Unorm8x2:
+        o << "VertexFormat::Unorm8x2";
+        break;
+      case VertexFormat::Unorm8x4:
+        o << "VertexFormat::Unorm8x4";
+        break;
+      case VertexFormat::Snorm8x2:
+        o << "VertexFormat::Snorm8x2";
+        break;
+      case VertexFormat::Snorm8x4:
+        o << "VertexFormat::Snorm8x4";
+        break;
+      case VertexFormat::Uint16x2:
+        o << "VertexFormat::Uint16x2";
+        break;
+      case VertexFormat::Uint16x4:
+        o << "VertexFormat::Uint16x4";
+        break;
+      case VertexFormat::Sint16x2:
+        o << "VertexFormat::Sint16x2";
+        break;
+      case VertexFormat::Sint16x4:
+        o << "VertexFormat::Sint16x4";
+        break;
+      case VertexFormat::Unorm16x2:
+        o << "VertexFormat::Unorm16x2";
+        break;
+      case VertexFormat::Unorm16x4:
+        o << "VertexFormat::Unorm16x4";
+        break;
+      case VertexFormat::Snorm16x2:
+        o << "VertexFormat::Snorm16x2";
+        break;
+      case VertexFormat::Snorm16x4:
+        o << "VertexFormat::Snorm16x4";
+        break;
+      case VertexFormat::Float16x2:
+        o << "VertexFormat::Float16x2";
+        break;
+      case VertexFormat::Float16x4:
+        o << "VertexFormat::Float16x4";
+        break;
+      case VertexFormat::Float32:
+        o << "VertexFormat::Float32";
+        break;
+      case VertexFormat::Float32x2:
+        o << "VertexFormat::Float32x2";
+        break;
+      case VertexFormat::Float32x3:
+        o << "VertexFormat::Float32x3";
+        break;
+      case VertexFormat::Float32x4:
+        o << "VertexFormat::Float32x4";
+        break;
+      case VertexFormat::Uint32:
+        o << "VertexFormat::Uint32";
+        break;
+      case VertexFormat::Uint32x2:
+        o << "VertexFormat::Uint32x2";
+        break;
+      case VertexFormat::Uint32x3:
+        o << "VertexFormat::Uint32x3";
+        break;
+      case VertexFormat::Uint32x4:
+        o << "VertexFormat::Uint32x4";
+        break;
+      case VertexFormat::Sint32:
+        o << "VertexFormat::Sint32";
+        break;
+      case VertexFormat::Sint32x2:
+        o << "VertexFormat::Sint32x2";
+        break;
+      case VertexFormat::Sint32x3:
+        o << "VertexFormat::Sint32x3";
+        break;
+      case VertexFormat::Sint32x4:
+        o << "VertexFormat::Sint32x4";
+        break;
+          default:
+            o << "VertexFormat::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<VertexFormat>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, VertexStepMode value) {
+      switch (value) {
+      case VertexStepMode::Vertex:
+        o << "VertexStepMode::Vertex";
+        break;
+      case VertexStepMode::Instance:
+        o << "VertexStepMode::Instance";
+        break;
+          default:
+            o << "VertexStepMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<VertexStepMode>::type>(value);
+      }
+      return o;
+  }
+
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, BufferUsage value) {
+    o << "BufferUsage::";
+    if (!static_cast<bool>(value)) {
+    // 0 is often explicitly declared as None.
+    o << "None";
+      return o;
+    }
+
+    bool moreThanOneBit = !HasZeroOrOneBits(value);
+    if (moreThanOneBit) {
+      o << "(";
+    }
+
+    bool first = true;
+  if (value & BufferUsage::MapRead) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "MapRead";
+    value &= ~BufferUsage::MapRead;
+  }
+  if (value & BufferUsage::MapWrite) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "MapWrite";
+    value &= ~BufferUsage::MapWrite;
+  }
+  if (value & BufferUsage::CopySrc) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "CopySrc";
+    value &= ~BufferUsage::CopySrc;
+  }
+  if (value & BufferUsage::CopyDst) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "CopyDst";
+    value &= ~BufferUsage::CopyDst;
+  }
+  if (value & BufferUsage::Index) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Index";
+    value &= ~BufferUsage::Index;
+  }
+  if (value & BufferUsage::Vertex) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Vertex";
+    value &= ~BufferUsage::Vertex;
+  }
+  if (value & BufferUsage::Uniform) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Uniform";
+    value &= ~BufferUsage::Uniform;
+  }
+  if (value & BufferUsage::Storage) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Storage";
+    value &= ~BufferUsage::Storage;
+  }
+  if (value & BufferUsage::Indirect) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Indirect";
+    value &= ~BufferUsage::Indirect;
+  }
+  if (value & BufferUsage::QueryResolve) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "QueryResolve";
+    value &= ~BufferUsage::QueryResolve;
+  }
+
+    if (static_cast<bool>(value)) {
+      if (!first) {
+        o << "|";
+      }
+      o << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BufferUsage>::type>(value);
+    }
+
+    if (moreThanOneBit) {
+      o << ")";
+    }
+    return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ColorWriteMask value) {
+    o << "ColorWriteMask::";
+    if (!static_cast<bool>(value)) {
+    // 0 is often explicitly declared as None.
+    o << "None";
+      return o;
+    }
+
+    bool moreThanOneBit = !HasZeroOrOneBits(value);
+    if (moreThanOneBit) {
+      o << "(";
+    }
+
+    bool first = true;
+  if (value & ColorWriteMask::Red) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Red";
+    value &= ~ColorWriteMask::Red;
+  }
+  if (value & ColorWriteMask::Green) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Green";
+    value &= ~ColorWriteMask::Green;
+  }
+  if (value & ColorWriteMask::Blue) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Blue";
+    value &= ~ColorWriteMask::Blue;
+  }
+  if (value & ColorWriteMask::Alpha) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Alpha";
+    value &= ~ColorWriteMask::Alpha;
+  }
+  if (value & ColorWriteMask::All) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "All";
+    value &= ~ColorWriteMask::All;
+  }
+
+    if (static_cast<bool>(value)) {
+      if (!first) {
+        o << "|";
+      }
+      o << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ColorWriteMask>::type>(value);
+    }
+
+    if (moreThanOneBit) {
+      o << ")";
+    }
+    return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, MapMode value) {
+    o << "MapMode::";
+    if (!static_cast<bool>(value)) {
+    // 0 is often explicitly declared as None.
+    o << "None";
+      return o;
+    }
+
+    bool moreThanOneBit = !HasZeroOrOneBits(value);
+    if (moreThanOneBit) {
+      o << "(";
+    }
+
+    bool first = true;
+  if (value & MapMode::Read) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Read";
+    value &= ~MapMode::Read;
+  }
+  if (value & MapMode::Write) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Write";
+    value &= ~MapMode::Write;
+  }
+
+    if (static_cast<bool>(value)) {
+      if (!first) {
+        o << "|";
+      }
+      o << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<MapMode>::type>(value);
+    }
+
+    if (moreThanOneBit) {
+      o << ")";
+    }
+    return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ShaderStage value) {
+    o << "ShaderStage::";
+    if (!static_cast<bool>(value)) {
+    // 0 is often explicitly declared as None.
+    o << "None";
+      return o;
+    }
+
+    bool moreThanOneBit = !HasZeroOrOneBits(value);
+    if (moreThanOneBit) {
+      o << "(";
+    }
+
+    bool first = true;
+  if (value & ShaderStage::Vertex) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Vertex";
+    value &= ~ShaderStage::Vertex;
+  }
+  if (value & ShaderStage::Fragment) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Fragment";
+    value &= ~ShaderStage::Fragment;
+  }
+  if (value & ShaderStage::Compute) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Compute";
+    value &= ~ShaderStage::Compute;
+  }
+
+    if (static_cast<bool>(value)) {
+      if (!first) {
+        o << "|";
+      }
+      o << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ShaderStage>::type>(value);
+    }
+
+    if (moreThanOneBit) {
+      o << ")";
+    }
+    return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, TextureUsage value) {
+    o << "TextureUsage::";
+    if (!static_cast<bool>(value)) {
+    // 0 is often explicitly declared as None.
+    o << "None";
+      return o;
+    }
+
+    bool moreThanOneBit = !HasZeroOrOneBits(value);
+    if (moreThanOneBit) {
+      o << "(";
+    }
+
+    bool first = true;
+  if (value & TextureUsage::CopySrc) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "CopySrc";
+    value &= ~TextureUsage::CopySrc;
+  }
+  if (value & TextureUsage::CopyDst) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "CopyDst";
+    value &= ~TextureUsage::CopyDst;
+  }
+  if (value & TextureUsage::Sampled) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Sampled";
+    value &= ~TextureUsage::Sampled;
+  }
+  if (value & TextureUsage::Storage) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Storage";
+    value &= ~TextureUsage::Storage;
+  }
+  if (value & TextureUsage::RenderAttachment) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "RenderAttachment";
+    value &= ~TextureUsage::RenderAttachment;
+  }
+  if (value & TextureUsage::Present) {
+    if (!first) {
+      o << "|";
+    }
+    first = false;
+    o << "Present";
+    value &= ~TextureUsage::Present;
+  }
+
+    if (static_cast<bool>(value)) {
+      if (!first) {
+        o << "|";
+      }
+      o << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<TextureUsage>::type>(value);
+    }
+
+    if (moreThanOneBit) {
+      o << ")";
+    }
+    return o;
+  }
+
+}  // namespace wgpu
+
+#endif // WEBGPU_CPP_PRINT_H_
