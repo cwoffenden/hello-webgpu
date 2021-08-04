@@ -116,6 +116,9 @@ namespace dawn_native {
         // On an error, nullptr is returned.
         WGPUDevice CreateDevice(const DeviceDescriptor* deviceDescriptor = nullptr);
 
+        // Reset the backend device object for testing purposes.
+        void ResetInternalDeviceForTesting();
+
       private:
         AdapterBase* mImpl = nullptr;
     };
@@ -128,6 +131,8 @@ namespace dawn_native {
       protected:
         AdapterDiscoveryOptionsBase(WGPUBackendType type);
     };
+
+    enum BackendValidationLevel { Full, Partial, Disabled };
 
     // Represents a connection to dawn_native and is used for dependency injection, discovering
     // system adapters and injecting custom adapters (like a Swiftshader Vulkan adapter).
@@ -155,14 +160,12 @@ namespace dawn_native {
 
         const ToggleInfo* GetToggleInfo(const char* toggleName);
 
-        // Enable backend's validation layers if it has.
+        // Enables backend validation layers
         void EnableBackendValidation(bool enableBackendValidation);
+        void SetBackendValidationLevel(BackendValidationLevel validationLevel);
 
         // Enable debug capture on Dawn startup
         void EnableBeginCaptureOnStartup(bool beginCaptureOnStartup);
-
-        // Enable GPU based backend validation if it has.
-        void EnableGPUBasedBackendValidation(bool enableGPUBasedBackendValidation);
 
         void SetPlatform(dawn_platform::Platform* platform);
 
@@ -212,6 +215,7 @@ namespace dawn_native {
         DmaBuf,
         IOSurface,
         DXGISharedHandle,
+        EGLImage,
     };
 
     // Common properties of external images
@@ -223,6 +227,12 @@ namespace dawn_native {
 
       protected:
         ExternalImageDescriptor(ExternalImageType type);
+    };
+
+    struct DAWN_NATIVE_EXPORT ExternalImageAccessDescriptor {
+      public:
+        bool isInitialized;  // Whether the texture is initialized on import
+        WGPUTextureUsageFlags usage;
     };
 
     struct DAWN_NATIVE_EXPORT ExternalImageExportInfo {

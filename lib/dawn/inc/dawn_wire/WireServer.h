@@ -29,7 +29,6 @@ namespace dawn_wire {
     }  // namespace server
 
     struct DAWN_WIRE_EXPORT WireServerDescriptor {
-        WGPUDevice device;
         const DawnProcTable* procs;
         CommandSerializer* serializer;
         server::MemoryTransferService* memoryTransferService = nullptr;
@@ -43,12 +42,27 @@ namespace dawn_wire {
         const volatile char* HandleCommands(const volatile char* commands,
                                             size_t size) override final;
 
-        // TODO(enga): Remove defaults after updating Chrome.
         bool InjectTexture(WGPUTexture texture,
                            uint32_t id,
                            uint32_t generation,
-                           uint32_t deviceId = 1,
-                           uint32_t deviceGeneration = 0);
+                           uint32_t deviceId,
+                           uint32_t deviceGeneration);
+        bool InjectSwapChain(WGPUSwapChain swapchain,
+                             uint32_t id,
+                             uint32_t generation,
+                             uint32_t deviceId,
+                             uint32_t deviceGeneration);
+
+        bool InjectDevice(WGPUDevice device, uint32_t id, uint32_t generation);
+
+        // Look up a device by (id, generation) pair. Returns nullptr if the generation
+        // has expired or the id is not found.
+        // The Wire does not have destroy hooks to allow an embedder to observe when an object
+        // has been destroyed, but in Chrome, we need to know the list of live devices so we
+        // can call device.Tick() on all of them periodically to ensure progress on asynchronous
+        // work is made. Getting this list can be done by tracking the (id, generation) of
+        // previously injected devices, and observing if GetDevice(id, generation) returns non-null.
+        WGPUDevice GetDevice(uint32_t id, uint32_t generation);
 
       private:
         std::unique_ptr<server::Server> mImpl;
@@ -77,14 +91,18 @@ namespace dawn_wire {
                 ReadHandle();
                 virtual ~ReadHandle();
 
-                // Get the required serialization size for SerializeInitialData
-                virtual size_t SerializeInitialDataSize(const void* data, size_t dataLength) = 0;
+                // Return the size of the command serialized if
+                // SerializeDataUpdate is called with the same offset/size args
+                virtual size_t SizeOfSerializeDataUpdate(size_t offset, size_t size) = 0;
 
-                // Initialize the handle data.
-                // Serialize into |serializePointer| so the client can update handle data.
-                virtual void SerializeInitialData(const void* data,
-                                                  size_t dataLength,
-                                                  void* serializePointer) = 0;
+                // Gets called when a MapReadCallback resolves.
+                // Serialize the data update for the range (offset, offset + size) into
+                // |serializePointer| to the client There could be nothing to be serialized (if
+                // using shared memory)
+                virtual void SerializeDataUpdate(const void* data,
+                                                 size_t offset,
+                                                 size_t size,
+                                                 void* serializePointer) = 0;
 
               private:
                 ReadHandle(const ReadHandle&) = delete;
@@ -98,12 +116,17 @@ namespace dawn_wire {
 
                 // Set the target for writes from the client. DeserializeFlush should copy data
                 // into the target.
-                void SetTarget(void* data, size_t dataLength);
+                void SetTarget(void* data);
+                // Set Staging data length for OOB check
+                void SetDataLength(size_t dataLength);
 
                 // This function takes in the serialized result of
-                // client::MemoryTransferService::WriteHandle::SerializeFlush.
-                virtual bool DeserializeFlush(const void* deserializePointer,
-                                              size_t deserializeSize) = 0;
+                // client::MemoryTransferService::WriteHandle::SerializeDataUpdate.
+                // Needs to check potential offset/size OOB and overflow
+                virtual bool DeserializeDataUpdate(const void* deserializePointer,
+                                                   size_t deserializeSize,
+                                                   size_t offset,
+                                                   size_t size) = 0;
 
               protected:
                 void* mTargetData = nullptr;
