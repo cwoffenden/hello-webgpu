@@ -90,7 +90,7 @@ public:
 		layer.device       = device;
 		layer.pixelFormat  = MTLPixelFormatBGRA8Unorm;
 		layer.drawableSize = size;
-		if (usage & (WGPUTextureUsage_OutputAttachment | WGPUTextureUsage_Present)) {
+		if (usage & (WGPUTextureUsage_RenderAttachment | WGPUTextureUsage_Present)) {
 			layer.framebufferOnly = YES;
 		}
 		
@@ -250,7 +250,7 @@ WGPUSwapChain webgpu::createSwapChain(WGPUDevice device) {
 	/*
 	 * Currently failing on hi-DPI (with Vulkan on Windows).
 	 */
-	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_OutputAttachment, 800, 450);
+	wgpuSwapChainConfigure(swapchain, impl::swapPref, WGPUTextureUsage_RenderAttachment, 800, 450);
 	return swapchain;
 }
 
