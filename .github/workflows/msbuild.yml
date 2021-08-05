@@ -1,6 +1,6 @@
 # Builds Windows x64 and ARM variants
 
-name: MSBuild
+name: Visual Studio
 
 on: [push]
 
