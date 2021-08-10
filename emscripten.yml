@@ -1,0 +1,27 @@
+name: Emscripten
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        type: [Debug, Release]
+
+    env:
+      BUILD_TYPE: ${{matrix.type}}
+
+    steps:
+    - uses: actions/checkout@v2
+    - uses: mymindstorm/setup-emsdk@v9
+
+    - name: Test Emscripten
+      run: emcc -v
+
+    - name: Configure CMake
+      run: emcmake cmake -B ${{github.workspace}}/out -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/out --config ${{env.BUILD_TYPE}}
