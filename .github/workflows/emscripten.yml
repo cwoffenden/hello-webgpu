@@ -21,7 +21,7 @@ jobs:
       run: emcc -v
 
     - name: Configure CMake
-      run: emcmake cmake -B ${{github.workspace}}/out -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: emcmake cmake -B ${{github.workspace}}/out/web/${{env.BUILD_TYPE}} -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build
-      run: cmake --build ${{github.workspace}}/out --config ${{env.BUILD_TYPE}}
+      run: cmake --build ${{github.workspace}}/out/web/${{env.BUILD_TYPE}} --config ${{env.BUILD_TYPE}}
