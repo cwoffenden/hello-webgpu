@@ -1,0 +1,17 @@
+# Builds Mac x64 and ARM variants
+
+name: Xcode
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        destination: ["platform=macOS"]
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Build
+      run: xcodebuild clean build -destination '${{ matrix.destination] }}'
