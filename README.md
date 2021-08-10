@@ -1,6 +1,6 @@
 # "Hello, Triangle" WebGPU and Dawn
 
-[![MSVC workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml)
+[![MSVC workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml) [![Xcode workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/xcode.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/xcode.yml)
 
 Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emscripten.org) and [Dawn](//dawn.googlesource.com/dawn). Build for Windows using Visual Studio from 2015 onwards. Build for Emscripten (on Windows) using `build-web.bat` (CMake project to follow). Tested with Chrome Canary 82.0 with the `--enable-unsafe-webgpu` flag. Build for Mac using the Xcode project (tested with Xcode 11 & 12 and macOS 10.14, 10.15 & 11 beta).
 
