@@ -9,9 +9,9 @@ jobs:
     runs-on: macos-latest
     strategy:
       matrix:
-        destination: ["platform=macOS"]
+        destination: ["platform=macOS,arch=x86_64", "platform=macOS,arch=arm64"]
     steps:
     - name: Checkout
       uses: actions/checkout@v2
     - name: Build
-      run: xcodebuild clean build -destination '${{ matrix.destination] }}'
+      run: xcodebuild clean build -destination '${{ matrix.destination }}'
