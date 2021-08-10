@@ -6,6 +6,8 @@ on: [push]
 
 jobs:
   build:
+    runs-on: windows-latest
+
     strategy:
       matrix:
         configurations: [Debug, Release]
@@ -16,12 +18,9 @@ jobs:
       BUILD_CONFIGURATION: ${{matrix.configurations}}
       BUILD_PLATFORM: ${{matrix.platforms}}
 
-    runs-on: windows-latest
-
     steps:
-    - uses: actions/checkout@v2
-      with:
-        submodules: 'recursive'
+    - name: Checkout
+      uses: actions/checkout@v2
 
     - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v1.0.2
