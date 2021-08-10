@@ -367,7 +367,7 @@ static bool redraw() {
 	WGPURenderPassEncoder pass = wgpuCommandEncoderBeginRenderPass(encoder, &renderPass);	// create pass
 
 	// update the rotation
-	rotDeg += 0.1f;
+	rotDeg += 0.2f;
 	wgpuQueueWriteBuffer(queue, uRotBuf, 0, &rotDeg, sizeof(rotDeg));
 
 	// draw the triangle (comment these five lines to simply clear the screen)
