@@ -274,11 +274,7 @@ static void createPipelineAndBuffers() {
 	fragment.targetCount = 1;
 	fragment.targets = &colorTarget;
 
-#ifdef __EMSCRIPTEN__
-	WGPURenderPipelineDescriptor2 desc = {};
-#else
-	WGPURenderPipelineDescriptor  desc = {};
-#endif
+	WGPURenderPipelineDescriptor desc = {};
 	desc.fragment = &fragment;
 
 	// Other state
@@ -299,11 +295,7 @@ static void createPipelineAndBuffers() {
 	desc.primitive.topology = WGPUPrimitiveTopology_TriangleList;
 	desc.primitive.stripIndexFormat = WGPUIndexFormat_Undefined;
 
-#ifdef __EMSCRIPTEN__
-	pipeline = wgpuDeviceCreateRenderPipeline2(device, &desc);
-#else
-	pipeline = wgpuDeviceCreateRenderPipeline (device, &desc);
-#endif
+	pipeline = wgpuDeviceCreateRenderPipeline(device, &desc);
 
 	// partial clean-up (just move to the end, no?)
 	wgpuPipelineLayoutRelease(pipelineLayout);
