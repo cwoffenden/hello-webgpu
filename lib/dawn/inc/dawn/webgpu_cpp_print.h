@@ -71,6 +71,9 @@ namespace wgpu {
       case BackendType::Null:
         o << "BackendType::Null";
         break;
+      case BackendType::WebGPU:
+        o << "BackendType::WebGPU";
+        break;
       case BackendType::D3D11:
         o << "BackendType::D3D11";
         break;
@@ -135,24 +138,6 @@ namespace wgpu {
         break;
       case BlendFactor::OneMinusConstant:
         o << "BlendFactor::OneMinusConstant";
-        break;
-      case BlendFactor::SrcColor:
-        o << "BlendFactor::SrcColor";
-        break;
-      case BlendFactor::OneMinusSrcColor:
-        o << "BlendFactor::OneMinusSrcColor";
-        break;
-      case BlendFactor::DstColor:
-        o << "BlendFactor::DstColor";
-        break;
-      case BlendFactor::OneMinusDstColor:
-        o << "BlendFactor::OneMinusDstColor";
-        break;
-      case BlendFactor::BlendColor:
-        o << "BlendFactor::BlendColor";
-        break;
-      case BlendFactor::OneMinusBlendColor:
-        o << "BlendFactor::OneMinusBlendColor";
         break;
           default:
             o << "BlendFactor::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<BlendFactor>::type>(value);
@@ -337,6 +322,20 @@ namespace wgpu {
         break;
           default:
             o << "CullMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<CullMode>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, DeviceLostReason value) {
+      switch (value) {
+      case DeviceLostReason::Undefined:
+        o << "DeviceLostReason::Undefined";
+        break;
+      case DeviceLostReason::Destroyed:
+        o << "DeviceLostReason::Destroyed";
+        break;
+          default:
+            o << "DeviceLostReason::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<DeviceLostReason>::type>(value);
       }
       return o;
   }
@@ -560,6 +559,23 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, RequestDeviceStatus value) {
+      switch (value) {
+      case RequestDeviceStatus::Success:
+        o << "RequestDeviceStatus::Success";
+        break;
+      case RequestDeviceStatus::Error:
+        o << "RequestDeviceStatus::Error";
+        break;
+      case RequestDeviceStatus::Unknown:
+        o << "RequestDeviceStatus::Unknown";
+        break;
+          default:
+            o << "RequestDeviceStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<RequestDeviceStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, SType value) {
       switch (value) {
       case SType::Invalid:
@@ -664,9 +680,6 @@ namespace wgpu {
       case StorageTextureAccess::Undefined:
         o << "StorageTextureAccess::Undefined";
         break;
-      case StorageTextureAccess::ReadOnly:
-        o << "StorageTextureAccess::ReadOnly";
-        break;
       case StorageTextureAccess::WriteOnly:
         o << "StorageTextureAccess::WriteOnly";
         break;
@@ -683,9 +696,6 @@ namespace wgpu {
         break;
       case StoreOp::Discard:
         o << "StoreOp::Discard";
-        break;
-      case StoreOp::Clear:
-        o << "StoreOp::Clear";
         break;
           default:
             o << "StoreOp::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<StoreOp>::type>(value);
@@ -866,17 +876,20 @@ namespace wgpu {
       case TextureFormat::RGBA32Sint:
         o << "TextureFormat::RGBA32Sint";
         break;
-      case TextureFormat::Depth32Float:
-        o << "TextureFormat::Depth32Float";
+      case TextureFormat::Stencil8:
+        o << "TextureFormat::Stencil8";
+        break;
+      case TextureFormat::Depth16Unorm:
+        o << "TextureFormat::Depth16Unorm";
         break;
       case TextureFormat::Depth24Plus:
         o << "TextureFormat::Depth24Plus";
         break;
-      case TextureFormat::Stencil8:
-        o << "TextureFormat::Stencil8";
-        break;
       case TextureFormat::Depth24PlusStencil8:
         o << "TextureFormat::Depth24PlusStencil8";
+        break;
+      case TextureFormat::Depth32Float:
+        o << "TextureFormat::Depth32Float";
         break;
       case TextureFormat::BC1RGBAUnorm:
         o << "TextureFormat::BC1RGBAUnorm";
@@ -919,6 +932,120 @@ namespace wgpu {
         break;
       case TextureFormat::BC7RGBAUnormSrgb:
         o << "TextureFormat::BC7RGBAUnormSrgb";
+        break;
+      case TextureFormat::ETC2RGB8Unorm:
+        o << "TextureFormat::ETC2RGB8Unorm";
+        break;
+      case TextureFormat::ETC2RGB8UnormSrgb:
+        o << "TextureFormat::ETC2RGB8UnormSrgb";
+        break;
+      case TextureFormat::ETC2RGB8A1Unorm:
+        o << "TextureFormat::ETC2RGB8A1Unorm";
+        break;
+      case TextureFormat::ETC2RGB8A1UnormSrgb:
+        o << "TextureFormat::ETC2RGB8A1UnormSrgb";
+        break;
+      case TextureFormat::ETC2RGBA8Unorm:
+        o << "TextureFormat::ETC2RGBA8Unorm";
+        break;
+      case TextureFormat::ETC2RGBA8UnormSrgb:
+        o << "TextureFormat::ETC2RGBA8UnormSrgb";
+        break;
+      case TextureFormat::EACR11Unorm:
+        o << "TextureFormat::EACR11Unorm";
+        break;
+      case TextureFormat::EACR11Snorm:
+        o << "TextureFormat::EACR11Snorm";
+        break;
+      case TextureFormat::EACRG11Unorm:
+        o << "TextureFormat::EACRG11Unorm";
+        break;
+      case TextureFormat::EACRG11Snorm:
+        o << "TextureFormat::EACRG11Snorm";
+        break;
+      case TextureFormat::ASTC4x4Unorm:
+        o << "TextureFormat::ASTC4x4Unorm";
+        break;
+      case TextureFormat::ASTC4x4UnormSrgb:
+        o << "TextureFormat::ASTC4x4UnormSrgb";
+        break;
+      case TextureFormat::ASTC5x4Unorm:
+        o << "TextureFormat::ASTC5x4Unorm";
+        break;
+      case TextureFormat::ASTC5x4UnormSrgb:
+        o << "TextureFormat::ASTC5x4UnormSrgb";
+        break;
+      case TextureFormat::ASTC5x5Unorm:
+        o << "TextureFormat::ASTC5x5Unorm";
+        break;
+      case TextureFormat::ASTC5x5UnormSrgb:
+        o << "TextureFormat::ASTC5x5UnormSrgb";
+        break;
+      case TextureFormat::ASTC6x5Unorm:
+        o << "TextureFormat::ASTC6x5Unorm";
+        break;
+      case TextureFormat::ASTC6x5UnormSrgb:
+        o << "TextureFormat::ASTC6x5UnormSrgb";
+        break;
+      case TextureFormat::ASTC6x6Unorm:
+        o << "TextureFormat::ASTC6x6Unorm";
+        break;
+      case TextureFormat::ASTC6x6UnormSrgb:
+        o << "TextureFormat::ASTC6x6UnormSrgb";
+        break;
+      case TextureFormat::ASTC8x5Unorm:
+        o << "TextureFormat::ASTC8x5Unorm";
+        break;
+      case TextureFormat::ASTC8x5UnormSrgb:
+        o << "TextureFormat::ASTC8x5UnormSrgb";
+        break;
+      case TextureFormat::ASTC8x6Unorm:
+        o << "TextureFormat::ASTC8x6Unorm";
+        break;
+      case TextureFormat::ASTC8x6UnormSrgb:
+        o << "TextureFormat::ASTC8x6UnormSrgb";
+        break;
+      case TextureFormat::ASTC8x8Unorm:
+        o << "TextureFormat::ASTC8x8Unorm";
+        break;
+      case TextureFormat::ASTC8x8UnormSrgb:
+        o << "TextureFormat::ASTC8x8UnormSrgb";
+        break;
+      case TextureFormat::ASTC10x5Unorm:
+        o << "TextureFormat::ASTC10x5Unorm";
+        break;
+      case TextureFormat::ASTC10x5UnormSrgb:
+        o << "TextureFormat::ASTC10x5UnormSrgb";
+        break;
+      case TextureFormat::ASTC10x6Unorm:
+        o << "TextureFormat::ASTC10x6Unorm";
+        break;
+      case TextureFormat::ASTC10x6UnormSrgb:
+        o << "TextureFormat::ASTC10x6UnormSrgb";
+        break;
+      case TextureFormat::ASTC10x8Unorm:
+        o << "TextureFormat::ASTC10x8Unorm";
+        break;
+      case TextureFormat::ASTC10x8UnormSrgb:
+        o << "TextureFormat::ASTC10x8UnormSrgb";
+        break;
+      case TextureFormat::ASTC10x10Unorm:
+        o << "TextureFormat::ASTC10x10Unorm";
+        break;
+      case TextureFormat::ASTC10x10UnormSrgb:
+        o << "TextureFormat::ASTC10x10UnormSrgb";
+        break;
+      case TextureFormat::ASTC12x10Unorm:
+        o << "TextureFormat::ASTC12x10Unorm";
+        break;
+      case TextureFormat::ASTC12x10UnormSrgb:
+        o << "TextureFormat::ASTC12x10UnormSrgb";
+        break;
+      case TextureFormat::ASTC12x12Unorm:
+        o << "TextureFormat::ASTC12x12Unorm";
+        break;
+      case TextureFormat::ASTC12x12UnormSrgb:
+        o << "TextureFormat::ASTC12x12UnormSrgb";
         break;
       case TextureFormat::R8BG8Biplanar420Unorm:
         o << "TextureFormat::R8BG8Biplanar420Unorm";
@@ -1402,21 +1529,21 @@ namespace wgpu {
     o << "CopyDst";
     value &= ~TextureUsage::CopyDst;
   }
-  if (value & TextureUsage::Sampled) {
+  if (value & TextureUsage::TextureBinding) {
     if (!first) {
       o << "|";
     }
     first = false;
-    o << "Sampled";
-    value &= ~TextureUsage::Sampled;
+    o << "TextureBinding";
+    value &= ~TextureUsage::TextureBinding;
   }
-  if (value & TextureUsage::Storage) {
+  if (value & TextureUsage::StorageBinding) {
     if (!first) {
       o << "|";
     }
     first = false;
-    o << "Storage";
-    value &= ~TextureUsage::Storage;
+    o << "StorageBinding";
+    value &= ~TextureUsage::StorageBinding;
   }
   if (value & TextureUsage::RenderAttachment) {
     if (!first) {
