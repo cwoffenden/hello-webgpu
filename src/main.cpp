@@ -397,8 +397,25 @@ static bool redraw() {
 	return true;
 }
 
+window::Handle wHnd = nullptr;
+
+void init() {
+	queue = wgpuDeviceGetQueue(device);
+	swapchain = webgpu::createSwapChain(device);
+	createPipelineAndBuffers();
+
+	window::show(wHnd);
+	window::loop(wHnd, redraw);
+}
+
 extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
-	if (window::Handle wHnd = window::create()) {
+	wHnd = window::create();
+	if (wHnd) {
+		webgpu::create(wHnd, [](WGPUDevice dev) {
+			device = dev;
+			init();
+		});
+		/*
 		if ((device = webgpu::create(wHnd))) {
 			queue = wgpuDeviceGetQueue(device);
 			swapchain = webgpu::createSwapChain(device);
@@ -421,6 +438,7 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]) {
 	#ifndef __EMSCRIPTEN__
 		window::destroy(wHnd);
 	#endif
+	*/
 	}
 	return 0;
 }

@@ -1,6 +1,9 @@
 #include <emscripten/em_js.h>
 #include <emscripten/emscripten.h>
 
+#include <webgpu/webgpu.h>
+
+
 /**
  * \def KEEP_IN_MODULE
  * Marks a function to be kept in the \c Module and exposed to script. An
@@ -28,6 +31,8 @@ extern "C" int __main__(int /*argc*/, char* /*argv*/[]);
 
 //****************************************************************************/
 
+// Replaced with new WebGPU adapter/device API
+#if 0
 namespace impl {
 /**
  * JavaScript async calls that need to finish before calling \c main().
@@ -58,6 +63,7 @@ EM_JS(void, glue_preint, (), {
 	}
 });
 }
+#endif
 
 //****************************************************************************/
 
@@ -74,6 +80,7 @@ KEEP_IN_MODULE void _glue_main_() {
  * Entry point. Workaround for Emscripten needing an \c async start.
  */
 int main(int /*argc*/, char* /*argv*/[]) {
-	impl::glue_preint();
+	//impl::glue_preint();
+	__main__(0, nullptr);
 	return 0;
 }
