@@ -12,16 +12,6 @@ WGPUBuffer indxBuf; // index buffer
 WGPUBuffer uRotBuf; // uniform buffer (containing the rotation angle)
 WGPUBindGroup bindGroup;
 
-/*
- * Workaround for Dawn currently expecting 'undefined' for entire buffers and
- * Emscripten/Chrome still expecting zero.
- */
-#ifndef __EMSCRIPTEN__
-#define ZERO_BUFFER_SIZE WGPU_WHOLE_SIZE
-#else
-#define ZERO_BUFFER_SIZE 0
-#endif
-
 /**
  * Current rotation angle (in degrees, updated per frame).
  */
@@ -95,25 +85,19 @@ static uint32_t const triangle_vert_spirv[] = {
  * WGSL equivalent of \c triangle_vert_spirv.
  */
 static char const triangle_vert_wgsl[] = R"(
-	let PI : f32 = 3.141592653589793;
-	fn radians(degs : f32) -> f32 {
-		return (degs * PI) / 180.0;
-	}
-	[[block]]
 	struct VertexIn {
-		[[location(0)]] aPos : vec2<f32>;
-		[[location(1)]] aCol : vec3<f32>;
+		@location(0) aPos : vec2<f32>;
+		@location(1) aCol : vec3<f32>;
 	};
 	struct VertexOut {
-		[[location(0)]] vCol : vec3<f32>;
-		[[builtin(position)]] Position : vec4<f32>;
+		@location(0) vCol : vec3<f32>;
+		@builtin(position) Position : vec4<f32>;
 	};
-	[[block]]
 	struct Rotation {
-		[[location(0)]] degs : f32;
+		@location(0) degs : f32;
 	};
-	[[group(0), binding(0)]] var<uniform> uRot : Rotation;
-	[[stage(vertex)]]
+	@group(0) @binding(0) var<uniform> uRot : Rotation;
+	@stage(vertex)
 	fn main(input : VertexIn) -> VertexOut {
 		var rads : f32 = radians(uRot.degs);
 		var cosA : f32 = cos(rads);
@@ -162,8 +146,8 @@ static uint32_t const triangle_frag_spirv[] = {
  * WGSL equivalent of \c triangle_frag_spirv.
  */
 static char const triangle_frag_wgsl[] = R"(
-	[[stage(fragment)]]
-	fn main([[location(0)]] vCol : vec3<f32>) -> [[location(0)]] vec4<f32> {
+	@stage(fragment)
+	fn main(@location(0) vCol : vec3<f32>) -> @location(0) vec4<f32> {
 		return vec4<f32>(vCol, 1.0);
 	}
 )";
@@ -375,8 +359,8 @@ static bool redraw() {
 	// draw the triangle (comment these five lines to simply clear the screen)
 	wgpuRenderPassEncoderSetPipeline(pass, pipeline);
 	wgpuRenderPassEncoderSetBindGroup(pass, 0, bindGroup, 0, 0);
-	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0, ZERO_BUFFER_SIZE);
-	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, WGPUIndexFormat_Uint16, 0, ZERO_BUFFER_SIZE);
+	wgpuRenderPassEncoderSetVertexBuffer(pass, 0, vertBuf, 0, WGPU_WHOLE_SIZE);
+	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, WGPUIndexFormat_Uint16, 0, WGPU_WHOLE_SIZE);
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
 
 	wgpuRenderPassEncoderEndPass(pass);
