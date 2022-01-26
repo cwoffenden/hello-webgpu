@@ -49,19 +49,16 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
-  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, AlphaOp value) {
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, AlphaMode value) {
       switch (value) {
-      case AlphaOp::DontChange:
-        o << "AlphaOp::DontChange";
+      case AlphaMode::Premultiplied:
+        o << "AlphaMode::Premultiplied";
         break;
-      case AlphaOp::Premultiply:
-        o << "AlphaOp::Premultiply";
-        break;
-      case AlphaOp::Unpremultiply:
-        o << "AlphaOp::Unpremultiply";
+      case AlphaMode::Unpremultiplied:
+        o << "AlphaMode::Unpremultiplied";
         break;
           default:
-            o << "AlphaOp::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AlphaOp>::type>(value);
+            o << "AlphaMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AlphaMode>::type>(value);
       }
       return o;
   }
@@ -342,9 +339,6 @@ namespace wgpu {
   template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ErrorFilter value) {
       switch (value) {
-      case ErrorFilter::None:
-        o << "ErrorFilter::None";
-        break;
       case ErrorFilter::Validation:
         o << "ErrorFilter::Validation";
         break;
@@ -376,6 +370,56 @@ namespace wgpu {
         break;
           default:
             o << "ErrorType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ErrorType>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, FeatureName value) {
+      switch (value) {
+      case FeatureName::Undefined:
+        o << "FeatureName::Undefined";
+        break;
+      case FeatureName::Depth24UnormStencil8:
+        o << "FeatureName::Depth24UnormStencil8";
+        break;
+      case FeatureName::Depth32FloatStencil8:
+        o << "FeatureName::Depth32FloatStencil8";
+        break;
+      case FeatureName::TimestampQuery:
+        o << "FeatureName::TimestampQuery";
+        break;
+      case FeatureName::PipelineStatisticsQuery:
+        o << "FeatureName::PipelineStatisticsQuery";
+        break;
+      case FeatureName::TextureCompressionBC:
+        o << "FeatureName::TextureCompressionBC";
+        break;
+      case FeatureName::TextureCompressionETC2:
+        o << "FeatureName::TextureCompressionETC2";
+        break;
+      case FeatureName::TextureCompressionASTC:
+        o << "FeatureName::TextureCompressionASTC";
+        break;
+      case FeatureName::IndirectFirstInstance:
+        o << "FeatureName::IndirectFirstInstance";
+        break;
+      case FeatureName::DepthClamping:
+        o << "FeatureName::DepthClamping";
+        break;
+      case FeatureName::DawnShaderFloat16:
+        o << "FeatureName::DawnShaderFloat16";
+        break;
+      case FeatureName::DawnInternalUsages:
+        o << "FeatureName::DawnInternalUsages";
+        break;
+      case FeatureName::DawnMultiPlanarFormats:
+        o << "FeatureName::DawnMultiPlanarFormats";
+        break;
+      case FeatureName::DawnNative:
+        o << "FeatureName::DawnNative";
+        break;
+          default:
+            o << "FeatureName::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<FeatureName>::type>(value);
       }
       return o;
   }
@@ -482,6 +526,37 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PowerPreference value) {
+      switch (value) {
+      case PowerPreference::Undefined:
+        o << "PowerPreference::Undefined";
+        break;
+      case PowerPreference::LowPower:
+        o << "PowerPreference::LowPower";
+        break;
+      case PowerPreference::HighPerformance:
+        o << "PowerPreference::HighPerformance";
+        break;
+          default:
+            o << "PowerPreference::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PowerPreference>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PredefinedColorSpace value) {
+      switch (value) {
+      case PredefinedColorSpace::Undefined:
+        o << "PredefinedColorSpace::Undefined";
+        break;
+      case PredefinedColorSpace::Srgb:
+        o << "PredefinedColorSpace::Srgb";
+        break;
+          default:
+            o << "PredefinedColorSpace::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PredefinedColorSpace>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PresentMode value) {
       switch (value) {
       case PresentMode::Immediate:
@@ -559,6 +634,26 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, RequestAdapterStatus value) {
+      switch (value) {
+      case RequestAdapterStatus::Success:
+        o << "RequestAdapterStatus::Success";
+        break;
+      case RequestAdapterStatus::Unavailable:
+        o << "RequestAdapterStatus::Unavailable";
+        break;
+      case RequestAdapterStatus::Error:
+        o << "RequestAdapterStatus::Error";
+        break;
+      case RequestAdapterStatus::Unknown:
+        o << "RequestAdapterStatus::Unknown";
+        break;
+          default:
+            o << "RequestAdapterStatus::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<RequestAdapterStatus>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, RequestDeviceStatus value) {
       switch (value) {
       case RequestDeviceStatus::Success:
@@ -587,8 +682,8 @@ namespace wgpu {
       case SType::SurfaceDescriptorFromWindowsHWND:
         o << "SType::SurfaceDescriptorFromWindowsHWND";
         break;
-      case SType::SurfaceDescriptorFromXlib:
-        o << "SType::SurfaceDescriptorFromXlib";
+      case SType::SurfaceDescriptorFromXlibWindow:
+        o << "SType::SurfaceDescriptorFromXlibWindow";
         break;
       case SType::SurfaceDescriptorFromCanvasHTMLSelector:
         o << "SType::SurfaceDescriptorFromCanvasHTMLSelector";
@@ -598,9 +693,6 @@ namespace wgpu {
         break;
       case SType::ShaderModuleWGSLDescriptor:
         o << "SType::ShaderModuleWGSLDescriptor";
-        break;
-      case SType::PrimitiveDepthClampingState:
-        o << "SType::PrimitiveDepthClampingState";
         break;
       case SType::SurfaceDescriptorFromWindowsCoreWindow:
         o << "SType::SurfaceDescriptorFromWindowsCoreWindow";
@@ -616,6 +708,15 @@ namespace wgpu {
         break;
       case SType::DawnTextureInternalUsageDescriptor:
         o << "SType::DawnTextureInternalUsageDescriptor";
+        break;
+      case SType::PrimitiveDepthClampingState:
+        o << "SType::PrimitiveDepthClampingState";
+        break;
+      case SType::DawnTogglesDeviceDescriptor:
+        o << "SType::DawnTogglesDeviceDescriptor";
+        break;
+      case SType::DawnEncoderInternalUsageDescriptor:
+        o << "SType::DawnEncoderInternalUsageDescriptor";
         break;
           default:
             o << "SType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<SType>::type>(value);
@@ -888,8 +989,14 @@ namespace wgpu {
       case TextureFormat::Depth24PlusStencil8:
         o << "TextureFormat::Depth24PlusStencil8";
         break;
+      case TextureFormat::Depth24UnormStencil8:
+        o << "TextureFormat::Depth24UnormStencil8";
+        break;
       case TextureFormat::Depth32Float:
         o << "TextureFormat::Depth32Float";
+        break;
+      case TextureFormat::Depth32FloatStencil8:
+        o << "TextureFormat::Depth32FloatStencil8";
         break;
       case TextureFormat::BC1RGBAUnorm:
         o << "TextureFormat::BC1RGBAUnorm";

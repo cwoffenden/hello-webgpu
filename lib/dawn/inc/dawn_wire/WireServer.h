@@ -21,7 +21,7 @@
 
 struct DawnProcTable;
 
-namespace dawn_wire {
+namespace dawn::wire {
 
     namespace server {
         class Server;
@@ -54,6 +54,8 @@ namespace dawn_wire {
                              uint32_t deviceGeneration);
 
         bool InjectDevice(WGPUDevice device, uint32_t id, uint32_t generation);
+
+        bool InjectInstance(WGPUInstance instance, uint32_t id, uint32_t generation);
 
         // Look up a device by (id, generation) pair. Returns nullptr if the generation
         // has expired or the id is not found.
@@ -143,6 +145,6 @@ namespace dawn_wire {
         };
     }  // namespace server
 
-}  // namespace dawn_wire
+}  // namespace dawn::wire
 
 #endif  // DAWNWIRE_WIRESERVER_H_

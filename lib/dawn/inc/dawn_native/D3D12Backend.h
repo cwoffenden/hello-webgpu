@@ -28,7 +28,7 @@
 struct ID3D12Device;
 struct ID3D12Resource;
 
-namespace dawn_native { namespace d3d12 {
+namespace dawn::native::d3d12 {
 
     class D3D11on12ResourceCache;
 
@@ -55,9 +55,14 @@ namespace dawn_native { namespace d3d12 {
         HANDLE sharedHandle;
     };
 
+    // Keyed mutex acquire/release uses a fixed key of 0 to match Chromium behavior.
+    constexpr UINT64 kDXGIKeyedMutexAcquireReleaseKey = 0;
+
     struct DAWN_NATIVE_EXPORT ExternalImageAccessDescriptorDXGIKeyedMutex
         : ExternalImageAccessDescriptor {
       public:
+        // TODO(chromium:1241533): Remove deprecated keyed mutex params after removing associated
+        // code from Chromium - we use a fixed key of 0 for acquire and release everywhere now.
         uint64_t acquireMutexKey;
         uint64_t releaseMutexKey;
         bool isSwapChainTexture = false;
@@ -95,11 +100,12 @@ namespace dawn_native { namespace d3d12 {
     };
 
     struct DAWN_NATIVE_EXPORT AdapterDiscoveryOptions : public AdapterDiscoveryOptionsBase {
+        AdapterDiscoveryOptions();
         AdapterDiscoveryOptions(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
 
         Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
     };
 
-}}  // namespace dawn_native::d3d12
+}  // namespace dawn::native::d3d12
 
 #endif  // DAWNNATIVE_D3D12BACKEND_H_
