@@ -90,8 +90,9 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	enable_iterator_debugging=true
 	symbol_level=1
 	
-	# Dawn's ANGLE is currently broken
+	# Don't need these features
 	dawn_use_angle=false
+	dawn_use_swiftshader=false
 	```
 
 	If you don't set the `enable_iterator_debugging` option then you'll need [`_ITERATOR_DEBUG_LEVEL=0`](//docs.microsoft.com/en-us/cpp/standard-library/iterator-debug-level?view=vs-2019) setting in the preprocessor.
