@@ -16,7 +16,7 @@
 #define DAWNNATIVE_D3D12BACKEND_H_
 
 #include <dawn/dawn_wsi.h>
-#include <dawn_native/DawnNative.h>
+#include <dawn/native/DawnNative.h>
 
 #include <DXGI1_4.h>
 #include <d3d12.h>

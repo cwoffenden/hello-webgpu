@@ -18,12 +18,12 @@
 
 #include <dawn/dawn_proc.h>
 #include <dawn/webgpu_cpp.h>
-#include <dawn_native/NullBackend.h>
+#include <dawn/native/NullBackend.h>
 #ifdef DAWN_ENABLE_BACKEND_D3D12
-#include <dawn_native/D3D12Backend.h>
+#include <dawn/native/D3D12Backend.h>
 #endif
 #ifdef DAWN_ENABLE_BACKEND_VULKAN
-#include <dawn_native/VulkanBackend.h>
+#include <dawn/native/VulkanBackend.h>
 #include <vulkan/vulkan_win32.h>
 #endif
 
@@ -44,7 +44,7 @@ namespace impl {
 WGPUBackendType backend;
 
 /*
- * WebGPU graphics API-specific device, created from a \c dawn_native::Adapter
+ * WebGPU graphics API-specific device, created from a \c dawn::native::Adapter
  * and optional feature requests. This should wrap the same underlying device
  * for the same configuration.
  */
@@ -90,11 +90,11 @@ static WGPUTextureFormat swapPref;
  * \param[in] type2nd optional fallback \e backend type (or \c WGPUBackendType_Null to pick the first choice or nothing)
  * \return the best choice adapter or an empty adapter wrapper
  */
-static dawn_native::Adapter requestAdapter(WGPUBackendType type1st, WGPUBackendType type2nd = WGPUBackendType_Null) {
-	static dawn_native::Instance instance;
+static dawn::native::Adapter requestAdapter(WGPUBackendType type1st, WGPUBackendType type2nd = WGPUBackendType_Null) {
+	static dawn::native::Instance instance;
 	instance.DiscoverDefaultAdapters();
 	wgpu::AdapterProperties properties;
-	std::vector<dawn_native::Adapter> adapters = instance.GetAdapters();
+	std::vector<dawn::native::Adapter> adapters = instance.GetAdapters();
 	for (auto it = adapters.begin(); it != adapters.end(); ++it) {
 		it->GetProperties(&properties);
 		if (static_cast<WGPUBackendType>(properties.backendType) == type1st) {
@@ -109,7 +109,7 @@ static dawn_native::Adapter requestAdapter(WGPUBackendType type1st, WGPUBackendT
 			}
 		}
 	}
-	return dawn_native::Adapter();
+	return dawn::native::Adapter();
 }
 
 #ifdef DAWN_ENABLE_BACKEND_VULKAN
@@ -130,7 +130,7 @@ static VkSurfaceKHR createVkSurface(WGPUDevice device, window::Handle window) {
 	info.hinstance = GetModuleHandle(NULL);
 	info.hwnd      = reinterpret_cast<HWND>(window);
 	vkCreateWin32SurfaceKHR(
-		dawn_native::vulkan::GetInstance(device),
+		dawn::native::vulkan::GetInstance(device),
 			&info, nullptr, &surface);
 #endif
 	return surface;
@@ -146,24 +146,24 @@ static void initSwapChain(WGPUBackendType backend, WGPUDevice device, window::Ha
 #ifdef DAWN_ENABLE_BACKEND_D3D12
 	case WGPUBackendType_D3D12:
 		if (impl::swapImpl.userData == nullptr) {
-			impl::swapImpl = dawn_native::d3d12::CreateNativeSwapChainImpl(
+			impl::swapImpl = dawn::native::d3d12::CreateNativeSwapChainImpl(
 							 impl::device, reinterpret_cast<HWND>(window));
-			impl::swapPref = dawn_native::d3d12::GetNativeSwapChainPreferredFormat(&impl::swapImpl);
+			impl::swapPref = dawn::native::d3d12::GetNativeSwapChainPreferredFormat(&impl::swapImpl);
 		}
 		break;
 #endif
 #ifdef DAWN_ENABLE_BACKEND_VULKAN
 	case WGPUBackendType_Vulkan:
 		if (impl::swapImpl.userData == nullptr) {
-			impl::swapImpl = dawn_native::vulkan::CreateNativeSwapChainImpl(
+			impl::swapImpl = dawn::native::vulkan::CreateNativeSwapChainImpl(
 							 impl::device, createVkSurface(device, window));
-			impl::swapPref = dawn_native::vulkan::GetNativeSwapChainPreferredFormat(&impl::swapImpl);
+			impl::swapPref = dawn::native::vulkan::GetNativeSwapChainPreferredFormat(&impl::swapImpl);
 		}
 		break;
 #endif
 	default:
 		if (impl::swapImpl.userData == nullptr) {
-			impl::swapImpl = dawn_native::null::CreateNativeSwapChainImpl();
+			impl::swapImpl = dawn::native::null::CreateNativeSwapChainImpl();
 			impl::swapPref = WGPUTextureFormat_Undefined;
 		}
 		break;
@@ -195,13 +195,13 @@ WGPUDevice webgpu::create(window::Handle window, WGPUBackendType type) {
 	/*
 	 * First go at this. We're only creating one global device/swap chain so far.
 	 */
-	if (dawn_native::Adapter adapter = impl::requestAdapter(type)) {
+	if (dawn::native::Adapter adapter = impl::requestAdapter(type)) {
 		wgpu::AdapterProperties properties;
 		adapter.GetProperties(&properties);
 		impl::backend = static_cast<WGPUBackendType>(properties.backendType);
 		impl::device  = adapter.CreateDevice();
 		impl::initSwapChain(impl::backend, impl::device, window);
-		DawnProcTable procs(dawn_native::GetProcs());
+		DawnProcTable procs(dawn::native::GetProcs());
 		procs.deviceSetUncapturedErrorCallback(impl::device, impl::printError, nullptr);
 		dawnProcSetProcs(&procs);
 	}

@@ -19,7 +19,7 @@
 #include <limits>
 
 #include "dawn/webgpu.h"
-#include "dawn_wire/dawn_wire_export.h"
+#include "dawn/wire/dawn_wire_export.h"
 
 namespace dawn::wire {
 

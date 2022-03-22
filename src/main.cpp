@@ -363,7 +363,7 @@ static bool redraw() {
 	wgpuRenderPassEncoderSetIndexBuffer(pass, indxBuf, WGPUIndexFormat_Uint16, 0, WGPU_WHOLE_SIZE);
 	wgpuRenderPassEncoderDrawIndexed(pass, 3, 1, 0, 0, 0);
 
-	wgpuRenderPassEncoderEndPass(pass);
+	wgpuRenderPassEncoderEnd(pass);
 	wgpuRenderPassEncoderRelease(pass);														// release pass
 	WGPUCommandBuffer commands = wgpuCommandEncoderFinish(encoder, nullptr);				// create commands
 	wgpuCommandEncoderRelease(encoder);														// release encoder

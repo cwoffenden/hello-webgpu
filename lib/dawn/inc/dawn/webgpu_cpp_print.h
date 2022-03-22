@@ -283,6 +283,20 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, ComputePassTimestampLocation value) {
+      switch (value) {
+      case ComputePassTimestampLocation::Beginning:
+        o << "ComputePassTimestampLocation::Beginning";
+        break;
+      case ComputePassTimestampLocation::End:
+        o << "ComputePassTimestampLocation::End";
+        break;
+          default:
+            o << "ComputePassTimestampLocation::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ComputePassTimestampLocation>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, CreatePipelineAsyncStatus value) {
       switch (value) {
       case CreatePipelineAsyncStatus::Success:
@@ -471,6 +485,9 @@ namespace wgpu {
   template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, LoadOp value) {
       switch (value) {
+      case LoadOp::Undefined:
+        o << "LoadOp::Undefined";
+        break;
       case LoadOp::Clear:
         o << "LoadOp::Clear";
         break;
@@ -634,6 +651,20 @@ namespace wgpu {
       return o;
   }
   template <typename CharT, typename Traits>
+  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, RenderPassTimestampLocation value) {
+      switch (value) {
+      case RenderPassTimestampLocation::Beginning:
+        o << "RenderPassTimestampLocation::Beginning";
+        break;
+      case RenderPassTimestampLocation::End:
+        o << "RenderPassTimestampLocation::End";
+        break;
+          default:
+            o << "RenderPassTimestampLocation::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<RenderPassTimestampLocation>::type>(value);
+      }
+      return o;
+  }
+  template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, RequestAdapterStatus value) {
       switch (value) {
       case RequestAdapterStatus::Success:
@@ -694,6 +725,12 @@ namespace wgpu {
       case SType::ShaderModuleWGSLDescriptor:
         o << "SType::ShaderModuleWGSLDescriptor";
         break;
+      case SType::SurfaceDescriptorFromWaylandSurface:
+        o << "SType::SurfaceDescriptorFromWaylandSurface";
+        break;
+      case SType::SurfaceDescriptorFromAndroidNativeWindow:
+        o << "SType::SurfaceDescriptorFromAndroidNativeWindow";
+        break;
       case SType::SurfaceDescriptorFromWindowsCoreWindow:
         o << "SType::SurfaceDescriptorFromWindowsCoreWindow";
         break;
@@ -717,6 +754,12 @@ namespace wgpu {
         break;
       case SType::DawnEncoderInternalUsageDescriptor:
         o << "SType::DawnEncoderInternalUsageDescriptor";
+        break;
+      case SType::DawnInstanceDescriptor:
+        o << "SType::DawnInstanceDescriptor";
+        break;
+      case SType::DawnCacheDeviceDescriptor:
+        o << "SType::DawnCacheDeviceDescriptor";
         break;
           default:
             o << "SType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<SType>::type>(value);
@@ -792,6 +835,9 @@ namespace wgpu {
   template <typename CharT, typename Traits>
   std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, StoreOp value) {
       switch (value) {
+      case StoreOp::Undefined:
+        o << "StoreOp::Undefined";
+        break;
       case StoreOp::Store:
         o << "StoreOp::Store";
         break;

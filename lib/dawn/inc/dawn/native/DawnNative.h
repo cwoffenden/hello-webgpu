@@ -16,8 +16,8 @@
 #define DAWNNATIVE_DAWNNATIVE_H_
 
 #include <dawn/dawn_proc_table.h>
+#include <dawn/native/dawn_native_export.h>
 #include <dawn/webgpu.h>
-#include <dawn_native/dawn_native_export.h>
 
 #include <string>
 #include <vector>
@@ -29,7 +29,7 @@ namespace dawn::platform {
 namespace wgpu {
     struct AdapterProperties;
     struct DeviceDescriptor;
-}
+}  // namespace wgpu
 
 namespace dawn::native {
 
@@ -136,7 +136,7 @@ namespace dawn::native {
     // for this instance.
     class DAWN_NATIVE_EXPORT Instance {
       public:
-        Instance();
+        explicit Instance(const WGPUInstanceDescriptor* desc = nullptr);
         ~Instance();
 
         Instance(const Instance& other) = delete;

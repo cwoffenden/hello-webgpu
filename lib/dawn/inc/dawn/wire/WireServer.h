@@ -17,7 +17,7 @@
 
 #include <memory>
 
-#include "dawn_wire/Wire.h"
+#include "dawn/wire/Wire.h"
 
 struct DawnProcTable;
 

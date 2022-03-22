@@ -3,6 +3,7 @@
 
 #include "dawn/webgpu.h"
 #include "dawn/EnumClassBitmasks.h"
+#include <cmath>
 
 namespace wgpu {
 
@@ -109,6 +110,11 @@ namespace wgpu {
         Info = 0x00000002,
     };
 
+    enum class ComputePassTimestampLocation : uint32_t {
+        Beginning = 0x00000000,
+        End = 0x00000001,
+    };
+
     enum class CreatePipelineAsyncStatus : uint32_t {
         Success = 0x00000000,
         Error = 0x00000001,
@@ -175,8 +181,9 @@ namespace wgpu {
     };
 
     enum class LoadOp : uint32_t {
-        Clear = 0x00000000,
-        Load = 0x00000001,
+        Undefined = 0x00000000,
+        Clear = 0x00000001,
+        Load = 0x00000002,
     };
 
     enum class LoggingType : uint32_t {
@@ -232,6 +239,11 @@ namespace wgpu {
         DeviceLost = 0x00000003,
     };
 
+    enum class RenderPassTimestampLocation : uint32_t {
+        Beginning = 0x00000000,
+        End = 0x00000001,
+    };
+
     enum class RequestAdapterStatus : uint32_t {
         Success = 0x00000000,
         Unavailable = 0x00000001,
@@ -253,14 +265,18 @@ namespace wgpu {
         SurfaceDescriptorFromCanvasHTMLSelector = 0x00000004,
         ShaderModuleSPIRVDescriptor = 0x00000005,
         ShaderModuleWGSLDescriptor = 0x00000006,
-        SurfaceDescriptorFromWindowsCoreWindow = 0x00000008,
-        ExternalTextureBindingEntry = 0x00000009,
-        ExternalTextureBindingLayout = 0x0000000A,
-        SurfaceDescriptorFromWindowsSwapChainPanel = 0x0000000B,
+        SurfaceDescriptorFromWaylandSurface = 0x00000008,
+        SurfaceDescriptorFromAndroidNativeWindow = 0x00000009,
+        SurfaceDescriptorFromWindowsCoreWindow = 0x0000000B,
+        ExternalTextureBindingEntry = 0x0000000C,
+        ExternalTextureBindingLayout = 0x0000000D,
+        SurfaceDescriptorFromWindowsSwapChainPanel = 0x0000000E,
         DawnTextureInternalUsageDescriptor = 0x000003E8,
         PrimitiveDepthClampingState = 0x000003E9,
         DawnTogglesDeviceDescriptor = 0x000003EA,
         DawnEncoderInternalUsageDescriptor = 0x000003EB,
+        DawnInstanceDescriptor = 0x000003EC,
+        DawnCacheDeviceDescriptor = 0x000003ED,
     };
 
     enum class SamplerBindingType : uint32_t {
@@ -287,8 +303,9 @@ namespace wgpu {
     };
 
     enum class StoreOp : uint32_t {
-        Store = 0x00000000,
-        Discard = 0x00000001,
+        Undefined = 0x00000000,
+        Store = 0x00000001,
+        Discard = 0x00000002,
     };
 
     enum class TextureAspect : uint32_t {
@@ -564,10 +581,12 @@ namespace wgpu {
     struct CommandBufferDescriptor;
     struct CommandEncoderDescriptor;
     struct CompilationMessage;
-    struct ComputePassDescriptor;
+    struct ComputePassTimestampWrite;
     struct ConstantEntry;
     struct CopyTextureForBrowserOptions;
+    struct DawnCacheDeviceDescriptor;
     struct DawnEncoderInternalUsageDescriptor;
+    struct DawnInstanceDescriptor;
     struct DawnTextureInternalUsageDescriptor;
     struct DawnTogglesDeviceDescriptor;
     struct Extent3D;
@@ -585,6 +604,7 @@ namespace wgpu {
     struct RenderBundleDescriptor;
     struct RenderBundleEncoderDescriptor;
     struct RenderPassDepthStencilAttachment;
+    struct RenderPassTimestampWrite;
     struct RequestAdapterOptions;
     struct SamplerBindingLayout;
     struct SamplerDescriptor;
@@ -594,8 +614,10 @@ namespace wgpu {
     struct StencilFaceState;
     struct StorageTextureBindingLayout;
     struct SurfaceDescriptor;
+    struct SurfaceDescriptorFromAndroidNativeWindow;
     struct SurfaceDescriptorFromCanvasHTMLSelector;
     struct SurfaceDescriptorFromMetalLayer;
+    struct SurfaceDescriptorFromWaylandSurface;
     struct SurfaceDescriptorFromWindowsCoreWindow;
     struct SurfaceDescriptorFromWindowsHWND;
     struct SurfaceDescriptorFromWindowsSwapChainPanel;
@@ -609,6 +631,7 @@ namespace wgpu {
     struct BindGroupLayoutEntry;
     struct BlendState;
     struct CompilationInfo;
+    struct ComputePassDescriptor;
     struct DepthStencilState;
     struct ImageCopyBuffer;
     struct ImageCopyTexture;
@@ -814,8 +837,9 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
-        void Dispatch(uint32_t x, uint32_t y = 1, uint32_t z = 1) const;
+        void Dispatch(uint32_t workgroupCountX, uint32_t workgroupCountY = 1, uint32_t workgroupCountZ = 1) const;
         void DispatchIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
+        void End() const;
         void EndPass() const;
         void InsertDebugMarker(char const * markerLabel) const;
         void PopDebugGroup() const;
@@ -1006,6 +1030,7 @@ namespace wgpu {
         void DrawIndexed(uint32_t indexCount, uint32_t instanceCount = 1, uint32_t firstIndex = 0, int32_t baseVertex = 0, uint32_t firstInstance = 0) const;
         void DrawIndexedIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
         void DrawIndirect(Buffer const& indirectBuffer, uint64_t indirectOffset) const;
+        void End() const;
         void EndOcclusionQuery() const;
         void EndPass() const;
         void ExecuteBundles(uint32_t bundlesCount, RenderBundle const * bundles) const;
@@ -1207,9 +1232,10 @@ namespace wgpu {
         uint64_t length;
     };
 
-    struct ComputePassDescriptor {
-        ChainedStruct const * nextInChain = nullptr;
-        char const * label = nullptr;
+    struct ComputePassTimestampWrite {
+        QuerySet querySet;
+        uint32_t queryIndex;
+        ComputePassTimestampLocation location;
     };
 
     struct ConstantEntry {
@@ -1229,11 +1255,26 @@ namespace wgpu {
         AlphaMode dstAlphaMode = AlphaMode::Unpremultiplied;
     };
 
+    struct DawnCacheDeviceDescriptor : ChainedStruct {
+        DawnCacheDeviceDescriptor() {
+            sType = SType::DawnCacheDeviceDescriptor;
+        }
+        alignas(ChainedStruct) char const * isolationKey = "";
+    };
+
     struct DawnEncoderInternalUsageDescriptor : ChainedStruct {
         DawnEncoderInternalUsageDescriptor() {
             sType = SType::DawnEncoderInternalUsageDescriptor;
         }
         alignas(ChainedStruct) bool useInternalUsages = false;
+    };
+
+    struct DawnInstanceDescriptor : ChainedStruct {
+        DawnInstanceDescriptor() {
+            sType = SType::DawnInstanceDescriptor;
+        }
+        alignas(ChainedStruct) uint32_t additionalRuntimeSearchPathsCount = 0;
+        const char* const * additionalRuntimeSearchPaths;
     };
 
     struct DawnTextureInternalUsageDescriptor : ChainedStruct {
@@ -1375,14 +1416,22 @@ namespace wgpu {
 
     struct RenderPassDepthStencilAttachment {
         TextureView view;
-        LoadOp depthLoadOp;
-        StoreOp depthStoreOp;
-        float clearDepth;
+        LoadOp depthLoadOp = LoadOp::Undefined;
+        StoreOp depthStoreOp = StoreOp::Undefined;
+        float clearDepth = NAN;
+        float depthClearValue = 0;
         bool depthReadOnly = false;
-        LoadOp stencilLoadOp;
-        StoreOp stencilStoreOp;
+        LoadOp stencilLoadOp = LoadOp::Undefined;
+        StoreOp stencilStoreOp = StoreOp::Undefined;
         uint32_t clearStencil = 0;
+        uint32_t stencilClearValue = 0;
         bool stencilReadOnly = false;
+    };
+
+    struct RenderPassTimestampWrite {
+        QuerySet querySet;
+        uint32_t queryIndex;
+        RenderPassTimestampLocation location;
     };
 
     struct RequestAdapterOptions {
@@ -1451,6 +1500,13 @@ namespace wgpu {
         char const * label = nullptr;
     };
 
+    struct SurfaceDescriptorFromAndroidNativeWindow : ChainedStruct {
+        SurfaceDescriptorFromAndroidNativeWindow() {
+            sType = SType::SurfaceDescriptorFromAndroidNativeWindow;
+        }
+        alignas(ChainedStruct) void * window;
+    };
+
     struct SurfaceDescriptorFromCanvasHTMLSelector : ChainedStruct {
         SurfaceDescriptorFromCanvasHTMLSelector() {
             sType = SType::SurfaceDescriptorFromCanvasHTMLSelector;
@@ -1463,6 +1519,14 @@ namespace wgpu {
             sType = SType::SurfaceDescriptorFromMetalLayer;
         }
         alignas(ChainedStruct) void * layer;
+    };
+
+    struct SurfaceDescriptorFromWaylandSurface : ChainedStruct {
+        SurfaceDescriptorFromWaylandSurface() {
+            sType = SType::SurfaceDescriptorFromWaylandSurface;
+        }
+        alignas(ChainedStruct) void * display;
+        void * surface;
     };
 
     struct SurfaceDescriptorFromWindowsCoreWindow : ChainedStruct {
@@ -1567,6 +1631,13 @@ namespace wgpu {
         CompilationMessage const * messages;
     };
 
+    struct ComputePassDescriptor {
+        ChainedStruct const * nextInChain = nullptr;
+        char const * label = nullptr;
+        uint32_t timestampWriteCount = 0;
+        ComputePassTimestampWrite const * timestampWrites;
+    };
+
     struct DepthStencilState {
         ChainedStruct const * nextInChain = nullptr;
         TextureFormat format;
@@ -1604,11 +1675,12 @@ namespace wgpu {
     };
 
     struct RenderPassColorAttachment {
-        TextureView view;
+        TextureView view = nullptr;
         TextureView resolveTarget = nullptr;
         LoadOp loadOp;
         StoreOp storeOp;
-        Color clearColor;
+        Color clearColor = { NAN, NAN, NAN, NAN };
+        Color clearValue;
     };
 
     struct RequiredLimits {
@@ -1695,6 +1767,8 @@ namespace wgpu {
         RenderPassColorAttachment const * colorAttachments;
         RenderPassDepthStencilAttachment const * depthStencilAttachment = nullptr;
         QuerySet occlusionQuerySet = nullptr;
+        uint32_t timestampWriteCount = 0;
+        RenderPassTimestampWrite const * timestampWrites;
     };
 
     struct VertexState {

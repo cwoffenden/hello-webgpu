@@ -61,6 +61,7 @@ typedef struct DawnProcTable {
 
     WGPUProcComputePassEncoderDispatch computePassEncoderDispatch;
     WGPUProcComputePassEncoderDispatchIndirect computePassEncoderDispatchIndirect;
+    WGPUProcComputePassEncoderEnd computePassEncoderEnd;
     WGPUProcComputePassEncoderEndPass computePassEncoderEndPass;
     WGPUProcComputePassEncoderInsertDebugMarker computePassEncoderInsertDebugMarker;
     WGPUProcComputePassEncoderPopDebugGroup computePassEncoderPopDebugGroup;
@@ -161,6 +162,7 @@ typedef struct DawnProcTable {
     WGPUProcRenderPassEncoderDrawIndexed renderPassEncoderDrawIndexed;
     WGPUProcRenderPassEncoderDrawIndexedIndirect renderPassEncoderDrawIndexedIndirect;
     WGPUProcRenderPassEncoderDrawIndirect renderPassEncoderDrawIndirect;
+    WGPUProcRenderPassEncoderEnd renderPassEncoderEnd;
     WGPUProcRenderPassEncoderEndOcclusionQuery renderPassEncoderEndOcclusionQuery;
     WGPUProcRenderPassEncoderEndPass renderPassEncoderEndPass;
     WGPUProcRenderPassEncoderExecuteBundles renderPassEncoderExecuteBundles;

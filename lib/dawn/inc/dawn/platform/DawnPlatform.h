@@ -15,7 +15,7 @@
 #ifndef DAWNPLATFORM_DAWNPLATFORM_H_
 #define DAWNPLATFORM_DAWNPLATFORM_H_
 
-#include "dawn_platform/dawn_platform_export.h"
+#include "dawn/platform/dawn_platform_export.h"
 
 #include <cstddef>
 #include <cstdint>

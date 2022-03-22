@@ -16,7 +16,7 @@
 #define DAWNWIRE_WIRECLIENT_H_
 
 #include "dawn/dawn_proc_table.h"
-#include "dawn_wire/Wire.h"
+#include "dawn/wire/Wire.h"
 
 #include <memory>
 #include <vector>
