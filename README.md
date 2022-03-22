@@ -1,6 +1,6 @@
 # "Hello, Triangle" WebGPU and Dawn
 
-[![MSVC workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/msbuild.yml) [![Xcode workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/xcode.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/xcode.yml) [![Emscripten workflow](https://github.com/cwoffenden/hello-webgpu/actions/workflows/emscripten.yml/badge.svg)](https://github.com/cwoffenden/hello-webgpu/actions/workflows/emscripten.yml)
+[![MSVC workflow](/../../actions/workflows/msbuild.yml/badge.svg)](/../../actions/workflows/msbuild.yml) [![Xcode workflow](/../../actions/workflows/xcode.yml/badge.svg)](/../../actions/workflows/xcode.yml) [![Emscripten workflow](/../../actions/workflows/emscripten.yml/badge.svg)](/../../actions/workflows/emscripten.yml)
 
 Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emscripten.org) and [Dawn](//dawn.googlesource.com/dawn). Build for Windows using Visual Studio from 2015 onwards. Build for Emscripten using CMake (or on Windows using `build-web.bat`). Build for Mac using the Xcode project (tested with Xcode 11 & 12 and macOS 10.14, 10.15 & 11 beta).
 
