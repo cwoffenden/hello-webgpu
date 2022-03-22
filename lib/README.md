@@ -105,7 +105,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	
 	These should be enough:
 	
-	`ninja -C out\Release dawn_native_shared dawn_platform_shared dawn_proc_shared`
+	`ninja -C out\Release src/dawn/native:shared src/dawn/platform:shared proc_shared`
 
 11. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
