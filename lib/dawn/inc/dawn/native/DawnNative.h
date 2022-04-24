@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNNATIVE_DAWNNATIVE_H_
-#define DAWNNATIVE_DAWNNATIVE_H_
-
-#include <dawn/dawn_proc_table.h>
-#include <dawn/native/dawn_native_export.h>
-#include <dawn/webgpu.h>
+#ifndef INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_
+#define INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_
 
 #include <string>
 #include <vector>
+
+#include "dawn/dawn_proc_table.h"
+#include "dawn/native/dawn_native_export.h"
+#include "dawn/webgpu.h"
 
 namespace dawn::platform {
     class Platform;
@@ -69,6 +69,7 @@ namespace dawn::native {
     class DAWN_NATIVE_EXPORT Adapter {
       public:
         Adapter();
+        // NOLINTNEXTLINE(runtime/explicit)
         Adapter(AdapterBase* impl);
         ~Adapter();
 
@@ -124,7 +125,7 @@ namespace dawn::native {
         const WGPUBackendType backendType;
 
       protected:
-        AdapterDiscoveryOptionsBase(WGPUBackendType type);
+        explicit AdapterDiscoveryOptionsBase(WGPUBackendType type);
     };
 
     enum BackendValidationLevel { Full, Partial, Disabled };
@@ -163,6 +164,7 @@ namespace dawn::native {
         // Enable debug capture on Dawn startup
         void EnableBeginCaptureOnStartup(bool beginCaptureOnStartup);
 
+        // TODO(dawn:1374) Deprecate this once it is passed via the descriptor.
         void SetPlatform(dawn::platform::Platform* platform);
 
         // Returns the underlying WGPUInstance object.
@@ -222,7 +224,7 @@ namespace dawn::native {
         ExternalImageType GetType() const;
 
       protected:
-        ExternalImageDescriptor(ExternalImageType type);
+        explicit ExternalImageDescriptor(ExternalImageType type);
 
       private:
         ExternalImageType mType;
@@ -240,7 +242,7 @@ namespace dawn::native {
         ExternalImageType GetType() const;
 
       protected:
-        ExternalImageExportInfo(ExternalImageType type);
+        explicit ExternalImageExportInfo(ExternalImageType type);
 
       private:
         ExternalImageType mType;
@@ -258,4 +260,4 @@ namespace dawn::native {
 // TODO(dawn:824): Remove once the deprecation period is passed.
 namespace dawn_native = dawn::native;
 
-#endif  // DAWNNATIVE_DAWNNATIVE_H_
+#endif  // INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_

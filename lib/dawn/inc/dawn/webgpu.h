@@ -892,6 +892,11 @@ typedef struct WGPUQuerySetDescriptor {
     uint32_t pipelineStatisticsCount;
 } WGPUQuerySetDescriptor;
 
+typedef struct WGPUQueueDescriptor {
+    WGPUChainedStruct const * nextInChain;
+    char const * label;
+} WGPUQueueDescriptor;
+
 typedef struct WGPURenderBundleDescriptor {
     WGPUChainedStruct const * nextInChain;
     char const * label;
@@ -1176,6 +1181,8 @@ typedef struct WGPUTextureDescriptor {
     WGPUTextureFormat format;
     uint32_t mipLevelCount;
     uint32_t sampleCount;
+    uint32_t viewFormatCount;
+    WGPUTextureFormat const * viewFormats;
 } WGPUTextureDescriptor;
 
 typedef struct WGPUVertexBufferLayout {
@@ -1212,6 +1219,7 @@ typedef struct WGPUDeviceDescriptor {
     uint32_t requiredFeaturesCount;
     WGPUFeatureName const * requiredFeatures;
     WGPURequiredLimits const * requiredLimits;
+    WGPUQueueDescriptor defaultQueue;
 } WGPUDeviceDescriptor;
 
 typedef struct WGPUDeviceProperties {
@@ -1402,6 +1410,7 @@ typedef void (*WGPUProcDeviceLoseForTesting)(WGPUDevice device);
 typedef bool (*WGPUProcDevicePopErrorScope)(WGPUDevice device, WGPUErrorCallback callback, void * userdata);
 typedef void (*WGPUProcDevicePushErrorScope)(WGPUDevice device, WGPUErrorFilter filter);
 typedef void (*WGPUProcDeviceSetDeviceLostCallback)(WGPUDevice device, WGPUDeviceLostCallback callback, void * userdata);
+typedef void (*WGPUProcDeviceSetLabel)(WGPUDevice device, char const * label);
 typedef void (*WGPUProcDeviceSetLoggingCallback)(WGPUDevice device, WGPULoggingCallback callback, void * userdata);
 typedef void (*WGPUProcDeviceSetUncapturedErrorCallback)(WGPUDevice device, WGPUErrorCallback callback, void * userdata);
 typedef void (*WGPUProcDeviceTick)(WGPUDevice device);
@@ -1434,6 +1443,7 @@ typedef void (*WGPUProcQuerySetRelease)(WGPUQuerySet querySet);
 // Procs of Queue
 typedef void (*WGPUProcQueueCopyTextureForBrowser)(WGPUQueue queue, WGPUImageCopyTexture const * source, WGPUImageCopyTexture const * destination, WGPUExtent3D const * copySize, WGPUCopyTextureForBrowserOptions const * options);
 typedef void (*WGPUProcQueueOnSubmittedWorkDone)(WGPUQueue queue, uint64_t signalValue, WGPUQueueWorkDoneCallback callback, void * userdata);
+typedef void (*WGPUProcQueueSetLabel)(WGPUQueue queue, char const * label);
 typedef void (*WGPUProcQueueSubmit)(WGPUQueue queue, uint32_t commandCount, WGPUCommandBuffer const * commands);
 typedef void (*WGPUProcQueueWriteBuffer)(WGPUQueue queue, WGPUBuffer buffer, uint64_t bufferOffset, void const * data, size_t size);
 typedef void (*WGPUProcQueueWriteTexture)(WGPUQueue queue, WGPUImageCopyTexture const * destination, void const * data, size_t dataSize, WGPUTextureDataLayout const * dataLayout, WGPUExtent3D const * writeSize);
@@ -1639,6 +1649,7 @@ WGPU_EXPORT void wgpuDeviceLoseForTesting(WGPUDevice device);
 WGPU_EXPORT bool wgpuDevicePopErrorScope(WGPUDevice device, WGPUErrorCallback callback, void * userdata);
 WGPU_EXPORT void wgpuDevicePushErrorScope(WGPUDevice device, WGPUErrorFilter filter);
 WGPU_EXPORT void wgpuDeviceSetDeviceLostCallback(WGPUDevice device, WGPUDeviceLostCallback callback, void * userdata);
+WGPU_EXPORT void wgpuDeviceSetLabel(WGPUDevice device, char const * label);
 WGPU_EXPORT void wgpuDeviceSetLoggingCallback(WGPUDevice device, WGPULoggingCallback callback, void * userdata);
 WGPU_EXPORT void wgpuDeviceSetUncapturedErrorCallback(WGPUDevice device, WGPUErrorCallback callback, void * userdata);
 WGPU_EXPORT void wgpuDeviceTick(WGPUDevice device);
@@ -1671,6 +1682,7 @@ WGPU_EXPORT void wgpuQuerySetRelease(WGPUQuerySet querySet);
 // Methods of Queue
 WGPU_EXPORT void wgpuQueueCopyTextureForBrowser(WGPUQueue queue, WGPUImageCopyTexture const * source, WGPUImageCopyTexture const * destination, WGPUExtent3D const * copySize, WGPUCopyTextureForBrowserOptions const * options);
 WGPU_EXPORT void wgpuQueueOnSubmittedWorkDone(WGPUQueue queue, uint64_t signalValue, WGPUQueueWorkDoneCallback callback, void * userdata);
+WGPU_EXPORT void wgpuQueueSetLabel(WGPUQueue queue, char const * label);
 WGPU_EXPORT void wgpuQueueSubmit(WGPUQueue queue, uint32_t commandCount, WGPUCommandBuffer const * commands);
 WGPU_EXPORT void wgpuQueueWriteBuffer(WGPUQueue queue, WGPUBuffer buffer, uint64_t bufferOffset, void const * data, size_t size);
 WGPU_EXPORT void wgpuQueueWriteTexture(WGPUQueue queue, WGPUImageCopyTexture const * destination, void const * data, size_t dataSize, WGPUTextureDataLayout const * dataLayout, WGPUExtent3D const * writeSize);

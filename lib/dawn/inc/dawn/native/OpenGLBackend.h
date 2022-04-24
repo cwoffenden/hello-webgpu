@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNNATIVE_OPENGLBACKEND_H_
-#define DAWNNATIVE_OPENGLBACKEND_H_
+#ifndef INCLUDE_DAWN_NATIVE_OPENGLBACKEND_H_
+#define INCLUDE_DAWN_NATIVE_OPENGLBACKEND_H_
 
 typedef void* EGLImage;
 
-#include <dawn/dawn_wsi.h>
-#include <dawn/native/DawnNative.h>
+#include "dawn/dawn_wsi.h"
+#include "dawn/native/DawnNative.h"
 
 namespace dawn::native::opengl {
 
@@ -52,4 +52,4 @@ namespace dawn::native::opengl {
 
 }  // namespace dawn::native::opengl
 
-#endif  // DAWNNATIVE_OPENGLBACKEND_H_
+#endif  // INCLUDE_DAWN_NATIVE_OPENGLBACKEND_H_

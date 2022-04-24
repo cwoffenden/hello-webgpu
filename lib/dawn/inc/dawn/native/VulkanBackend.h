@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNNATIVE_VULKANBACKEND_H_
-#define DAWNNATIVE_VULKANBACKEND_H_
-
-#include <dawn/dawn_wsi.h>
-#include <dawn/native/DawnNative.h>
+#ifndef INCLUDE_DAWN_NATIVE_VULKANBACKEND_H_
+#define INCLUDE_DAWN_NATIVE_VULKANBACKEND_H_
 
 #include <vulkan/vulkan.h>
 
 #include <vector>
+
+#include "dawn/dawn_wsi.h"
+#include "dawn/native/DawnNative.h"
 
 namespace dawn::native::vulkan {
 
@@ -137,4 +137,4 @@ namespace dawn::native::vulkan {
 
 }  // namespace dawn::native::vulkan
 
-#endif  // DAWNNATIVE_VULKANBACKEND_H_
+#endif  // INCLUDE_DAWN_NATIVE_VULKANBACKEND_H_

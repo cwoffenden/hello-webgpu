@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNWIRE_WIRESERVER_H_
-#define DAWNWIRE_WIRESERVER_H_
+#ifndef INCLUDE_DAWN_WIRE_WIRESERVER_H_
+#define INCLUDE_DAWN_WIRE_WIRESERVER_H_
 
 #include <memory>
 
@@ -36,11 +36,10 @@ namespace dawn::wire {
 
     class DAWN_WIRE_EXPORT WireServer : public CommandHandler {
       public:
-        WireServer(const WireServerDescriptor& descriptor);
+        explicit WireServer(const WireServerDescriptor& descriptor);
         ~WireServer() override;
 
-        const volatile char* HandleCommands(const volatile char* commands,
-                                            size_t size) override final;
+        const volatile char* HandleCommands(const volatile char* commands, size_t size) final;
 
         bool InjectTexture(WGPUTexture texture,
                            uint32_t id,
@@ -147,4 +146,4 @@ namespace dawn::wire {
 
 }  // namespace dawn::wire
 
-#endif  // DAWNWIRE_WIRESERVER_H_
+#endif  // INCLUDE_DAWN_WIRE_WIRESERVER_H_

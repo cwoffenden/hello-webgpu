@@ -12,11 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNNATIVE_D3D12BACKEND_H_
-#define DAWNNATIVE_D3D12BACKEND_H_
-
-#include <dawn/dawn_wsi.h>
-#include <dawn/native/DawnNative.h>
+#ifndef INCLUDE_DAWN_NATIVE_D3D12BACKEND_H_
+#define INCLUDE_DAWN_NATIVE_D3D12BACKEND_H_
 
 #include <DXGI1_4.h>
 #include <d3d12.h>
@@ -24,6 +21,9 @@
 #include <wrl/client.h>
 
 #include <memory>
+
+#include "dawn/dawn_wsi.h"
+#include "dawn/native/DawnNative.h"
 
 struct ID3D12Device;
 struct ID3D12Resource;
@@ -101,11 +101,11 @@ namespace dawn::native::d3d12 {
 
     struct DAWN_NATIVE_EXPORT AdapterDiscoveryOptions : public AdapterDiscoveryOptionsBase {
         AdapterDiscoveryOptions();
-        AdapterDiscoveryOptions(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
+        explicit AdapterDiscoveryOptions(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
 
         Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
     };
 
 }  // namespace dawn::native::d3d12
 
-#endif  // DAWNNATIVE_D3D12BACKEND_H_
+#endif  // INCLUDE_DAWN_NATIVE_D3D12BACKEND_H_

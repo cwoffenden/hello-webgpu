@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNNATIVE_NULLBACKEND_H_
-#define DAWNNATIVE_NULLBACKEND_H_
+#ifndef INCLUDE_DAWN_NATIVE_NULLBACKEND_H_
+#define INCLUDE_DAWN_NATIVE_NULLBACKEND_H_
 
-#include <dawn/dawn_wsi.h>
-#include <dawn/native/DawnNative.h>
+#include "dawn/dawn_wsi.h"
+#include "dawn/native/DawnNative.h"
 
 namespace dawn::native::null {
     DAWN_NATIVE_EXPORT DawnSwapChainImplementation CreateNativeSwapChainImpl();
 }  // namespace dawn::native::null
 
-#endif  // DAWNNATIVE_NULLBACKEND_H_
+#endif  // INCLUDE_DAWN_NATIVE_NULLBACKEND_H_

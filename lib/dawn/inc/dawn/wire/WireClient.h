@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef DAWNWIRE_WIRECLIENT_H_
-#define DAWNWIRE_WIRECLIENT_H_
-
-#include "dawn/dawn_proc_table.h"
-#include "dawn/wire/Wire.h"
+#ifndef INCLUDE_DAWN_WIRE_WIRECLIENT_H_
+#define INCLUDE_DAWN_WIRE_WIRECLIENT_H_
 
 #include <memory>
 #include <vector>
+
+#include "dawn/dawn_proc_table.h"
+#include "dawn/wire/Wire.h"
 
 namespace dawn::wire {
 
@@ -65,11 +65,10 @@ namespace dawn::wire {
 
     class DAWN_WIRE_EXPORT WireClient : public CommandHandler {
       public:
-        WireClient(const WireClientDescriptor& descriptor);
+        explicit WireClient(const WireClientDescriptor& descriptor);
         ~WireClient() override;
 
-        const volatile char* HandleCommands(const volatile char* commands,
-                                            size_t size) override final;
+        const volatile char* HandleCommands(const volatile char* commands, size_t size) final;
 
         ReservedTexture ReserveTexture(WGPUDevice device);
         ReservedSwapChain ReserveSwapChain(WGPUDevice device);
@@ -180,4 +179,4 @@ namespace dawn::wire {
     }  // namespace client
 }  // namespace dawn::wire
 
-#endif  // DAWNWIRE_WIRECLIENT_H_
+#endif  // INCLUDE_DAWN_WIRE_WIRECLIENT_H_

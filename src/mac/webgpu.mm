@@ -7,8 +7,8 @@
 
 #include <dawn/dawn_proc.h>
 #include <dawn/webgpu_cpp.h>
-#include <dawn_native/MetalBackend.h>
-#include <dawn_native/NullBackend.h>
+#include <dawn/native/MetalBackend.h>
+#include <dawn/native/NullBackend.h>
 
 #import <AppKit/NSWindow.h>
 #import <QuartzCore/QuartzCore.h>

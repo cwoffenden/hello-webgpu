@@ -601,6 +601,7 @@ namespace wgpu {
     struct PrimitiveDepthClampingState;
     struct PrimitiveState;
     struct QuerySetDescriptor;
+    struct QueueDescriptor;
     struct RenderBundleDescriptor;
     struct RenderBundleEncoderDescriptor;
     struct RenderPassDepthStencilAttachment;
@@ -901,6 +902,7 @@ namespace wgpu {
         bool PopErrorScope(ErrorCallback callback, void * userdata) const;
         void PushErrorScope(ErrorFilter filter) const;
         void SetDeviceLostCallback(DeviceLostCallback callback, void * userdata) const;
+        void SetLabel(char const * label) const;
         void SetLoggingCallback(LoggingCallback callback, void * userdata) const;
         void SetUncapturedErrorCallback(ErrorCallback callback, void * userdata) const;
         void Tick() const;
@@ -973,6 +975,7 @@ namespace wgpu {
 
         void CopyTextureForBrowser(ImageCopyTexture const * source, ImageCopyTexture const * destination, Extent3D const * copySize, CopyTextureForBrowserOptions const * options) const;
         void OnSubmittedWorkDone(uint64_t signalValue, QueueWorkDoneCallback callback, void * userdata) const;
+        void SetLabel(char const * label) const;
         void Submit(uint32_t commandCount, CommandBuffer const * commands) const;
         void WriteBuffer(Buffer const& buffer, uint64_t bufferOffset, void const * data, size_t size) const;
         void WriteTexture(ImageCopyTexture const * destination, void const * data, size_t dataSize, TextureDataLayout const * dataLayout, Extent3D const * writeSize) const;
@@ -1398,6 +1401,11 @@ namespace wgpu {
         uint32_t pipelineStatisticsCount = 0;
     };
 
+    struct QueueDescriptor {
+        ChainedStruct const * nextInChain = nullptr;
+        char const * label = nullptr;
+    };
+
     struct RenderBundleDescriptor {
         ChainedStruct const * nextInChain = nullptr;
         char const * label = nullptr;
@@ -1702,6 +1710,8 @@ namespace wgpu {
         TextureFormat format;
         uint32_t mipLevelCount = 1;
         uint32_t sampleCount = 1;
+        uint32_t viewFormatCount = 0;
+        TextureFormat const * viewFormats;
     };
 
     struct VertexBufferLayout {
@@ -1738,6 +1748,7 @@ namespace wgpu {
         uint32_t requiredFeaturesCount = 0;
         FeatureName const * requiredFeatures = nullptr;
         RequiredLimits const * requiredLimits = nullptr;
+        QueueDescriptor defaultQueue;
     };
 
     struct DeviceProperties {
