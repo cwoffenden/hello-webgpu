@@ -340,10 +340,18 @@ static bool redraw() {
 	colorDesc.view    = backBufView;
 	colorDesc.loadOp  = WGPULoadOp_Clear;
 	colorDesc.storeOp = WGPUStoreOp_Store;
+#ifdef __EMSCRIPTEN__
+	// Dawn has both clearValue/clearColor but only Color works; Emscripten only has Value
+	colorDesc.clearValue.r = 0.3f;
+	colorDesc.clearValue.g = 0.3f;
+	colorDesc.clearValue.b = 0.3f;
+	colorDesc.clearValue.a = 1.0f;
+#else
 	colorDesc.clearColor.r = 0.3f;
 	colorDesc.clearColor.g = 0.3f;
 	colorDesc.clearColor.b = 0.3f;
 	colorDesc.clearColor.a = 1.0f;
+#endif
 
 	WGPURenderPassDescriptor renderPass = {};
 	renderPass.colorAttachmentCount = 1;
