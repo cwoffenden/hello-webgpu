@@ -57,6 +57,9 @@ namespace wgpu {
       case AlphaMode::Unpremultiplied:
         o << "AlphaMode::Unpremultiplied";
         break;
+      case AlphaMode::Opaque:
+        o << "AlphaMode::Opaque";
+        break;
           default:
             o << "AlphaMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<AlphaMode>::type>(value);
       }
@@ -359,6 +362,9 @@ namespace wgpu {
       case ErrorFilter::OutOfMemory:
         o << "ErrorFilter::OutOfMemory";
         break;
+      case ErrorFilter::Internal:
+        o << "ErrorFilter::Internal";
+        break;
           default:
             o << "ErrorFilter::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<ErrorFilter>::type>(value);
       }
@@ -375,6 +381,9 @@ namespace wgpu {
         break;
       case ErrorType::OutOfMemory:
         o << "ErrorType::OutOfMemory";
+        break;
+      case ErrorType::Internal:
+        o << "ErrorType::Internal";
         break;
       case ErrorType::Unknown:
         o << "ErrorType::Unknown";
@@ -393,8 +402,8 @@ namespace wgpu {
       case FeatureName::Undefined:
         o << "FeatureName::Undefined";
         break;
-      case FeatureName::Depth24UnormStencil8:
-        o << "FeatureName::Depth24UnormStencil8";
+      case FeatureName::DepthClipControl:
+        o << "FeatureName::DepthClipControl";
         break;
       case FeatureName::Depth32FloatStencil8:
         o << "FeatureName::Depth32FloatStencil8";
@@ -417,8 +426,8 @@ namespace wgpu {
       case FeatureName::IndirectFirstInstance:
         o << "FeatureName::IndirectFirstInstance";
         break;
-      case FeatureName::DepthClamping:
-        o << "FeatureName::DepthClamping";
+      case FeatureName::ShaderF16:
+        o << "FeatureName::ShaderF16";
         break;
       case FeatureName::DawnShaderFloat16:
         o << "FeatureName::DawnShaderFloat16";
@@ -431,6 +440,9 @@ namespace wgpu {
         break;
       case FeatureName::DawnNative:
         o << "FeatureName::DawnNative";
+        break;
+      case FeatureName::ChromiumExperimentalDp4a:
+        o << "FeatureName::ChromiumExperimentalDp4a";
         break;
           default:
             o << "FeatureName::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<FeatureName>::type>(value);
@@ -556,20 +568,6 @@ namespace wgpu {
         break;
           default:
             o << "PowerPreference::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PowerPreference>::type>(value);
-      }
-      return o;
-  }
-  template <typename CharT, typename Traits>
-  std::basic_ostream<CharT, Traits>& operator<<(std::basic_ostream<CharT, Traits>& o, PredefinedColorSpace value) {
-      switch (value) {
-      case PredefinedColorSpace::Undefined:
-        o << "PredefinedColorSpace::Undefined";
-        break;
-      case PredefinedColorSpace::Srgb:
-        o << "PredefinedColorSpace::Srgb";
-        break;
-          default:
-            o << "PredefinedColorSpace::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<PredefinedColorSpace>::type>(value);
       }
       return o;
   }
@@ -725,6 +723,9 @@ namespace wgpu {
       case SType::ShaderModuleWGSLDescriptor:
         o << "SType::ShaderModuleWGSLDescriptor";
         break;
+      case SType::PrimitiveDepthClipControl:
+        o << "SType::PrimitiveDepthClipControl";
+        break;
       case SType::SurfaceDescriptorFromWaylandSurface:
         o << "SType::SurfaceDescriptorFromWaylandSurface";
         break;
@@ -743,11 +744,11 @@ namespace wgpu {
       case SType::SurfaceDescriptorFromWindowsSwapChainPanel:
         o << "SType::SurfaceDescriptorFromWindowsSwapChainPanel";
         break;
+      case SType::RenderPassDescriptorMaxDrawCount:
+        o << "SType::RenderPassDescriptorMaxDrawCount";
+        break;
       case SType::DawnTextureInternalUsageDescriptor:
         o << "SType::DawnTextureInternalUsageDescriptor";
-        break;
-      case SType::PrimitiveDepthClampingState:
-        o << "SType::PrimitiveDepthClampingState";
         break;
       case SType::DawnTogglesDeviceDescriptor:
         o << "SType::DawnTogglesDeviceDescriptor";
@@ -1034,9 +1035,6 @@ namespace wgpu {
         break;
       case TextureFormat::Depth24PlusStencil8:
         o << "TextureFormat::Depth24PlusStencil8";
-        break;
-      case TextureFormat::Depth24UnormStencil8:
-        o << "TextureFormat::Depth24UnormStencil8";
         break;
       case TextureFormat::Depth32Float:
         o << "TextureFormat::Depth32Float";
@@ -1372,6 +1370,9 @@ namespace wgpu {
         break;
       case VertexStepMode::Instance:
         o << "VertexStepMode::Instance";
+        break;
+      case VertexStepMode::VertexBufferNotUsed:
+        o << "VertexStepMode::VertexBufferNotUsed";
         break;
           default:
             o << "VertexStepMode::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<VertexStepMode>::type>(value);

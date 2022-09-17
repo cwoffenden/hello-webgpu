@@ -29,6 +29,8 @@ typedef struct DawnProcTable {
     WGPUProcBufferDestroy bufferDestroy;
     WGPUProcBufferGetConstMappedRange bufferGetConstMappedRange;
     WGPUProcBufferGetMappedRange bufferGetMappedRange;
+    WGPUProcBufferGetSize bufferGetSize;
+    WGPUProcBufferGetUsage bufferGetUsage;
     WGPUProcBufferMapAsync bufferMapAsync;
     WGPUProcBufferSetLabel bufferSetLabel;
     WGPUProcBufferUnmap bufferUnmap;
@@ -61,6 +63,8 @@ typedef struct DawnProcTable {
 
     WGPUProcComputePassEncoderDispatch computePassEncoderDispatch;
     WGPUProcComputePassEncoderDispatchIndirect computePassEncoderDispatchIndirect;
+    WGPUProcComputePassEncoderDispatchWorkgroups computePassEncoderDispatchWorkgroups;
+    WGPUProcComputePassEncoderDispatchWorkgroupsIndirect computePassEncoderDispatchWorkgroupsIndirect;
     WGPUProcComputePassEncoderEnd computePassEncoderEnd;
     WGPUProcComputePassEncoderEndPass computePassEncoderEndPass;
     WGPUProcComputePassEncoderInsertDebugMarker computePassEncoderInsertDebugMarker;
@@ -85,6 +89,8 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateComputePipeline deviceCreateComputePipeline;
     WGPUProcDeviceCreateComputePipelineAsync deviceCreateComputePipelineAsync;
     WGPUProcDeviceCreateErrorBuffer deviceCreateErrorBuffer;
+    WGPUProcDeviceCreateErrorExternalTexture deviceCreateErrorExternalTexture;
+    WGPUProcDeviceCreateErrorTexture deviceCreateErrorTexture;
     WGPUProcDeviceCreateExternalTexture deviceCreateExternalTexture;
     WGPUProcDeviceCreatePipelineLayout deviceCreatePipelineLayout;
     WGPUProcDeviceCreateQuerySet deviceCreateQuerySet;
@@ -97,11 +103,12 @@ typedef struct DawnProcTable {
     WGPUProcDeviceCreateTexture deviceCreateTexture;
     WGPUProcDeviceDestroy deviceDestroy;
     WGPUProcDeviceEnumerateFeatures deviceEnumerateFeatures;
+    WGPUProcDeviceForceLoss deviceForceLoss;
+    WGPUProcDeviceGetAdapter deviceGetAdapter;
     WGPUProcDeviceGetLimits deviceGetLimits;
     WGPUProcDeviceGetQueue deviceGetQueue;
     WGPUProcDeviceHasFeature deviceHasFeature;
     WGPUProcDeviceInjectError deviceInjectError;
-    WGPUProcDeviceLoseForTesting deviceLoseForTesting;
     WGPUProcDevicePopErrorScope devicePopErrorScope;
     WGPUProcDevicePushErrorScope devicePushErrorScope;
     WGPUProcDeviceSetDeviceLostCallback deviceSetDeviceLostCallback;
@@ -127,6 +134,8 @@ typedef struct DawnProcTable {
     WGPUProcPipelineLayoutRelease pipelineLayoutRelease;
 
     WGPUProcQuerySetDestroy querySetDestroy;
+    WGPUProcQuerySetGetCount querySetGetCount;
+    WGPUProcQuerySetGetType querySetGetType;
     WGPUProcQuerySetSetLabel querySetSetLabel;
     WGPUProcQuerySetReference querySetReference;
     WGPUProcQuerySetRelease querySetRelease;
@@ -209,6 +218,14 @@ typedef struct DawnProcTable {
 
     WGPUProcTextureCreateView textureCreateView;
     WGPUProcTextureDestroy textureDestroy;
+    WGPUProcTextureGetDepthOrArrayLayers textureGetDepthOrArrayLayers;
+    WGPUProcTextureGetDimension textureGetDimension;
+    WGPUProcTextureGetFormat textureGetFormat;
+    WGPUProcTextureGetHeight textureGetHeight;
+    WGPUProcTextureGetMipLevelCount textureGetMipLevelCount;
+    WGPUProcTextureGetSampleCount textureGetSampleCount;
+    WGPUProcTextureGetUsage textureGetUsage;
+    WGPUProcTextureGetWidth textureGetWidth;
     WGPUProcTextureSetLabel textureSetLabel;
     WGPUProcTextureReference textureReference;
     WGPUProcTextureRelease textureRelease;

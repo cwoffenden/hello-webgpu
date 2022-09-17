@@ -21,6 +21,7 @@
 #include <wrl/client.h>
 
 #include <memory>
+#include <vector>
 
 #include "dawn/dawn_wsi.h"
 #include "dawn/native/DawnNative.h"
@@ -30,81 +31,107 @@ struct ID3D12Resource;
 
 namespace dawn::native::d3d12 {
 
-    class D3D11on12ResourceCache;
+class D3D11on12ResourceCache;
+class Device;
+class ExternalImageDXGIImpl;
 
-    DAWN_NATIVE_EXPORT Microsoft::WRL::ComPtr<ID3D12Device> GetD3D12Device(WGPUDevice device);
-    DAWN_NATIVE_EXPORT DawnSwapChainImplementation CreateNativeSwapChainImpl(WGPUDevice device,
-                                                                             HWND window);
-    DAWN_NATIVE_EXPORT WGPUTextureFormat
-    GetNativeSwapChainPreferredFormat(const DawnSwapChainImplementation* swapChain);
+DAWN_NATIVE_EXPORT Microsoft::WRL::ComPtr<ID3D12Device> GetD3D12Device(WGPUDevice device);
+DAWN_NATIVE_EXPORT DawnSwapChainImplementation CreateNativeSwapChainImpl(WGPUDevice device,
+                                                                         HWND window);
+DAWN_NATIVE_EXPORT WGPUTextureFormat
+GetNativeSwapChainPreferredFormat(const DawnSwapChainImplementation* swapChain);
 
-    enum MemorySegment {
-        Local,
-        NonLocal,
-    };
+enum MemorySegment {
+    Local,
+    NonLocal,
+};
 
-    DAWN_NATIVE_EXPORT uint64_t SetExternalMemoryReservation(WGPUDevice device,
-                                                             uint64_t requestedReservationSize,
-                                                             MemorySegment memorySegment);
+DAWN_NATIVE_EXPORT uint64_t SetExternalMemoryReservation(WGPUDevice device,
+                                                         uint64_t requestedReservationSize,
+                                                         MemorySegment memorySegment);
 
-    struct DAWN_NATIVE_EXPORT ExternalImageDescriptorDXGISharedHandle : ExternalImageDescriptor {
-      public:
-        ExternalImageDescriptorDXGISharedHandle();
+struct DAWN_NATIVE_EXPORT ExternalImageDescriptorDXGISharedHandle : ExternalImageDescriptor {
+  public:
+    ExternalImageDescriptorDXGISharedHandle();
 
-        // Note: SharedHandle must be a handle to a texture object.
-        HANDLE sharedHandle;
-    };
+    // Note: SharedHandle must be a handle to a texture object.
+    HANDLE sharedHandle = nullptr;
 
-    // Keyed mutex acquire/release uses a fixed key of 0 to match Chromium behavior.
-    constexpr UINT64 kDXGIKeyedMutexAcquireReleaseKey = 0;
+    // Whether fence synchronization should be used instead of texture's keyed mutex.
+    bool useFenceSynchronization = false;
+};
 
-    struct DAWN_NATIVE_EXPORT ExternalImageAccessDescriptorDXGIKeyedMutex
-        : ExternalImageAccessDescriptor {
-      public:
-        // TODO(chromium:1241533): Remove deprecated keyed mutex params after removing associated
-        // code from Chromium - we use a fixed key of 0 for acquire and release everywhere now.
-        uint64_t acquireMutexKey;
-        uint64_t releaseMutexKey;
-        bool isSwapChainTexture = false;
-    };
+// Keyed mutex acquire/release uses a fixed key of 0 to match Chromium behavior.
+constexpr UINT64 kDXGIKeyedMutexAcquireReleaseKey = 0;
 
-    class DAWN_NATIVE_EXPORT ExternalImageDXGI {
-      public:
-        ~ExternalImageDXGI();
+struct DAWN_NATIVE_EXPORT ExternalImageDXGIFenceDescriptor {
+    // Shared handle for the fence. This never passes ownership to the callee (when used as an input
+    // parameter) or to the caller (when used as a return value or output parameter).
+    HANDLE fenceHandle = nullptr;
 
-        // Note: SharedHandle must be a handle to a texture object.
-        static std::unique_ptr<ExternalImageDXGI> Create(
-            WGPUDevice device,
-            const ExternalImageDescriptorDXGISharedHandle* descriptor);
+    // The value that was previously signaled on this fence and should be waited on.
+    uint64_t fenceValue = 0;
+};
 
-        WGPUTexture ProduceTexture(WGPUDevice device,
-                                   const ExternalImageAccessDescriptorDXGIKeyedMutex* descriptor);
+struct DAWN_NATIVE_EXPORT ExternalImageDXGIBeginAccessDescriptor {
+    bool isInitialized = false;  // Whether the texture is initialized on import
+    WGPUTextureUsageFlags usage = WGPUTextureUsage_None;
 
-      private:
-        ExternalImageDXGI(Microsoft::WRL::ComPtr<ID3D12Resource> d3d12Resource,
-                          const WGPUTextureDescriptor* descriptor);
+    // A list of fences to wait on before accessing the texture.
+    std::vector<ExternalImageDXGIFenceDescriptor> waitFences;
 
-        Microsoft::WRL::ComPtr<ID3D12Resource> mD3D12Resource;
+    // Whether the texture is for a WebGPU swap chain.
+    bool isSwapChainTexture = false;
+};
 
-        // Contents of WGPUTextureDescriptor are stored individually since the descriptor
-        // could outlive this image.
-        WGPUTextureUsageFlags mUsage;
-        WGPUTextureUsageFlags mUsageInternal = WGPUTextureUsage_None;
-        WGPUTextureDimension mDimension;
-        WGPUExtent3D mSize;
-        WGPUTextureFormat mFormat;
-        uint32_t mMipLevelCount;
-        uint32_t mSampleCount;
+// TODO(dawn:576): Remove after changing Chromium code to use the new struct name.
+struct DAWN_NATIVE_EXPORT ExternalImageAccessDescriptorDXGIKeyedMutex
+    : ExternalImageDXGIBeginAccessDescriptor {
+  public:
+    // TODO(chromium:1241533): Remove deprecated keyed mutex params after removing associated
+    // code from Chromium - we use a fixed key of 0 for acquire and release everywhere now.
+    uint64_t acquireMutexKey;
+    uint64_t releaseMutexKey;
+};
 
-        std::unique_ptr<D3D11on12ResourceCache> mD3D11on12ResourceCache;
-    };
+class DAWN_NATIVE_EXPORT ExternalImageDXGI {
+  public:
+    ~ExternalImageDXGI();
 
-    struct DAWN_NATIVE_EXPORT AdapterDiscoveryOptions : public AdapterDiscoveryOptionsBase {
-        AdapterDiscoveryOptions();
-        explicit AdapterDiscoveryOptions(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
+    static std::unique_ptr<ExternalImageDXGI> Create(
+        WGPUDevice device,
+        const ExternalImageDescriptorDXGISharedHandle* descriptor);
 
-        Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
-    };
+    // Returns true if the external image resources are still valid, otherwise ProduceTexture() is
+    // guaranteed to fail e.g. after device destruction.
+    bool IsValid() const;
+
+    // TODO(sunnyps): |device| is ignored - remove after Chromium migrates to BeginAccess().
+    WGPUTexture ProduceTexture(WGPUDevice device,
+                               const ExternalImageDXGIBeginAccessDescriptor* descriptor);
+
+    // Creates WGPUTexture wrapping the DXGI shared handle. The provided wait fences or the
+    // texture's keyed mutex will be synchronized before using the texture in any command lists.
+    // Empty fences (nullptr handle) are ignored for convenience (EndAccess can return such fences).
+    WGPUTexture BeginAccess(const ExternalImageDXGIBeginAccessDescriptor* descriptor);
+
+    // Returns the signalFence that the client must wait on for correct synchronization. Can return
+    // an empty fence (nullptr handle) if the texture wasn't accessed by Dawn.
+    // Note that merely calling Destroy() on the WGPUTexture does not ensure synchronization.
+    void EndAccess(WGPUTexture texture, ExternalImageDXGIFenceDescriptor* signalFence);
+
+  private:
+    explicit ExternalImageDXGI(std::unique_ptr<ExternalImageDXGIImpl> impl);
+
+    std::unique_ptr<ExternalImageDXGIImpl> mImpl;
+};
+
+struct DAWN_NATIVE_EXPORT AdapterDiscoveryOptions : public AdapterDiscoveryOptionsBase {
+    AdapterDiscoveryOptions();
+    explicit AdapterDiscoveryOptions(Microsoft::WRL::ComPtr<IDXGIAdapter> adapter);
+
+    Microsoft::WRL::ComPtr<IDXGIAdapter> dxgiAdapter;
+};
 
 }  // namespace dawn::native::d3d12
 
