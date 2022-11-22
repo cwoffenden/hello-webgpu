@@ -167,11 +167,13 @@ namespace wgpu {
         TextureCompressionASTC = 0x00000007,
         IndirectFirstInstance = 0x00000008,
         ShaderF16 = 0x00000009,
+        RG11B10UfloatRenderable = 0x0000000A,
         DawnShaderFloat16 = 0x000003E9,
         DawnInternalUsages = 0x000003EA,
         DawnMultiPlanarFormats = 0x000003EB,
         DawnNative = 0x000003EC,
         ChromiumExperimentalDp4a = 0x000003ED,
+        TimestampQueryInsidePasses = 0x000003EE,
     };
 
     enum class FilterMode : uint32_t {
@@ -283,6 +285,7 @@ namespace wgpu {
         DawnEncoderInternalUsageDescriptor = 0x000003EB,
         DawnInstanceDescriptor = 0x000003EC,
         DawnCacheDeviceDescriptor = 0x000003ED,
+        DawnAdapterPropertiesPowerPreference = 0x000003EE,
     };
 
     enum class SamplerBindingType : uint32_t {
@@ -590,18 +593,20 @@ namespace wgpu {
     struct ComputePassTimestampWrite;
     struct ConstantEntry;
     struct CopyTextureForBrowserOptions;
+    struct DawnAdapterPropertiesPowerPreference;
     struct DawnCacheDeviceDescriptor;
     struct DawnEncoderInternalUsageDescriptor;
     struct DawnInstanceDescriptor;
     struct DawnTextureInternalUsageDescriptor;
     struct DawnTogglesDeviceDescriptor;
+    struct Extent2D;
     struct Extent3D;
     struct ExternalTextureBindingEntry;
     struct ExternalTextureBindingLayout;
-    struct ExternalTextureDescriptor;
     struct InstanceDescriptor;
     struct Limits;
     struct MultisampleState;
+    struct Origin2D;
     struct Origin3D;
     struct PipelineLayoutDescriptor;
     struct PrimitiveDepthClipControl;
@@ -641,7 +646,9 @@ namespace wgpu {
     struct CompilationInfo;
     struct ComputePassDescriptor;
     struct DepthStencilState;
+    struct ExternalTextureDescriptor;
     struct ImageCopyBuffer;
+    struct ImageCopyExternalTexture;
     struct ImageCopyTexture;
     struct ProgrammableStageDescriptor;
     struct RenderPassColorAttachment;
@@ -988,6 +995,7 @@ namespace wgpu {
         using ObjectBase::ObjectBase;
         using ObjectBase::operator=;
 
+        void CopyExternalTextureForBrowser(ImageCopyExternalTexture const * source, ImageCopyTexture const * destination, Extent3D const * copySize, CopyTextureForBrowserOptions const * options) const;
         void CopyTextureForBrowser(ImageCopyTexture const * source, ImageCopyTexture const * destination, Extent3D const * copySize, CopyTextureForBrowserOptions const * options) const;
         void OnSubmittedWorkDone(uint64_t signalValue, QueueWorkDoneCallback callback, void * userdata) const;
         void SetLabel(char const * label) const;
@@ -1051,7 +1059,7 @@ namespace wgpu {
         void End() const;
         void EndOcclusionQuery() const;
         void EndPass() const;
-        void ExecuteBundles(uint32_t bundlesCount, RenderBundle const * bundles) const;
+        void ExecuteBundles(uint32_t bundleCount, RenderBundle const * bundles) const;
         void InsertDebugMarker(char const * markerLabel) const;
         void PopDebugGroup() const;
         void PushDebugGroup(char const * groupLabel) const;
@@ -1207,7 +1215,7 @@ namespace wgpu {
         uint32_t binding;
         Buffer buffer = nullptr;
         uint64_t offset = 0;
-        uint64_t size;
+        uint64_t size = WGPU_WHOLE_SIZE;
         Sampler sampler = nullptr;
         TextureView textureView = nullptr;
     };
@@ -1284,6 +1292,15 @@ namespace wgpu {
         bool internalUsage = false;
     };
 
+    // Can be chained in AdapterProperties
+    struct DawnAdapterPropertiesPowerPreference : ChainedStructOut {
+        DawnAdapterPropertiesPowerPreference() {
+            sType = SType::DawnAdapterPropertiesPowerPreference;
+        }
+        static constexpr size_t kFirstMemberAlignment = detail::ConstexprMax(alignof(ChainedStruct), alignof(PowerPreference ));
+        alignas(kFirstMemberAlignment) PowerPreference powerPreference = PowerPreference::Undefined;
+    };
+
     // Can be chained in DeviceDescriptor
     struct DawnCacheDeviceDescriptor : ChainedStruct {
         DawnCacheDeviceDescriptor() {
@@ -1333,6 +1350,11 @@ namespace wgpu {
         const char* const * forceDisabledToggles;
     };
 
+    struct Extent2D {
+        uint32_t width = 0;
+        uint32_t height = 1;
+    };
+
     struct Extent3D {
         uint32_t width;
         uint32_t height = 1;
@@ -1355,18 +1377,6 @@ namespace wgpu {
         }
     };
 
-    struct ExternalTextureDescriptor {
-        ChainedStruct const * nextInChain = nullptr;
-        char const * label = nullptr;
-        TextureView plane0;
-        TextureView plane1 = nullptr;
-        bool doYuvToRgbConversionOnly = false;
-        float const * yuvToRgbConversionMatrix = nullptr;
-        float const * srcTransferFunctionParameters;
-        float const * dstTransferFunctionParameters;
-        float const * gamutConversionMatrix;
-    };
-
     struct InstanceDescriptor {
         ChainedStruct const * nextInChain = nullptr;
     };
@@ -1377,6 +1387,7 @@ namespace wgpu {
         uint32_t maxTextureDimension3D = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxTextureArrayLayers = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxBindGroups = WGPU_LIMIT_U32_UNDEFINED;
+        uint32_t maxBindingsPerBindGroup = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxDynamicUniformBuffersPerPipelineLayout = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxDynamicStorageBuffersPerPipelineLayout = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxSampledTexturesPerShaderStage = WGPU_LIMIT_U32_UNDEFINED;
@@ -1389,6 +1400,7 @@ namespace wgpu {
         uint32_t minUniformBufferOffsetAlignment = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t minStorageBufferOffsetAlignment = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxVertexBuffers = WGPU_LIMIT_U32_UNDEFINED;
+        uint64_t maxBufferSize = WGPU_LIMIT_U64_UNDEFINED;
         uint32_t maxVertexAttributes = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxVertexBufferArrayStride = WGPU_LIMIT_U32_UNDEFINED;
         uint32_t maxInterStageShaderComponents = WGPU_LIMIT_U32_UNDEFINED;
@@ -1407,6 +1419,11 @@ namespace wgpu {
         uint32_t count = 1;
         uint32_t mask = 0xFFFFFFFF;
         bool alphaToCoverageEnabled = false;
+    };
+
+    struct Origin2D {
+        uint32_t x = 0;
+        uint32_t y = 0;
     };
 
     struct Origin3D {
@@ -1736,10 +1753,30 @@ namespace wgpu {
         float depthBiasClamp = 0.0f;
     };
 
+    struct ExternalTextureDescriptor {
+        ChainedStruct const * nextInChain = nullptr;
+        char const * label = nullptr;
+        TextureView plane0;
+        TextureView plane1 = nullptr;
+        Origin2D visibleOrigin;
+        Extent2D visibleSize;
+        bool doYuvToRgbConversionOnly = false;
+        float const * yuvToRgbConversionMatrix = nullptr;
+        float const * srcTransferFunctionParameters;
+        float const * dstTransferFunctionParameters;
+        float const * gamutConversionMatrix;
+    };
+
     struct ImageCopyBuffer {
         ChainedStruct const * nextInChain = nullptr;
         TextureDataLayout layout;
         Buffer buffer;
+    };
+
+    struct ImageCopyExternalTexture {
+        ChainedStruct const * nextInChain = nullptr;
+        ExternalTexture externalTexture;
+        Origin3D origin;
     };
 
     struct ImageCopyTexture {

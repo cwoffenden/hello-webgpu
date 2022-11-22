@@ -140,6 +140,7 @@ typedef struct DawnProcTable {
     WGPUProcQuerySetReference querySetReference;
     WGPUProcQuerySetRelease querySetRelease;
 
+    WGPUProcQueueCopyExternalTextureForBrowser queueCopyExternalTextureForBrowser;
     WGPUProcQueueCopyTextureForBrowser queueCopyTextureForBrowser;
     WGPUProcQueueOnSubmittedWorkDone queueOnSubmittedWorkDone;
     WGPUProcQueueSetLabel queueSetLabel;

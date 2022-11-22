@@ -2,7 +2,7 @@
 
 These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HEAD/docs/building.md) but tailored for Windows (and specifically a DLL that can be linked with MSVC).
 
-1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
+1. Install Visual Studio (here VS2019 was used but 2015 or 2017 should also work; 2022 is currently failing). The [Community](//visualstudio.microsoft.com/vs/community/) edition is fine. Add [CMake](//cmake.org) (and [Ninja](//ninja-build.org)) in the VS install options.
 
 2. You need the the [full Windows 10 SDK](//developer.microsoft.com/en-gb/windows/downloads/windows-10-sdk/); the VS installer will install the Win10 SDK but it misses the required [Debugging Tools for Windows](//docs.microsoft.com/en-us/windows-hardware/drivers/debugger/) (alternatively this can be added afterwards [following the Chrome build instructions](https://chromium.googlesource.com/chromium/src/+/master/docs/windows_build_instructions.md#Visual-Studio)).
 
@@ -52,6 +52,15 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	1. `gn args out\Release`
 
 	2. In the text file that just opened add `is_debug=false` then save and close it.
+
+	Note: building Dawn as of November 2022 is failing due to missing `chrome/VERSION`, which can be fixed by creating a file with:
+
+	```bat
+	MAJOR=1
+	MINOR=0
+	BUILD=0
+	PATCH=0
+	```
 
 	3. `ninja -C out\Release dawn_samples` (omit the samples target to build the unit tests, etc.)
 
@@ -105,7 +114,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	
 	These should be enough:
 	
-	`ninja -C out\Release src/dawn/native:shared src/dawn/platform:shared proc_shared`
+	`ninja -C out\Release src/dawn/native:shared src/dawn/platform:shared proc_shared webgpu_dawn`
 
 11. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 

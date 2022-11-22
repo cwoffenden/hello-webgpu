@@ -429,6 +429,9 @@ namespace wgpu {
       case FeatureName::ShaderF16:
         o << "FeatureName::ShaderF16";
         break;
+      case FeatureName::RG11B10UfloatRenderable:
+        o << "FeatureName::RG11B10UfloatRenderable";
+        break;
       case FeatureName::DawnShaderFloat16:
         o << "FeatureName::DawnShaderFloat16";
         break;
@@ -443,6 +446,9 @@ namespace wgpu {
         break;
       case FeatureName::ChromiumExperimentalDp4a:
         o << "FeatureName::ChromiumExperimentalDp4a";
+        break;
+      case FeatureName::TimestampQueryInsidePasses:
+        o << "FeatureName::TimestampQueryInsidePasses";
         break;
           default:
             o << "FeatureName::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<FeatureName>::type>(value);
@@ -761,6 +767,9 @@ namespace wgpu {
         break;
       case SType::DawnCacheDeviceDescriptor:
         o << "SType::DawnCacheDeviceDescriptor";
+        break;
+      case SType::DawnAdapterPropertiesPowerPreference:
+        o << "SType::DawnAdapterPropertiesPowerPreference";
         break;
           default:
             o << "SType::" << std::showbase << std::hex << std::setfill('0') << std::setw(4) << static_cast<typename std::underlying_type<SType>::type>(value);
