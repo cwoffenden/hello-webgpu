@@ -10,7 +10,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 4. Install the [Vulkan SDK](//www.lunarg.com/vulkan-sdk/). Make sure the examples run (`vkcube.exe`, for example).
 
-5. Install Git. I installed Git for Windows via the [Git Credential Manager](//github.com/Microsoft/Git-Credential-Manager-for-Windows/releases/).
+5. Install Git. I installed Git for Windows (//gitforwindows.org/).
 
 6. Install Google's [Depot Tools](//commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools_tutorial.html#_setting_up). I didn't install Depot Tools the recommended way, instead I did this:
 
