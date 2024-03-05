@@ -1,53 +1,51 @@
-// Copyright 2018 The Dawn Authors
+// Copyright 2018 The Dawn & Tint Authors
 //
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// Redistribution and use in source and binary forms, with or without
+// modification, are permitted provided that the following conditions are met:
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// 1. Redistributions of source code must retain the above copyright notice, this
+//    list of conditions and the following disclaimer.
 //
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
+// 2. Redistributions in binary form must reproduce the above copyright notice,
+//    this list of conditions and the following disclaimer in the documentation
+//    and/or other materials provided with the distribution.
+//
+// 3. Neither the name of the copyright holder nor the names of its
+//    contributors may be used to endorse or promote products derived from
+//    this software without specific prior written permission.
+//
+// THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+// AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+// IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+// FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+// DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+// SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+// CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+// OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+// OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #ifndef INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_
 #define INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_
 
-#include <string>
 #include <vector>
 
 #include "dawn/dawn_proc_table.h"
 #include "dawn/native/dawn_native_export.h"
-#include "dawn/webgpu.h"
+#include "dawn/webgpu_cpp.h"
 
 namespace dawn::platform {
 class Platform;
 }  // namespace dawn::platform
-
-namespace wgpu {
-struct AdapterProperties;
-struct DeviceDescriptor;
-}  // namespace wgpu
 
 namespace dawn::native {
 
 class InstanceBase;
 class AdapterBase;
 
-// An optional parameter of Adapter::CreateDevice() to send additional information when creating
-// a Device. For example, we can use it to enable a workaround, optimization or feature.
-struct DAWN_NATIVE_EXPORT DawnDeviceDescriptor {
-    DawnDeviceDescriptor();
-    ~DawnDeviceDescriptor();
-
-    std::vector<const char*> requiredFeatures;
-    std::vector<const char*> forceEnabledToggles;
-    std::vector<const char*> forceDisabledToggles;
-
-    const WGPURequiredLimits* requiredLimits = nullptr;
-};
+// Each toggle is assigned with a TogglesStage, indicating the validation and earliest usage
+// time of the toggle.
+enum class ToggleStage { Instance, Adapter, Device };
 
 // A struct to record the information of a toggle. A toggle is a code path in Dawn device that
 // can be manually configured to run or not outside Dawn, including workarounds, special
@@ -56,6 +54,7 @@ struct ToggleInfo {
     const char* name;
     const char* description;
     const char* url;
+    ToggleStage stage;
 };
 
 // A struct to record the information of a feature. A feature is a GPU feature that is not
@@ -66,7 +65,7 @@ struct FeatureInfo {
     const char* description;
     const char* url;
     // The enum of feature state, could be stable or experimental. Using an experimental feature
-    // requires DisallowUnsafeAPIs toggle being disabled.
+    // requires the AllowUnsafeAPIs toggle to be enabled.
     enum class FeatureState { Stable = 0, Experimental };
     FeatureState featureState;
 };
@@ -92,7 +91,6 @@ class DAWN_NATIVE_EXPORT Adapter {
     void GetProperties(wgpu::AdapterProperties* properties) const;
     void GetProperties(WGPUAdapterProperties* properties) const;
 
-    std::vector<const char*> GetSupportedExtensions() const;
     std::vector<const char*> GetSupportedFeatures() const;
     bool GetLimits(WGPUSupportedLimits* limits) const;
 
@@ -105,19 +103,20 @@ class DAWN_NATIVE_EXPORT Adapter {
     explicit operator bool() const;
 
     // Create a device on this adapter. On an error, nullptr is returned.
-    WGPUDevice CreateDevice(const DawnDeviceDescriptor* deviceDescriptor);
     WGPUDevice CreateDevice(const wgpu::DeviceDescriptor* deviceDescriptor);
     WGPUDevice CreateDevice(const WGPUDeviceDescriptor* deviceDescriptor = nullptr);
 
-    void RequestDevice(const DawnDeviceDescriptor* descriptor,
-                       WGPURequestDeviceCallback callback,
-                       void* userdata);
     void RequestDevice(const wgpu::DeviceDescriptor* descriptor,
                        WGPURequestDeviceCallback callback,
                        void* userdata);
     void RequestDevice(const WGPUDeviceDescriptor* descriptor,
                        WGPURequestDeviceCallback callback,
                        void* userdata);
+    void RequestDevice(std::nullptr_t descriptor,
+                       WGPURequestDeviceCallback callback,
+                       void* userdata) {
+        RequestDevice(static_cast<const wgpu::DeviceDescriptor*>(descriptor), callback, userdata);
+    }
 
     // Returns the underlying WGPUAdapter object.
     WGPUAdapter Get() const;
@@ -129,16 +128,26 @@ class DAWN_NATIVE_EXPORT Adapter {
     AdapterBase* mImpl = nullptr;
 };
 
-// Base class for options passed to Instance::DiscoverAdapters.
-struct DAWN_NATIVE_EXPORT AdapterDiscoveryOptionsBase {
-  public:
-    const WGPUBackendType backendType;
-
-  protected:
-    explicit AdapterDiscoveryOptionsBase(WGPUBackendType type);
-};
-
 enum BackendValidationLevel { Full, Partial, Disabled };
+
+// Can be chained in InstanceDescriptor
+struct DAWN_NATIVE_EXPORT DawnInstanceDescriptor : wgpu::ChainedStruct {
+    DawnInstanceDescriptor();
+    uint32_t additionalRuntimeSearchPathsCount = 0;
+    const char* const* additionalRuntimeSearchPaths;
+    dawn::platform::Platform* platform = nullptr;
+
+    BackendValidationLevel backendValidationLevel = BackendValidationLevel::Disabled;
+    bool beginCaptureOnStartup = false;
+    bool enableAdapterBlocklist = false;
+
+    WGPULoggingCallback loggingCallback = nullptr;
+    void* loggingCallbackUserdata = nullptr;
+
+    // Equality operators, mostly for testing. Note that this tests
+    // strict pointer-pointer equality if the struct contains member pointers.
+    bool operator==(const DawnInstanceDescriptor& rhs) const;
+};
 
 // Represents a connection to dawn_native and is used for dependency injection, discovering
 // system adapters and injecting custom adapters (like a Swiftshader Vulkan adapter).
@@ -153,16 +162,13 @@ class DAWN_NATIVE_EXPORT Instance {
     Instance(const Instance& other) = delete;
     Instance& operator=(const Instance& other) = delete;
 
-    // Gather all adapters in the system that can be accessed with no special options. These
-    // adapters will later be returned by GetAdapters.
-    void DiscoverDefaultAdapters();
-
-    // Adds adapters that can be discovered with the options provided (like a getProcAddress).
-    // The backend is chosen based on the type of the options used. Returns true on success.
-    bool DiscoverAdapters(const AdapterDiscoveryOptionsBase* options);
-
-    // Returns all the adapters that the instance knows about.
-    std::vector<Adapter> GetAdapters() const;
+    // Discovers and returns a vector of adapters.
+    // All systems adapters that can be found are returned if no options are passed.
+    // Otherwise, returns adapters based on the `options`. Adapter toggles descriptor can chained
+    // after options.
+    std::vector<Adapter> EnumerateAdapters(const WGPURequestAdapterOptions* options) const;
+    std::vector<Adapter> EnumerateAdapters(
+        const wgpu::RequestAdapterOptions* options = nullptr) const;
 
     const ToggleInfo* GetToggleInfo(const char* toggleName);
     const FeatureInfo* GetFeatureInfo(WGPUFeatureName feature);
@@ -174,8 +180,8 @@ class DAWN_NATIVE_EXPORT Instance {
     // Enable debug capture on Dawn startup
     void EnableBeginCaptureOnStartup(bool beginCaptureOnStartup);
 
-    // TODO(dawn:1374) Deprecate this once it is passed via the descriptor.
-    void SetPlatform(dawn::platform::Platform* platform);
+    // Enable / disable the adapter blocklist.
+    void EnableAdapterBlocklist(bool enable);
 
     uint64_t GetDeviceCountForTesting() const;
 
@@ -198,8 +204,8 @@ DAWN_NATIVE_EXPORT size_t GetLazyClearCountForTesting(WGPUDevice device);
 // Backdoor to get the number of deprecation warnings for testing
 DAWN_NATIVE_EXPORT size_t GetDeprecationWarningCountForTesting(WGPUDevice device);
 
-// Backdoor to get the number of adapters an instance knows about for testing
-DAWN_NATIVE_EXPORT size_t GetAdapterCountForTesting(WGPUInstance instance);
+// Backdoor to get the number of physical devices an instance knows about for testing
+DAWN_NATIVE_EXPORT size_t GetPhysicalDeviceCountForTesting(WGPUInstance instance);
 
 //  Query if texture has been initialized
 DAWN_NATIVE_EXPORT bool IsTextureSubresourceInitialized(
@@ -215,6 +221,8 @@ DAWN_NATIVE_EXPORT std::vector<const char*> GetProcMapNamesForTesting();
 
 DAWN_NATIVE_EXPORT bool DeviceTick(WGPUDevice device);
 
+DAWN_NATIVE_EXPORT bool InstanceProcessEvents(WGPUInstance instance);
+
 // ErrorInjector functions used for testing only. Defined in dawn_native/ErrorInjector.cpp
 DAWN_NATIVE_EXPORT void EnableErrorInjector();
 DAWN_NATIVE_EXPORT void DisableErrorInjector();
@@ -228,8 +236,11 @@ enum ExternalImageType {
     DmaBuf,
     IOSurface,
     DXGISharedHandle,
+    D3D11Texture,
     EGLImage,
+    GLTexture,
     AHardwareBuffer,
+    Last = AHardwareBuffer,
 };
 
 // Common properties of external images
@@ -264,12 +275,12 @@ DAWN_NATIVE_EXPORT const char* GetObjectLabelForTesting(void* objectHandle);
 
 DAWN_NATIVE_EXPORT uint64_t GetAllocatedSizeForTesting(WGPUBuffer buffer);
 
-DAWN_NATIVE_EXPORT bool BindGroupLayoutBindingsEqualForTesting(WGPUBindGroupLayout a,
-                                                               WGPUBindGroupLayout b);
+DAWN_NATIVE_EXPORT std::vector<const ToggleInfo*> AllToggleInfos();
+
+// Used to query the details of an feature. Return nullptr if featureName is not a valid
+// name of an feature supported in Dawn.
+DAWN_NATIVE_EXPORT const FeatureInfo* GetFeatureInfo(wgpu::FeatureName feature);
 
 }  // namespace dawn::native
-
-// TODO(dawn:824): Remove once the deprecation period is passed.
-namespace dawn_native = dawn::native;
 
 #endif  // INCLUDE_DAWN_NATIVE_DAWNNATIVE_H_

@@ -1,4 +1,4 @@
-// Copyright 2018 The Dawn & Tint Authors
+// Copyright 2023 The Dawn & Tint Authors
 //
 // Redistribution and use in source and binary forms, with or without
 // modification, are permitted provided that the following conditions are met:
@@ -25,25 +25,41 @@
 // OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#ifndef INCLUDE_DAWN_NATIVE_DAWN_NATIVE_EXPORT_H_
-#define INCLUDE_DAWN_NATIVE_DAWN_NATIVE_EXPORT_H_
+#ifndef INCLUDE_DAWN_NATIVE_D3D11BACKEND_H_
+#define INCLUDE_DAWN_NATIVE_D3D11BACKEND_H_
 
-#if defined(DAWN_NATIVE_SHARED_LIBRARY)
-#if defined(_WIN32)
-#if defined(DAWN_NATIVE_IMPLEMENTATION)
-#define DAWN_NATIVE_EXPORT __declspec(dllexport)
-#else
-#define DAWN_NATIVE_EXPORT __declspec(dllimport)
-#endif
-#else  // defined(_WIN32)
-#if defined(DAWN_NATIVE_IMPLEMENTATION)
-#define DAWN_NATIVE_EXPORT __attribute__((visibility("default")))
-#else
-#define DAWN_NATIVE_EXPORT
-#endif
-#endif  // defined(_WIN32)
-#else   // defined(DAWN_NATIVE_SHARED_LIBRARY)
-#define DAWN_NATIVE_EXPORT
-#endif  // defined(DAWN_NATIVE_SHARED_LIBRARY)
+#include <d3d11_1.h>
+#include <windows.h>
+#include <wrl/client.h>
 
-#endif  // INCLUDE_DAWN_NATIVE_DAWN_NATIVE_EXPORT_H_
+#include <memory>
+
+#include "dawn/native/D3DBackend.h"
+
+namespace dawn::native::d3d11 {
+
+DAWN_NATIVE_EXPORT Microsoft::WRL::ComPtr<ID3D11Device> GetD3D11Device(WGPUDevice device);
+
+// May be chained on RequestAdapterOptions
+struct DAWN_NATIVE_EXPORT RequestAdapterOptionsD3D11Device : wgpu::ChainedStruct {
+    RequestAdapterOptionsD3D11Device() {
+        sType = static_cast<wgpu::SType>(WGPUSType_RequestAdapterOptionsD3D11Device);
+    }
+
+    Microsoft::WRL::ComPtr<ID3D11Device> device;
+};
+
+// May be chained on SharedTextureMemoryDescriptor
+struct DAWN_NATIVE_EXPORT SharedTextureMemoryD3D11Texture2DDescriptor : wgpu::ChainedStruct {
+    SharedTextureMemoryD3D11Texture2DDescriptor() {
+        sType = static_cast<wgpu::SType>(WGPUSType_SharedTextureMemoryD3D11Texture2DDescriptor);
+    }
+
+    // This ID3D11Texture2D object must be created from the same ID3D11Device used in the
+    // WGPUDevice.
+    Microsoft::WRL::ComPtr<ID3D11Texture2D> texture;
+};
+
+}  // namespace dawn::native::d3d11
+
+#endif  // INCLUDE_DAWN_NATIVE_D3D11BACKEND_H_
