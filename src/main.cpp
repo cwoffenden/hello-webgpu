@@ -338,6 +338,7 @@ static bool redraw() {
 
 	WGPURenderPassColorAttachment colorDesc = {};
 	colorDesc.view    = backBufView;
+	colorDesc.depthSlice = WGPU_DEPTH_SLICE_UNDEFINED;
 	colorDesc.loadOp  = WGPULoadOp_Clear;
 	colorDesc.storeOp = WGPUStoreOp_Store;
 	colorDesc.clearValue.r = 0.3f;
