@@ -22,7 +22,7 @@ if (EMSCRIPTEN)
 	# -s EVAL_CTORS=1
 
 	# Linker flags to optimize for smallest output code size
-	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ENVIRONMENT=web -s TEXTDECODER=2 -s ABORTING_MALLOC=0 -s ALLOW_MEMORY_GROWTH=0 -s SUPPORT_ERRNO=0 -s MALLOC=emmalloc -s NO_FILESYSTEM=1 --output_eol=linux")
+	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -s ENVIRONMENT=web -s TEXTDECODER=2 -s ABORTING_MALLOC=0 -s ALLOW_MEMORY_GROWTH=0 -s MALLOC=emmalloc -s NO_FILESYSTEM=1 --output_eol=linux")
 	#  -s MINIMAL_RUNTIME=2
 elseif (WIN32)
 	file(GLOB_RECURSE platform_sources src/win/*)
