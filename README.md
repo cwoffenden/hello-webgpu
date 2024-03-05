@@ -8,7 +8,7 @@ Starter project for C++ [WebGPU](//gpuweb.github.io/gpuweb/)/[Emscripten](//emsc
 
 The included `libdawn` is pre-built for Windows/MSVC and Mac; [see instructions](lib/README.md) if you wish to build it yourself for Windows (out of the box Dawn on Windows builds with [Depot Tools](//commondatastorage.googleapis.com/chrome-infra-docs/flat/depot_tools/docs/html/depot_tools.html)/Clang so MSVC's linker fails with the exposed `std` types).
 
-As of May 2023 the API should be stable enough, with Chrome being the first browser to enable WebGPU by default. The code is [tested and working](//wip.numfum.com/cw/2023-05-12/index.html) with Chrome 113 (other browsers may need flags to enable) and Emscripten 3.1.38.
+As of May 2023 the API should be stable enough, with Chrome being the first browser to enable WebGPU by default. The code is [tested and working](//wip.numfum.com/cw/2024-03-05/index.html) with Chrome 122 (other browsers may need flags to enable) and Emscripten 3.1.53.
 
 Emscripten build instructions:
 ```
