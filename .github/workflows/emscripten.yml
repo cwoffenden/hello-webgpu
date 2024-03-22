@@ -14,8 +14,8 @@ jobs:
       BUILD_TYPE: ${{matrix.type}}
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: mymindstorm/setup-emsdk@v10
+    - uses: actions/checkout@v4
+    - uses: mymindstorm/setup-emsdk@v14
 
     - name: Test Emscripten
       run: emcc -v
