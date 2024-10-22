@@ -85,6 +85,15 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	dawn_use_swiftshader=false
 	```
 
+	Some toggles to investigate, seen in the Dawn Element room:
+
+ 	```ini
+	skip_validation=true
+	disable_robustness=true
+	disable_workgroup_init=true
+	lazy_clear_resource_on_first_use=false
+  	```
+
 	Note the the all-important `is_clang=false`, needed since we want to link with MSVC (a step which saves everyone the headache of wondering why the returned `std::vector` and other types have the wrong signature). It's also the reason for the `win32file` addition to Python in the earlier steps. Also note the `is_official_build=true` to enable all the right optimisation flags.
 
 	For debug:
@@ -108,7 +117,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 
 	At this point you might want to produce builds for both `target_cpu="x64"` and `target_cpu="x86"`, and optionally for the ARM64-based [Surface Pro X](https://www.microsoft.com/en-us/p/surface-pro-x/8vdnrp2m6hhc), with `target_cpu="arm64"` and `dawn_enable_vulkan=false` (Windows on ARM only supports DX).
 
-10. If you only built the samples, to get the DLLs you'll need to either build all (omit `dawn_samples` in step 8) or specify the shared libraries you need. See the full list here:
+11. If you only built the samples, to get the DLLs you'll need to either build all (omit `dawn_samples` in step 8) or specify the shared libraries you need. See the full list here:
 
 	`gn ls out\Release`
 	
@@ -116,7 +125,7 @@ These are based on [Dawn's build instructions](//dawn.googlesource.com/dawn/+/HE
 	
 	`ninja -C out\Release src/dawn/native:shared src/dawn/platform:shared proc_shared webgpu_dawn`
 
-11. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
+12. That's it for Dawn but (optionally) almost the same steps can be used to build [ANGLE](//chromium.googlesource.com/angle/angle/+/HEAD/doc/DevSetup.md).
 
 	Taking the same arguments as Dawn plus:
 
